@@ -2,9 +2,9 @@
 title: "RFlocalfdr"
 output: rmarkdown::html_vignette
 vignette: >
-  \VignetteIndexEntry{RFlocalfdr}
-  \VignetteEngine{knitr::rmarkdown}
-  \VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{RFlocalfdr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
