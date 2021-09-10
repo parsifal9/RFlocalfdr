@@ -14,10 +14,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r, eval=FALSE}
 library(RFlocalfdr)
 ```
-```{r variable counts}
+
+```{r,  eval=FALSE}
 library(ranger)
 rf1<-ranger(Species ~ ., data = iris,importance="impurity",seed=123)
 t2<-count_variables(rf1)
@@ -26,7 +27,7 @@ plot(density((imp)))
 hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
 ```
 
-```{r detemine a cutoff to get unimodal density}
+```{r , eval=FALSE}
 # detemine a cutoff to get unimodal density
 
 plot(density(log(imp)),lwd=3,ylim=c(0,0.2))
@@ -43,20 +44,49 @@ hist(log(imp[t2 > 3]),col=6,lwd=2,breaks=200)
 hist(imp[t2 > 3],col=6,lwd=2,breaks=10)
 imp <- imp[t2 > 3]
 #################################################################################
+```
 
+```{r , eval=FALSE}
+library(RFlocalfdr)
+```
 
-```{r scale data}
+```{,r  eval=FALSE}
+library(ranger)
+rf1<-ranger(Species ~ ., data = iris,importance="impurity",seed=123)
+t2<-count_variables(rf1)
+imp<-log(rf1$variable.importance)
+plot(density((imp)))
+hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
+```
+
+```{r , eval=FALSE}
+scale data}
 temp.data <- imp - min(imp) + .Machine$double.eps 
 length(temp.data) #[1] 18317
 ```
 
 
 #################################################################################
-```{r  load some test data (iris is too small}
+```{r  , eval=FALSE}
+library(RFlocalfdr)
+```
+
+```{r,  eval=FALSE}
+library(ranger)
+rf1<-ranger(Species ~ ., data = iris,importance="impurity",seed=123)
+t2<-count_variables(rf1)
+imp<-log(rf1$variable.importance)
+plot(density((imp)))
+hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
+```
+
+```{r , eval=FALSE}
+load some test data (iris is too small}
 rm(list=ls())
 data(imp1)
 ```
-```{r  load some test data (iris is too small}
+
+```{r, eval=FALSE}
 #################################################################################
 #fit spline
 f<- f.spline(imp1)
