@@ -19,3 +19,7 @@ Imports:
     sn
 Depends: 
     R (>= 2.10)
+Suggests: 
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr
