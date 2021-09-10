@@ -18,6 +18,8 @@ knitr::opts_chunk$set(
 library(RFlocalfdr)
 ```
 
+A small example using the iris data set.
+
 ```{r,  eval=FALSE}
 library(ranger)
 rf1<-ranger(Species ~ ., data = iris,importance="impurity",seed=123)
@@ -26,9 +28,8 @@ imp<-log(rf1$variable.importance)
 plot(density((imp)))
 hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
 ```
-
+Detemine a cutoff to get unimodal density
 ```{r , eval=FALSE}
-# detemine a cutoff to get unimodal density
 
 plot(density(log(imp)),lwd=3,ylim=c(0,0.2))
 lines(density(log(imp[t2 == 1])),col=2,lwd=2)
@@ -39,62 +40,35 @@ lines(density(log(imp[t2== 5])),col=6,lwd=2)
 plot(density(log(imp[t2 > 3])),col=6,lwd=2)
 hist(log(imp[t2 > 3]),col=6,lwd=2,breaks=200)
 
-#################################################################################
 # make cutoff
 hist(imp[t2 > 3],col=6,lwd=2,breaks=10)
 imp <- imp[t2 > 3]
-#################################################################################
+
 ```
 
+scale data
 ```{r , eval=FALSE}
-library(RFlocalfdr)
-```
-
-```{,r  eval=FALSE}
-library(ranger)
-rf1<-ranger(Species ~ ., data = iris,importance="impurity",seed=123)
-t2<-count_variables(rf1)
-imp<-log(rf1$variable.importance)
-plot(density((imp)))
-hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
-```
-
-```{r , eval=FALSE}
-scale data}
-temp.data <- imp - min(imp) + .Machine$double.eps 
-length(temp.data) #[1] 18317
+imp <- imp - min(imp) + .Machine$double.eps 
+length(imp) 
 ```
 
 
-#################################################################################
-```{r  , eval=FALSE}
-library(RFlocalfdr)
-```
-
-```{r,  eval=FALSE}
-library(ranger)
-rf1<-ranger(Species ~ ., data = iris,importance="impurity",seed=123)
-t2<-count_variables(rf1)
-imp<-log(rf1$variable.importance)
-plot(density((imp)))
-hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
-```
-
-```{r , eval=FALSE}
 load some test data (iris is too small}
-rm(list=ls())
+This data is already processed
+
+```{r , eval=FALSE}
 data(imp1)
 ```
 
+fit a spline
 ```{r, eval=FALSE}
-#################################################################################
-#fit spline
 f<- f.spline(imp1)
+```
 
 
-#################################################################################
-########skew normal by nls
-## this is just a test 
+skew normal by nls
+this is just a test 
+```{r, eval=FALSE}
 y<-f$zh$density
 x<-f$x
 plot(x,y,type="l")
@@ -119,17 +93,21 @@ plot(x,aa)
 abline(h=0.2)
 ww<-which.min(abs(aa[20:119]-0.2))
 sum(imp1> x[as.numeric(names(ww))])  # 351
-
-##############################################################################################################
-# determine the value p0, C
-# this may not work as we are looking for a very small proportion of non-null genes
-# set p0 to 1
-# set C as below
+```
 
 
 
+determine the value p0, C
 
-##############################################################################################################
+this may not work as we are looking for a very small proportion of non-null genes
+ 
+set p0 to 1
+
+set C as below
+
+
+
+```{r, eval=FALSE}
 C<-sn::qsn(0.95,  xi=summary(mm1.df)$parameters[1,1], omega=summary(mm1.df)$parameters[2,1], alpha= summary(mm1.df)$parameters[3,1] )
 hist(imp1,col=6,lwd=2,breaks=100,main="histogram of importances")
 abline(v=C)
