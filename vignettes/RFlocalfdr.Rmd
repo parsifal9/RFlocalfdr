@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 
 ```{r, eval=FALSE}
 library(RFlocalfdr)
+
 ```
 
 A small example using the iris data set.
@@ -28,9 +29,9 @@ imp<-log(rf1$variable.importance)
 plot(density((imp)))
 hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
 ```
+
 Detemine a cutoff to get unimodal density
 ```{r , eval=FALSE}
-
 plot(density(log(imp)),lwd=3,ylim=c(0,0.2))
 lines(density(log(imp[t2 == 1])),col=2,lwd=2)
 lines(density(log(imp[t2 == 2])),col=3,lwd=2)
@@ -58,11 +59,13 @@ This data is already processed
 
 ```{r , eval=FALSE}
 data(imp1)
+
 ```
 
 fit a spline
 ```{r, eval=FALSE}
 f<- f.spline(imp1)
+
 ```
 
 

@@ -6,7 +6,7 @@
 #' @keywords spline
 #' @export
 #' @examples
-f.spline <-function(zz,df=10){
+f.fir <-function(zz,df=10){
     bre = 120
     lo <- min(zz)
     up <- max(zz)
@@ -26,7 +26,7 @@ f.spline <-function(zz,df=10){
     f.hist<-hist.of.data$counts
     lines(x,f.spline,col="blue",lwd="4")
     lines(x,f.hist,col="green",lwd="4")
-    temp<-list(x,zh,f.spline)
-    names(temp)<-c("x","zh","f.spline")
+    temp <- list(x, zh, f.spline,hist.of.data$counts)
+    names(temp) <- c("x", "zh", "f.spline", "counts")
     temp
 }

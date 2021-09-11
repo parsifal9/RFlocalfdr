@@ -7,11 +7,9 @@
 #' @export
 #' @examples
 #' local.fdr()
-local.fdr <-function(f,FUN=dburr, ...){
+local.fdr <-function(f,FUN=dburr, p0= 1, ...){
     f0<-FUN(x, ...)
     f<-f$f.spline
-    
-    p0<-1
     f <- (sum(f0) * f)/sum(f)
     fdr <- pmin((p0 * f0)/f,1)
     plot(fdr)
