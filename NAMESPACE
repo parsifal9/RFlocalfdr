@@ -5,4 +5,4 @@ export(count_variables)
 export(f.fit)
 export(local.fdr)
 export(my.dsn)
-export(propTrueNullByLocalFDR)
+
