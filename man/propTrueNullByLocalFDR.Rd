@@ -12,7 +12,4 @@ propTrueNullByLocalFDR(p)
 \description{
 propTrueNullByLocalFDR
 }
-\examples{
-propTrueNullByLocalFDR()
-}
 \keyword{cats}

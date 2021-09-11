@@ -2,6 +2,7 @@
 
 export(cat_function)
 export(count_variables)
+export(determine.C)
 export(f.fit)
 export(local.fdr)
 export(my.dsn)
