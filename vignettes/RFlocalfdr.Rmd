@@ -19,7 +19,8 @@ library(RFlocalfdr)
 
 ```
 
-A small example using the iris data set.
+A small example using the iris data set. Does not make a lot of sense. For this method to work we need 
+a lot of varaibles and a lot of trees.
 
 ```{r,  eval=FALSE}
 library(ranger)
@@ -30,7 +31,7 @@ plot(density((imp)))
 hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
 ```
 
-Detemine a cutoff to get unimodal density
+Detemine a cutoff to get a unimodal density
 ```{r , eval=FALSE}
 plot(density(log(imp)),lwd=3,ylim=c(0,0.2))
 lines(density(log(imp[t2 == 1])),col=2,lwd=2)
@@ -47,30 +48,29 @@ imp <- imp[t2 > 3]
 
 ```
 
-scale data
+After making the cutoff, translate the data
 ```{r , eval=FALSE}
 imp <- imp - min(imp) + .Machine$double.eps 
-length(imp) 
+length(imp)
+
 ```
 
-
-load some test data (iris is too small}
-This data is already processed
+Load some test data (iris is too small).
+This data is already processed to this stage.
 
 ```{r , eval=FALSE}
 data(imp1)
+hist(imp1,col=6,lwd=2,breaks=100,main="histogram of importances")
 
 ```
 
-fit a spline
+Fit a spline to the data
 ```{r, eval=FALSE}
 f<- f.fit(imp1)
 
 ```
 
-
-skew normal by nls
-this is just a test 
+Fit a skew-normal by nls. This is just a test to see that things are looking good.
 ```{r, eval=FALSE}
 y<-f$zh$density
 x<-f$x
@@ -99,21 +99,20 @@ sum(imp1> x[as.numeric(names(ww))])  # 351
 ```
 
 
-
- determine the value p0, C
-
-this may not work as we are looking for a very small proportion of non-null genes
- 
-set p0 to 1
-
-set C as below
-
-
-
+Determine the value of C
 ```{r, eval=FALSE}
+####################################################################################################
+#take C = qsn(0.95)
 C<-sn::qsn(0.95,  xi=summary(mm1.df)$parameters[1,1], omega=summary(mm1.df)$parameters[2,1], alpha= summary(mm1.df)$parameters[3,1] )
+
+#or
+qq<-determine.C(f_fit)
+plot(x,qq)
+
 hist(imp1,col=6,lwd=2,breaks=100,main="histogram of importances")
 abline(v=C)
+abline(v= 0.9041675)
+
 df2<-data.frame(x[x< C],y[x< C])
 names(df2)<-c("x","y")
 
@@ -126,7 +125,18 @@ plot(x,y,type="l",col="grey90",lwd=2,xlim=c(0,3))
 lines(df2$x,df2$y,col="green",lwd=2)
 lines(x,predict(mm1.df2,newdata=df),col="red",lwd=3)  
 lines(x,predict(mm1.df,newdata=df),col="blue",lwd=3)  
+```
 
+Determine the value of p0
+```{r, eval=FALSE}
+ppp<-sn::dsn(imp1, xi=summary(mm1.df)$parameters[1,1], omega=summary(mm1.df)$parameters[2,1], alpha= summary(mm1.df)$parameters[3,1] )
+p0<- propTrueNullByLocalFDR(ppp)
+p0
+
+```
+
+Get the fdr
+```{r, eval=FALSE}
 aa<-local.fdr(f,FUN=my.dsn,  xi=summary(mm1.df2)$parameters[1,1], omega=summary(mm1.df2)$parameters[2,1], lambda= summary(mm1.df2)$parameters[3,1] )
 plot(x,aa)
 abline(h=0.2)
