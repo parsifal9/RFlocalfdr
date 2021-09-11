@@ -100,7 +100,7 @@ sum(imp1> x[as.numeric(names(ww))])  # 351
 
 
 
-determine the value p0, C
+ determine the value p0, C
 
 this may not work as we are looking for a very small proportion of non-null genes
  
