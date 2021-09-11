@@ -4,7 +4,7 @@
 \alias{local.fdr}
 \title{local fdr}
 \usage{
-local.fdr(f, FUN = dburr, ...)
+local.fdr(f, FUN = dburr, p0 = 1, ...)
 }
 \arguments{
 \item{f}{f}

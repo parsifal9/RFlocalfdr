@@ -6,7 +6,7 @@
 #' @keywords spline
 #' @export
 #' @examples
-f.fir <-function(zz,df=10){
+f.fit <-function(zz,df=10){
     bre = 120
     lo <- min(zz)
     up <- max(zz)
