@@ -64,7 +64,7 @@ data(imp1)
 
 fit a spline
 ```{r, eval=FALSE}
-f<- f.spline(imp1)
+f<- f.fit(imp1)
 
 ```
 
