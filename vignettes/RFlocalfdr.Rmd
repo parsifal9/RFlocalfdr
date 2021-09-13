@@ -20,7 +20,7 @@ library(RFlocalfdr)
 ```
 
 A small example using the iris data set. Does not make a lot of sense. For this method to work we need 
-a lot of varaibles and a lot of trees.
+a lot of variables and a lot of trees.
 
 ```{r,  eval=FALSE}
 library(ranger)
@@ -29,9 +29,10 @@ t2<-count_variables(rf1)
 imp<-log(rf1$variable.importance)
 plot(density((imp)))
 hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
+
 ```
 
-Detemine a cutoff to get a unimodal density
+Detemine a cutoff to get a unimodal density.
 ```{r , eval=FALSE}
 plot(density(log(imp)),lwd=3,ylim=c(0,0.2))
 lines(density(log(imp[t2 == 1])),col=2,lwd=2)
@@ -55,8 +56,8 @@ length(imp)
 
 ```
 
-Load some test data (iris is too small).
-This data is already processed to this stage.
+Load some test data (iris is too small). This data is already processed to this stage,
+i.e. it is logged and scaled.
 
 ```{r , eval=FALSE}
 data(imp1)
@@ -125,6 +126,7 @@ plot(x,y,type="l",col="grey90",lwd=2,xlim=c(0,3))
 lines(df2$x,df2$y,col="green",lwd=2)
 lines(x,predict(mm1.df2,newdata=df),col="red",lwd=3)  
 lines(x,predict(mm1.df,newdata=df),col="blue",lwd=3)  
+
 ```
 
 Determine the value of p0
@@ -137,7 +139,7 @@ p0
 
 Get the fdr
 ```{r, eval=FALSE}
-aa<-local.fdr(f,FUN=my.dsn,  xi=summary(mm1.df2)$parameters[1,1], omega=summary(mm1.df2)$parameters[2,1], lambda= summary(mm1.df2)$parameters[3,1] )
+aa<-local.fdr(f,FUN=my.dsn,  xi=summary(mm1.df2)$parameters[1,1], omega=summary(mm1.df2)$parameters[2,1], lambda= summary(mm1.df2)$parameters[3,1],p0=p0 )
 plot(x,aa)
 abline(h=0.2)
 ww<-which.min(abs(aa[20:119]-0.2))
@@ -145,8 +147,10 @@ sum(imp1> x[as.numeric(names(ww))])  # 452
 abline(v=x[as.numeric(names(ww))])
 
 hist(imp1, breaks = 200,freq=FALSE)
-abline(v=qsn(0.95,  xi=summary(mm1.df2)$parameters[1,1], omega=summary(mm1.df2)$parameters[2,1], alpha= summary(mm1.df2)$parameters[3,1] ))
+abline(v=sn::qsn(0.95,  xi=summary(mm1.df2)$parameters[1,1], omega=summary(mm1.df2)$parameters[2,1], alpha= summary(mm1.df2)$parameters[3,1] ))
 abline(v=x[as.numeric(names(ww))])
-abline(v=0.9041675,col="red")
+abline(v=C,col="red")
+
+
 
 ```
