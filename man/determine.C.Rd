@@ -4,10 +4,31 @@
 \alias{determine.C}
 \title{determine.C}
 \usage{
-determine.C(f_fit)
+determine.C(
+  f_fit,
+  df,
+  t1,
+  trace.plot = FALSE,
+  starting_value = 1,
+  start_at = 30,
+  debug = debug
+)
 }
 \arguments{
-\item{f_fit}{Do you love cats? Defaults to TRUE.}
+\item{f_fit}{object returned by f.fit}
+
+\item{df}{data frame}
+
+\item{t1}{initial estimates}
+
+\item{trace.plot}{Do you love cats? Defaults to TRUE.}
+
+\item{starting_value}{Do you love cats? Defaults to TRUE.}
+
+\item{start_at}{Do you love cats? Defaults to TRUE.}
+
+\item{debug}{Do you love cats? Defaults to TRUE.
+#' @keywords cats}
 }
 \description{
 This function allows you to express your love of cats.
@@ -15,4 +36,3 @@ This function allows you to express your love of cats.
 \examples{
 cat_function()
 }
-\keyword{cats}
