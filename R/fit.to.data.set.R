@@ -31,7 +31,7 @@ fit.to.data.set<-function(df,imp){
     cat(class(mm1.df), "class(mm1.df) -- try 2","\n")
     
     if (class(mm1.df)=="try-error"){
-        vip.sn.mle <- fitdist(imp, "sn",start=list( xi = mean(imp),omega = 1, alpha= 0),
+        vip.sn.mle <- fitdistrplus::fitdist(imp, "sn",start=list( xi = mean(imp),omega = 1, alpha= 0),
                               lower=c(-Inf,0,-Inf),fix.arg=list( tau=0),method = c("mle"))
         plot(df$x,df$y,type="l",col="green",lwd=2,xlim=c(0, max(df$x)+0.5))
         curve(sn::dsn(x, xi= vip.sn.mle$estimate[1], omega=vip.sn.mle$estimate[2], alpha= vip.sn.mle$estimate[3]),

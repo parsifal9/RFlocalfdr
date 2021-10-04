@@ -16,7 +16,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports: 
     minpack.lm,
-    sn
+    sn,
+    fitdistrplus
 Depends: 
     R (>= 2.10)
 Suggests: 
