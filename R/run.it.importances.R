@@ -92,7 +92,8 @@ run.it.importances<-function(imp1,debug=0){
     if (debug==1){
      plot(x,y,type="l",col="grey90",lwd=2,xlim=c(0,12))
      lines(df2$x,df2$y,col="green",lwd=2)
-     lines(x,my.dsn(x,xi=temp[1], omega=temp[2], lambda=temp[3]))
+     lines(x,my.dsn(x,xi=final.estimates[1], omega=final.estimates[2],
+                               lambda= final.estimates[3]))
     }
     
     ###############################################################################################
@@ -118,7 +119,7 @@ run.it.importances<-function(imp1,debug=0){
     abline(v=x[as.numeric(names(ww))])
     cat(sum(imp1> x[as.numeric(names(ww))]),"sum(imp1> x[as.numeric(names(ww))])","\n")
     hist(imp1, breaks = 200,freq=FALSE)
-    abline(v=sn::qsn(0.95,  xi=t1[1], omega=t1[2],    alpha= t1[3]))
+    abline(v=sn::qsn(0.95,  xi=final.estimates[1], omega=final.estimates[2], alpha= final.estimates[3]))
     abline(v=x[as.numeric(names(ww))])
     cat(names(imp1)[imp1> x[as.numeric(names(ww))]],"\n\n\n\n")
     }
