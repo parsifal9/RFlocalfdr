@@ -4,10 +4,12 @@
 \alias{local.fdr}
 \title{local fdr}
 \usage{
-local.fdr(f, FUN = dburr, p0 = 1, ...)
+local.fdr(f, x, FUN = dburr, p0 = 1, ...)
 }
 \arguments{
 \item{f}{f}
+
+\item{x}{x}
 
 \item{FUN}{FUN}
 }

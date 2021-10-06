@@ -109,25 +109,28 @@ run.it.importances<-function(imp1,debug=0){
     
     aa<-local.fdr(f_fit,df$x,FUN=my.dsn, xi=final.estimates[1], omega=final.estimates[2],
                   lambda= final.estimates[3],p0 = p0 )
-    mean.aa<- which.min(abs(aa-mean(imp1)))
-    ww<-which.min(abs(aa[mean.aa:119]-0.2)) 
-    num.sig.genes <-sum(imp1> x[as.numeric(names(ww))])  
+    ## mean.aa<- which.min(abs(aa-mean(imp1)))
+    ## ww<-which.min(abs(aa[mean.aa:119]-0.2)) 
+    ## num.sig.genes <-sum(imp1> x[as.numeric(names(ww))])  
 
-    if (debug==1){
-    plot(x,aa)
-    abline(h=0.2)
-    abline(v=x[as.numeric(names(ww))])
-    cat(sum(imp1> x[as.numeric(names(ww))]),"sum(imp1> x[as.numeric(names(ww))])","\n")
-    hist(imp1, breaks = 200,freq=FALSE)
-    abline(v=sn::qsn(0.95,  xi=final.estimates[1], omega=final.estimates[2], alpha= final.estimates[3]))
-    abline(v=x[as.numeric(names(ww))])
-    cat(names(imp1)[imp1> x[as.numeric(names(ww))]],"\n\n\n\n")
-    }
+    ## if (debug==1){
+    ## plot(x,aa)
+    ## abline(h=0.2)
+    ## abline(v=x[as.numeric(names(ww))])
+    ## cat(sum(imp1> x[as.numeric(names(ww))]),"sum(imp1> x[as.numeric(names(ww))])","\n")
+    ## hist(imp1, breaks = 200,freq=FALSE)
+    ## abline(v=sn::qsn(0.95,  xi=final.estimates[1], omega=final.estimates[2], alpha= final.estimates[3]))
+    ## abline(v=x[as.numeric(names(ww))])
+    ## cat(names(imp1)[imp1> x[as.numeric(names(ww))]],"\n\n\n\n")
+    ## }
     
-    a1<- match(names(imp1)[imp1> x[as.numeric(names(ww))]],names(imp1))
-    ppp<- 1-sn::psn(imp1[a1], xi=final.estimates[1], omega=final.estimates[2], alpha= final.estimates[3])
-    names(ppp) <-names(imp1)[imp1> x[as.numeric(names(ww))]]
-    ppp
+    ## a1<- match(names(imp1)[imp1> x[as.numeric(names(ww))]],names(imp1))
+    ## ppp<- 1-sn::psn(imp1[a1], xi=final.estimates[1], omega=final.estimates[2], alpha= final.estimates[3])
+    ## names(ppp) <-names(imp1)[imp1> x[as.numeric(names(ww))]]
+    ## ppp
+    temp<-list(aa,df$x,final.estimates)
+    names(temp)<-c("fdr","x","estimates")
+    temp
 }
 
 
