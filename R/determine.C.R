@@ -12,7 +12,7 @@
 #' @export
 #' @examples
 #' cat_function()
-determine.C<-function (f_fit, df, t1,trace.plot = FALSE, starting_value = 1,start_at=30,debug=debug) 
+determine.C<-function (f_fit, df, t1,trace.plot = FALSE, starting_value = 1,start_at=30,debug.flag=0) 
 {
     f <- f_fit$f.spline
     x <- df$x
@@ -34,7 +34,7 @@ determine.C<-function (f_fit, df, t1,trace.plot = FALSE, starting_value = 1,star
 
     for (ii in start_at:119) {
         df2 <- df[1:ii, ]
-        if(debug==TRUE){
+        if(debug.flag > 0){
             cat("dim(df2)", dim(df2), "\n")
             }
         mm1.df2 = minpack.lm::nlsLM(y ~ my.dsn(x, xi = xi, omega = omega, 
@@ -54,7 +54,7 @@ determine.C<-function (f_fit, df, t1,trace.plot = FALSE, starting_value = 1,star
         }
         p0 <- propTrueNullByLocalFDR(ppp)
         f0 <- (sum(f) * f0.1)/sum(f0.1)
-        if(debug==TRUE){
+        if(debug.flag > 0){
             cat("p0 = ", p0, "\n")
         }
         qq[ii] <- cumsum((-f_fit$counts * log(f0/(f))) - log(p0))[ii]

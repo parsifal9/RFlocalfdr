@@ -6,7 +6,7 @@
 #' @keywords spline
 #' @export
 #' @examples
-f.fit <-function(zz,df=10){
+f.fit <-function(zz,df=10,debug.flag=0){
     bre = 120
     lo <- min(zz)
     up <- max(zz)
@@ -15,17 +15,22 @@ f.fit <-function(zz,df=10){
     zh <- hist(zzz, breaks = breaks, plot = F)
     x <- (breaks[-1] + breaks[-length(breaks)])/2 #midpoints
     y <- zh$counts  
-    f <- glm(y ~ splines:::ns(x, df = df), poisson)$fit
+    f.spline <- glm(y ~ splines:::ns(x, df = df), poisson)$fit
+    if (debug.flag > 0){
+        png(paste(temp.dir,"/histogram_of_variable_importances.png",sep=""))
+        hist.of.data<-hist(zzz, breaks = breaks,freq=TRUE, xlab="importance",axes=FALSE,
+                           main="histogram of variable importances" )
+        lines(x,f.spline,col="red",lwd="4")
+        lines(x,hist.of.data$counts,col="green",lwd="4")
+        legend("topright",c("spline","counts"),col=c("red","green"),lty=1,lwd=4)
+        box()
+        dev.off()
+
+    }
+    
     hist.of.data<-hist(zzz, breaks = breaks,freq=TRUE, xlab="importance",axes=FALSE,
-                       main="histogram of VI" )
-    lines(x,f,col="red",lwd="4")
-    box()
-    
-    f.spline<-f
-    
+                           main="histogram of variable importances" )
     f.hist<-hist.of.data$counts
-    lines(x,f.spline,col="blue",lwd="4")
-    lines(x,f.hist,col="green",lwd="4")
     temp <- list(x, zh, f.spline,hist.of.data$counts)
     names(temp) <- c("x", "zh", "f.spline", "counts")
     temp
