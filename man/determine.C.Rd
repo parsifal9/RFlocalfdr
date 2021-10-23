@@ -11,7 +11,7 @@ determine.C(
   trace.plot = FALSE,
   starting_value = 1,
   start_at = 30,
-  debug = debug
+  debug.flag = 0
 )
 }
 \arguments{

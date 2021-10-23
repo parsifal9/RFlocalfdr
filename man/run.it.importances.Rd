@@ -4,7 +4,7 @@
 \alias{run.it.importances}
 \title{run.it.importances}
 \usage{
-run.it.importances(imp1, debug = 0)
+run.it.importances(imp1, debug.flag = 0)
 }
 \description{
 This function allows you to express your love of cats.
