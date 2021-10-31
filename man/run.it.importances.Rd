@@ -9,7 +9,7 @@ run.it.importances(imp1, debug.flag = 0)
 \description{
 This function allows you to express your love of cats.
 #' @param imp importances
-#' @param debyg debug
+#' @param debug.flag debug
 #' @keywords cats
 }
 \examples{

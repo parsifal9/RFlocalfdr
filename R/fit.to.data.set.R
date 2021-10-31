@@ -61,7 +61,7 @@ fit.to.data.set<-function(df,imp,debug.flag=0,plot.string="",temp.dir=NULL){
     }
 
     if (debug.flag >1 ){
-        png(paste(temp.dir,"/fit_to_data_set",plot.string,".png",sep=""))
+        png(paste(temp.dir,"/fit_to_data_set_",plot.string,".png",sep=""))
         hist(imp,breaks=200,freq=FALSE)
         lines(df$x,df$y,type="l",col="green",lwd=2,xlim=c(0, max(df$x)+0.5))
       

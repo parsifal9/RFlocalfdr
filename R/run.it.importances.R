@@ -45,7 +45,7 @@ run.it.importances<-function(imp1,debug.flag=0){
 
         writeLines("we calcualte the fdr using the initial estimates", fileConn)
         aa<-local.fdr(f_fit,df$x,FUN=my.dsn, xi=initial.estimates[1], omega=initial.estimates[2],
-                      lambda= initial.estimates[3])  #return a plot  -- do we want this? 
+                      lambda= initial.estimates[3], debug.flag=debug.flag,plot.string="initial",temp.dir=temp.dir)
         plot(x,aa,main="fdr using initial estiamtes")
         abline(h=0.2)
         ww<-which.min(abs(aa[50:119]-0.2))  #this 50 may need to be tidied up
@@ -104,7 +104,7 @@ run.it.importances<-function(imp1,debug.flag=0){
          }
         
         #compare the plots
-        hist(imp,breaks=200,freq=FALSE)
+        hist(imp1,breaks=200,freq=FALSE)
         lines(x,y,type="l",col="grey90",lwd=2,xlim=c(0,12))
         lines(df2$x,df2$y,col="green",lwd=2)
         abline(v=C,col="green")
@@ -144,7 +144,7 @@ run.it.importances<-function(imp1,debug.flag=0){
     
     
     aa<-local.fdr(f_fit,df$x,FUN=my.dsn, xi=final.estimates[1], omega=final.estimates[2],
-                  lambda= final.estimates[3],p0 = p0 )
+                  lambda= final.estimates[3],p0 = p0, debug.flag=debug.flag,plot.string="final",temp.dir=temp.dir)
     ## mean.aa<- which.min(abs(aa-mean(imp1)))
     ## ww<-which.min(abs(aa[mean.aa:119]-0.2)) 
     ## num.sig.genes <-sum(imp1> x[as.numeric(names(ww))])  

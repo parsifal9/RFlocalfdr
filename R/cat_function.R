@@ -4,6 +4,8 @@
 #' @param love Do you love cats? Defaults to TRUE.
 #' @keywords cats
 #' @export
+#' @rawNamespace importFrom(sn,psn)
+#' @rawNamespace export(psn)
 #' @rawNamespace importFrom(sn,dsn)
 #' @rawNamespace export(dsn)
 #' @examples

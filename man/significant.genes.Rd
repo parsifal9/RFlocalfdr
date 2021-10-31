@@ -4,7 +4,7 @@
 \alias{significant.genes}
 \title{significant.genes}
 \usage{
-significant.genes(object, imp, cutoff = 0.2, do.plot = 0, Debug = 0)
+significant.genes(object, imp, cutoff = 0.2, do.plot = 0, debug.flag = 0)
 }
 \arguments{
 \item{object}{object}
@@ -15,7 +15,7 @@ significant.genes(object, imp, cutoff = 0.2, do.plot = 0, Debug = 0)
 
 \item{do.plot}{do.plot}
 
-\item{Debug}{Debug}
+\item{debug.flag}{debug.flag}
 }
 \description{
 This function allows you to express your love of cats.

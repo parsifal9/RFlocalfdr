@@ -4,7 +4,7 @@
 \alias{f.fit}
 \title{fit a spline}
 \usage{
-f.fit(zz, df = 10, debug.flag = 0)
+f.fit(zz, df = 10, debug.flag = 0, temp.dir = NULL)
 }
 \arguments{
 \item{zz}{the varaible importances}

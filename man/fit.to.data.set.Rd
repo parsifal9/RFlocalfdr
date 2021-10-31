@@ -4,10 +4,12 @@
 \alias{fit.to.data.set}
 \title{fit.to.data.set}
 \usage{
-fit.to.data.set(df, imp)
+fit.to.data.set(df, imp, debug.flag = 0, plot.string = "", temp.dir = NULL)
 }
 \arguments{
-\item{imp}{importances
+\item{imp}{importances}
+
+\item{debug.flag}{debug flag
 #' @keywords cats}
 
 \item{f_fit}{object returned by f.fit}

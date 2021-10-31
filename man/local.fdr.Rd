@@ -4,7 +4,16 @@
 \alias{local.fdr}
 \title{local fdr}
 \usage{
-local.fdr(f, x, FUN = dburr, p0 = 1, ...)
+local.fdr(
+  f,
+  x,
+  FUN = dburr,
+  p0 = 1,
+  debug.flag = 0,
+  plot.string = "",
+  temp.dir = NULL,
+  ...
+)
 }
 \arguments{
 \item{f}{f}
