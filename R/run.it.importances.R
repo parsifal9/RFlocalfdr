@@ -89,7 +89,8 @@ run.it.importances<-function(imp1,debug.flag=0){
         if (!is.na(cc)){
             abline(v= cc,col="purple",lwd=2)
         }
-
+        legend("topright",c("C","cc"),col=c("red","purple"),lty=1)
+        
         dev.off()
 
         
@@ -104,6 +105,7 @@ run.it.importances<-function(imp1,debug.flag=0){
          }
         
         #compare the plots
+        png(paste(temp.dir,"/compare_C_and_cc_and_the_resulting_fits_2.png",sep=""))
         hist(imp1,breaks=200,freq=FALSE)
         lines(x,y,type="l",col="grey90",lwd=2,xlim=c(0,12))
         lines(df2$x,df2$y,col="green",lwd=2)
@@ -117,6 +119,8 @@ run.it.importances<-function(imp1,debug.flag=0){
             curve(sn::dsn(x,  xi=mm1.df3.estimates$Estimate[1], omega=mm1.df3.estimates$Estimate[2],
                           alpha= mm1.df3.estimates$Estimate[3]),  add=TRUE,col="blue",lwd=3)
         }
+        legend("topright",c("C","cc"),col=c("green","blue"),lty=1)
+        dev.off()
     }
     
     final.estimates <- fit.to.data.set( df2<-data.frame(x[x< C],y[x< C]),imp1,debug.flag=debug.flag,plot.string="final",temp.dir=temp.dir)$Estimate
@@ -176,8 +180,8 @@ run.it.importances<-function(imp1,debug.flag=0){
         close(fileConn)
     }
 
-    temp<-list(aa,df$x,final.estimates,temp.dir)
-    names(temp)<-c("fdr","x","estimates","temp.dir")
+    temp<-list(aa,df$x,final.estimates,temp.dir,C,cc,p0)
+    names(temp)<-c("fdr","x","estimates","temp.dir","C","cc","p0")
     temp
 }
 

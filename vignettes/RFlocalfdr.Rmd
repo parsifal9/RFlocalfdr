@@ -19,34 +19,26 @@ library(RFlocalfdr)
 
 ```
 
-A small example using the iris data set. Does not make a lot of sense. For this method to work we need 
-a lot of variables and a lot of trees.
+A small example using the smoking  data set. 
 
 ```{r,  eval=FALSE}
+rm(list=ls())
+library(sparse.inv.cov)
 library(ranger)
-rf1<-ranger(Species ~ ., data = iris,importance="impurity",seed=123)
-t2<-count_variables(rf1)
+data(smoking)
+y<-smoking$y
+smoking_data<-smoking$rma
+y.numeric <-ifelse((y=="never-smoked"),0,1)
+
+rf1 <-ranger(y=y.numeric ,x=smoking_data,importance="impurity",seed=123, num.trees = 10000,classification=TRUE)
+t2 <-count_variables(rf1)
 imp<-log(rf1$variable.importance)
 plot(density((imp)))
-hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
-
 ```
-
 Detemine a cutoff to get a unimodal density.
 ```{r , eval=FALSE}
-plot(density(log(imp)),lwd=3,ylim=c(0,0.2))
-lines(density(log(imp[t2 == 1])),col=2,lwd=2)
-lines(density(log(imp[t2 == 2])),col=3,lwd=2)
-lines(density(log(imp[t2 == 3])),col=4,lwd=2)
-lines(density(log(imp[t2 == 4])),col=5,lwd=2)
-lines(density(log(imp[t2== 5])),col=6,lwd=2)
-plot(density(log(imp[t2 > 3])),col=6,lwd=2)
-hist(log(imp[t2 > 3]),col=6,lwd=2,breaks=200)
-
-# make cutoff
-hist(imp[t2 > 3],col=6,lwd=2,breaks=10)
-imp <- imp[t2 > 3]
-
+hist(imp[t2 > 2],col=6,lwd=2,breaks=10)
+imp <- imp[t2 > 2]
 ```
 
 After making the cutoff, translate the data
@@ -54,103 +46,16 @@ After making the cutoff, translate the data
 imp <- imp - min(imp) + .Machine$double.eps 
 length(imp)
 
+head(imp)
+#     121_at     1431_at   1494_f_at   1598_g_at     1729_at 200000_s_at 
+#   2.408754    2.157128    3.919858    3.144564    2.931158    1.174730
 ```
 
-Load some test data (iris is too small). This data is already processed to this stage,
-i.e. it is logged and scaled.
-
+Fit the model
 ```{r , eval=FALSE}
-data(imp1)
-hist(imp1,col=6,lwd=2,breaks=100,main="histogram of importances")
+ppp<-run.it.importances(imp,debug=0)
 
-```
-
-Fit a spline to the data
-```{r, eval=FALSE}
-f<- f.fit(imp1)
-
-```
-
-Fit a skew-normal by nls. This is just a test to see that things are looking good.
-```{r, eval=FALSE}
-y<-f$zh$density
-x<-f$x
-plot(x,y,type="l")
-df<-data.frame(x,y)
-
-mm1.df = minpack.lm::nlsLM(y ~ my.dsn(x,xi=xi, omega=omega, lambda=lambda), 
-                   start = list(xi=1, omega=2, lambda= 1 ),
-                   data = df,control=minpack.lm::nls.lm.control(maxiter=400))
-
-plot(df$x,df$y,type="l",col="green",lwd=2,xlim=c(0,2.5))
-lines(x,predict(mm1.df),col="red",lwd=3)  
-curve(sn::dsn(x,  xi=summary(mm1.df)$parameters[1,1], omega=summary(mm1.df)$parameters[2,1], alpha= summary(mm1.df)$parameters[3,1] ),  add=TRUE,col="blue",lwd=3)
-abline(v=sn::qsn(0.5,  xi=summary(mm1.df)$parameters[1,1], omega=summary(mm1.df)$parameters[2,1], alpha= summary(mm1.df)$parameters[3,1] ))
-abline(v=sn::qsn(0.05,  xi=summary(mm1.df)$parameters[1,1], omega=summary(mm1.df)$parameters[2,1], alpha= summary(mm1.df)$parameters[3,1] ))
-abline(v=sn::qsn(0.95,  xi=summary(mm1.df)$parameters[1,1], omega=summary(mm1.df)$parameters[2,1], alpha= summary(mm1.df)$parameters[3,1] ))
-
-sum(abs(df$y-predict(mm1.df))) #  4.631543
-
-
-aa<-local.fdr(f,FUN=my.dsn,  xi=summary(mm1.df)$parameters[1,1], omega=summary(mm1.df)$parameters[2,1], lambda= summary(mm1.df)$parameters[3,1] )
-plot(x,aa)
-abline(h=0.2)
-ww<-which.min(abs(aa[20:119]-0.2))
-sum(imp1> x[as.numeric(names(ww))])  # 351
-```
-
-
-Determine the value of C
-```{r, eval=FALSE}
-####################################################################################################
-#take C = qsn(0.95)
-C<-sn::qsn(0.95,  xi=summary(mm1.df)$parameters[1,1], omega=summary(mm1.df)$parameters[2,1], alpha= summary(mm1.df)$parameters[3,1] )
-
-#or
-qq<-determine.C(f_fit)
-plot(x,qq)
-
-hist(imp1,col=6,lwd=2,breaks=100,main="histogram of importances")
-abline(v=C)
-abline(v= 0.9041675)
-
-df2<-data.frame(x[x< C],y[x< C])
-names(df2)<-c("x","y")
-
-mm1.df2 = minpack.lm::nlsLM(y ~ my.dsn(x,xi=xi, omega=omega, lambda=lambda), 
-                   start = list(xi=1, omega=2, lambda= 1 ),
-                   data = df2,control=minpack.lm::nls.lm.control(maxiter=400))
-
-#compare the plots 
-plot(x,y,type="l",col="grey90",lwd=2,xlim=c(0,3))
-lines(df2$x,df2$y,col="green",lwd=2)
-lines(x,predict(mm1.df2,newdata=df),col="red",lwd=3)  
-lines(x,predict(mm1.df,newdata=df),col="blue",lwd=3)  
-
-```
-
-Determine the value of p0
-```{r, eval=FALSE}
-ppp<-sn::dsn(imp1, xi=summary(mm1.df)$parameters[1,1], omega=summary(mm1.df)$parameters[2,1], alpha= summary(mm1.df)$parameters[3,1] )
-p0<- propTrueNullByLocalFDR(ppp)
-p0
-
-```
-
-Get the fdr
-```{r, eval=FALSE}
-aa<-local.fdr(f,FUN=my.dsn,  xi=summary(mm1.df2)$parameters[1,1], omega=summary(mm1.df2)$parameters[2,1], lambda= summary(mm1.df2)$parameters[3,1],p0=p0 )
-plot(x,aa)
-abline(h=0.2)
-ww<-which.min(abs(aa[20:119]-0.2))
-sum(imp1> x[as.numeric(names(ww))])  # 452
-abline(v=x[as.numeric(names(ww))])
-
-hist(imp1, breaks = 200,freq=FALSE)
-abline(v=sn::qsn(0.95,  xi=summary(mm1.df2)$parameters[1,1], omega=summary(mm1.df2)$parameters[2,1], alpha= summary(mm1.df2)$parameters[3,1] ))
-abline(v=x[as.numeric(names(ww))])
-abline(v=C,col="red")
-
-
-
+aa<-significant.genes(ppp,imp,cutoff=0.2,do.plot=2)
+length(aa)
+#[1] 189
 ```
