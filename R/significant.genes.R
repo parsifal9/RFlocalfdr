@@ -17,7 +17,7 @@ significant.genes <-function(object,imp,cutoff=0.2,do.plot=0,debug.flag=0){
     num.sig.genes <-sum(imp> object$x[as.numeric(names(ww))])
 
     if (do.plot == 1){
-        hist(imp,col=6,lwd=2,breaks=100,main="",freq=FALSE,xlab="importances",ylab="density")
+        hist(imp,col=6,lwd=2,breaks=100,main="",freq=FALSE,xlab="importances",ylab="density",ylim=c(0,1))
          lines(object$x,object$fdr)
          abline(h=cutoff)
          abline(v=object$x[as.numeric(names(ww))])
@@ -27,7 +27,7 @@ significant.genes <-function(object,imp,cutoff=0.2,do.plot=0,debug.flag=0){
         cat(sum(imp> object$x[as.numeric(names(ww))]),"sum(imp> x[as.numeric(names(ww))])","\n")
     }
      if (do.plot==2){
-         hist(imp,col=6,lwd=2,breaks=100,main="",freq=FALSE,xlab="importances",ylab="density")
+         hist(imp,col=6,lwd=2,breaks=100,main="",freq=FALSE,xlab="importances",ylab="density",ylim=c(0,1))
          curve(my.dsn(x,   xi=object$estimates[1], omega=object$estimates[2], lambda= object$estimates[3]),add=TRUE,col="red",lwd=2)
          abline(v=sn::qsn(0.95,  xi=object$estimates[1], omega=object$estimates[2], alpha= object$estimates[3]),col="red",lwd=2)
          abline(v=object$x[as.numeric(names(ww))],lwd=2,col="orange")
