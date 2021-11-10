@@ -1,16 +1,21 @@
 #' significant.genes
 #'
-#' This function allows you to express your love of cats.
-#' @param object object 
+#' This function sepects the significant "genes" and makes some plots
+#' @param object object retruned by run.it.importance
 #' @param imp importances
 #' @param cutoff cutoff
-#' @param do.plot do.plot 
-#' @param debug.flag debug.flag
-#' @keywords cats
+#' @param do.plot do.plot either 0 (no plot), 1 (plot) or 2 (more detailed plot)
+#' @param debug.flag debug.flag  either 0 (no debugging information), 1 or 2 
+#' @keywords significant genes
 #' @export
 #' @examples
 #' cat_function()
 significant.genes <-function(object,imp,cutoff=0.2,do.plot=0,debug.flag=0){
+    if (length(names(imp)) != length(imp)){
+        print("imp should have names as this is what is returned\n")
+        return()
+        }
+    
     start.x <- which.min(abs(object$x-mean(imp)))
     ww<-which.min(abs(object$fdr[start.x:119]-cutoff)) 
     num.sig.genes <-sum(imp> object$x[as.numeric(names(ww))])
@@ -41,7 +46,7 @@ significant.genes <-function(object,imp,cutoff=0.2,do.plot=0,debug.flag=0){
      if (do.plot==2){
          old.par <- par(mar = c(2,2,2,2))
          ## do plotting stuff with new settings
-         par(mar = c(3, 3, 3, 6)) # Set the margin on all sides to 2
+         par(mar = c(4, 4, 4, 6)) # Set the margin on all sides to 2
          aa<- hist(imp, col = 6, lwd = 2, breaks = 100, main = "", 
                    freq = FALSE, xlab = "importances", ylab = "density",axes=FALSE)
          curve(my.dsn(x, xi = object$estimates[1], omega = object$estimates[2], 
@@ -59,13 +64,12 @@ significant.genes <-function(object,imp,cutoff=0.2,do.plot=0,debug.flag=0){
          plot(c(0,max(object$x)),c(0,1),type="n",axes=FALSE, xlab = "", ylab = "")
          lines(object$x, object$fdr, lwd = 3)
          abline(h = cutoff)
-         abline(v = object$x[as.numeric(names(ww))])
          axis(4, pretty(c(0,1),10))
          mtext(side=4,line=3,  "local fdr")
          axis(1,pretty(range(1:max(object$x)),10))
          legend("topright", c("fitted curve", "95% quantile", 
-                              "cutoff", "C", "cc"), col = c("red", "red", "orange", 
-                                                            "blue", "purple"), lty = 1, lwd = 2)
+                              "cutoff", "C", "cc","fdr"), col = c("red", "red", "orange", 
+                                                            "blue", "purple","black"), lty = 1, lwd = 2)
          
          box() #- to make it look "as usual
          par(old.par)

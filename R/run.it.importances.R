@@ -1,8 +1,8 @@
 #' run.it.importances
 #'
 #' This function allows you to express your love of cats.
-#' #' @param imp importances
-#' #' @param debug.flag debug
+#' #' @param imp "reduction in impurity" importances fraom a random forest model
+#' #' @param debug.flag debug.flag  either 0 (no debugging information), 1 or 2 
 #' #' @keywords cats
 #' @export
 #' @examples
