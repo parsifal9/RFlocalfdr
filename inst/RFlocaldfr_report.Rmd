@@ -1,0 +1,104 @@
+---
+title: "RFlocalfdr Report"
+author: "RFlocalfdr"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# knitr::opts_chunk$set(echo = TRUE, fig.width = 12, fig.height = 12)
+```
+
+
+```{r load-libraries,echo=FALSE}
+library(knitr)
+```
+# Initial plots
+
+
+
+```{r  , echo=FALSE, out.width = '50%'}
+knitr::include_graphics("density_importances.png")
+```
+The data
+ 
+ 
+ 
+```{r  , echo=FALSE,  out.width = '50%'}
+knitr::include_graphics("histogram_of_variable_importances.png")
+```
+Spline and count fit
+
+```{r , echo=FALSE, out.width = '50%'}
+knitr::include_graphics("histogram_of_variable_importances.png")
+```
+
+```{r  , echo=FALSE, out.width = '50%'}
+ knitr::include_graphics("density_importances2.png") 
+``` 
+density importances 2
+
+```{r  , echo=FALSE, out.width = '50%'} 
+knitr::include_graphics("fit_to_data_set_initial.png") 
+``` 
+fit to data set initial
+
+
+```{r  , echo=FALSE, out.width = '50%'} 
+knitr::include_graphics("local_fdr_initial.png") 
+``` 
+local fdr initial
+
+
+# determine the value "C"
+
+```{r  , echo=FALSE, out.width = '50%'} 
+knitr::include_graphics("determine_cc.png") 
+``` 
+determine cc
+
+```{r  , echo=FALSE, out.width = '50%'} 
+knitr::include_graphics("compare_C_and_cc_and_the_resulting_fits.png") 
+``` 
+compare_C_and_cc_and_the_resulting_fits.png"
+
+
+```{r  , echo=FALSE, out.width = '50%'} 
+knitr::include_graphics("fit_to_data_set_C.png") 
+``` 
+fit to data set C
+
+```{r  , echo=FALSE, out.width = '50%'} 
+knitr::include_graphics("fit_to_data_set_cc.png") 
+``` 
+fit to data set cc
+
+
+```{r  , echo=FALSE, out.width = '50%'} 
+knitr::include_graphics("compare_C_and_cc_and_the_resulting_fits_2.png") 
+``` 
+compare C and cc and the resulting fits2
+
+
+# final plots
+
+```{r  , echo=FALSE,  out.width = '50%'} 
+knitr::include_graphics("fit_to_data_set_final.png") 
+``` 
+fit to data set final
+
+```{r  , echo=FALSE,  out.width = '50%'} 
+knitr::include_graphics("fit.to.data.set_df2.png") 
+``` 
+fit to data set df2
+
+
+
+```{r  , echo=FALSE, out.width = '50%'} 
+knitr::include_graphics("local_fdr_final.png") 
+``` 
+local fdr final
+
+
+

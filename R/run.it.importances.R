@@ -7,11 +7,12 @@
 #' @export
 #' @examples
 #' cat_function()
-run.it.importances<-function(imp1,debug.flag=0){
-    temp.dir <- NULL
+run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL){
 
     if (debug.flag > 0){
-        temp.dir <-  tempdir()
+        if ( length(temp.dir)==0){
+            temp.dir <-  tempdir()
+        }
         fileConn<-file(paste(temp.dir,"/output.txt",sep=""), open = "wt")
         writeLines(c("Hello","World"), fileConn)
         }
@@ -124,7 +125,7 @@ run.it.importances<-function(imp1,debug.flag=0){
     }
     
     final.estimates <- fit.to.data.set( df2<-data.frame(x[x< C],y[x< C]),imp1,debug.flag=debug.flag,plot.string="final",temp.dir=temp.dir)$Estimate
-    #should we use the cc option and C as a fallback? Usersettable option?
+    #should we use the cc option and C as a fallback? User settable option?
 
     
     if (debug.flag >0){
