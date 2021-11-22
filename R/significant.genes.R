@@ -17,7 +17,7 @@ significant.genes <-function(object,imp,cutoff=0.2,do.plot=0,debug.flag=0){
         }
     
     start.x <- which.min(abs(object$x-mean(imp)))
-    ww<-which.min(abs(object$fdr[start.x:119]-cutoff)) 
+    ww<-which.min(abs(object$fdr_0.95[start.x:119]-cutoff)) 
     num.sig.genes <-sum(imp> object$x[as.numeric(names(ww))])
 
     if (do.plot == 1){
@@ -30,7 +30,7 @@ significant.genes <-function(object,imp,cutoff=0.2,do.plot=0,debug.flag=0){
          axis(2, pretty( c(0,max(aa$density)+0.5*max(aa$density)),10))
          par(new=TRUE)
          plot(c(0,max(object$x)),c(0,1),type="n",axes=FALSE, xlab = "", ylab = "")
-         lines(object$x, object$fdr)
+         lines(object$x, object$fdr_0.95)
          abline(h = cutoff)
          abline(v = object$x[as.numeric(names(ww))])
          axis(4, pretty(c(0,1),10))
@@ -49,20 +49,20 @@ significant.genes <-function(object,imp,cutoff=0.2,do.plot=0,debug.flag=0){
          par(mar = c(4, 4, 4, 6)) # Set the margin on all sides to 2
          aa<- hist(imp, col = 6, lwd = 2, breaks = 100, main = "", 
                    freq = FALSE, xlab = "importances", ylab = "density",axes=FALSE)
-         curve(my.dsn(x, xi = object$estimates[1], omega = object$estimates[2], 
-                      lambda = object$estimates[3]), add = TRUE, col = "red", 
+         curve(my.dsn(x, xi = object$estimates_C_0.95$Estimate[1], omega = object$estimates_C_0.95$Estimate[2], 
+                      lambda = object$estimates_C_0.95$Estimate[3]), add = TRUE, col = "red", 
                lwd = 2)
-         abline(v = sn::qsn(0.95, xi = object$estimates[1], omega = object$estimates[2], 
-                            alpha = object$estimates[3]), col = "red", lwd = 2)
+         abline(v = sn::qsn(0.95, xi = object$estimates_C_0.95$Estimate[1], omega = object$estimates_C_0.95$Estimate[2], 
+                            alpha = object$estimates_C_0.95$Estimate[3]), col = "red", lwd = 2)
          abline(v = object$x[as.numeric(names(ww))], lwd = 2, 
                 col = "orange")
-         abline(v = object$C, lwd = 2, col = "blue")
+         abline(v = object$C_0.95, lwd = 2, col = "blue")
          abline(v = object$cc, lwd = 2, col = "purple")
          
          axis(2, pretty( c(0,max(aa$density)+0.5*max(aa$density)),10))
          par(new=TRUE)
          plot(c(0,max(object$x)),c(0,1),type="n",axes=FALSE, xlab = "", ylab = "")
-         lines(object$x, object$fdr, lwd = 3)
+         lines(object$x, object$fdr_0.95, lwd = 3)
          abline(h = cutoff)
          axis(4, pretty(c(0,1),10))
          mtext(side=4,line=3,  "local fdr")
@@ -78,13 +78,19 @@ significant.genes <-function(object,imp,cutoff=0.2,do.plot=0,debug.flag=0){
     if(debug.flag==2){
         cat(names(imp)[imp> object$x[as.numeric(names(ww))]],"\n")
     }
-    
+
+
     a1<- match(names(imp)[imp> object$x[as.numeric(names(ww))]],names(imp))
-    ppp<- 1-sn::psn(imp[a1], xi=object$estimates[1], omega=object$estimates[2], alpha= object$estimates[3])
+    ppp<- 1-sn::psn(imp[a1], xi=object$estimates_C_0.95$Estimat[1], omega=object$estimates_C_0.95$Estimat[2], alpha= object$estimates_C_0.95$Estimat[3])
     names(ppp) <-names(imp)[imp> object$x[as.numeric(names(ww))]]
     if (debug.flag==2){
         cat(length(ppp),"\n") 
     }
+
+    cut <- 1-sn::psn(object$x[as.numeric(names(ww))], xi=object$estimates_C_0.95$Estimat[1], omega=object$estimates_C_0.95$Estimat[2], alpha= object$estimates_C_0.95$Estimat[3])
+    FDR <- cut*length(imp)/length(ppp)
     
-    ppp
+    temp<-list(ppp, FDR)
+    names(temp)<-c("probabilities", "FDR")
+    temp
 }

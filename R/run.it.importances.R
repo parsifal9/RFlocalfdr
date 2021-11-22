@@ -57,9 +57,9 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL){
     }
     ####################################################################################################
     #take C = qsn(0.95)
-    C<-sn::qsn(0.95,  xi=initial.estimates[1], omega=initial.estimates[2],  alpha= initial.estimates[3])
+    C_0.95<-sn::qsn(0.95,  xi=initial.estimates[1], omega=initial.estimates[2],  alpha= initial.estimates[3])
     if (debug.flag==1){
-        writeLines(paste("calculating C", C), fileConn)
+        writeLines(paste("calculating C_0.95", C_0.95), fileConn)
     }
 
     if (debug.flag >0){cat("calculating cc","\n")}
@@ -81,11 +81,27 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL){
 
     }
 
+
+    df2<-data.frame(x[x< C_0.95],y[x< C_0.95])
+    names(df2)<-c("x","y")
+    final.estimates_C_0.95 <- fit.to.data.set( df2,imp1,debug.flag=debug.flag,plot.string="final",temp.dir=temp.dir)
+    #    mm1.df2.estimates <- fit.to.data.set( df2,imp1,debug.flag=debug.flag,plot.string="C",temp.dir=temp.dir)
+
+    #should we use the cc option and C as a fallback? User settable option?
+    
+    if (!is.na(cc)){
+        df3<-data.frame(x[x< cc],y[x< cc])
+        names(df3)<-c("x","y")
+        final.estimates_cc <- fit.to.data.set( df3,imp1,debug.flag=debug.flag,plot.string="cc",temp.dir=temp.dir)
+    }
+
+    
+    
     if (debug.flag > 1 ){
         #compare C and cc and the resulting fits
         png(paste(temp.dir,"/compare_C_and_cc_and_the_resulting_fits.png",sep=""))
         hist(imp1,col=6,lwd=2,breaks=100,main="compare C and cc and the resulting fits")
-        abline(v=C,col="red",lwd=2)
+        abline(v=C_0.95,col="red",lwd=2)
 
         if (!is.na(cc)){
             abline(v= cc,col="purple",lwd=2)
@@ -93,53 +109,40 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL){
         legend("topright",c("C","cc"),col=c("red","purple"),lty=1)
         
         dev.off()
-
-        
-        df2<-data.frame(x[x< C],y[x< C])
-        names(df2)<-c("x","y")
-        mm1.df2.estimates <- fit.to.data.set( df2,imp1,debug.flag=debug.flag,plot.string="C",temp.dir=temp.dir)
-
-        if (!is.na(cc)){
-            df3<-data.frame(x[x< cc],y[x< cc])
-            names(df3)<-c("x","y")
-            mm1.df3.estimates <- fit.to.data.set( df3,imp1,debug.flag=debug.flag,plot.string="cc",temp.dir=temp.dir)
-         }
         
         #compare the plots
         png(paste(temp.dir,"/compare_C_and_cc_and_the_resulting_fits_2.png",sep=""))
         hist(imp1,breaks=200,freq=FALSE)
         lines(x,y,type="l",col="grey90",lwd=2,xlim=c(0,12))
         lines(df2$x,df2$y,col="green",lwd=2)
-        abline(v=C,col="green")
-        curve(sn::dsn(x,  xi=mm1.df2.estimates$Estimate[1], omega=mm1.df2.estimates$Estimate[2],
-                      alpha= mm1.df2.estimates$Estimate[3]),  add=TRUE,col="green",lwd=3)
+        abline(v=C_0.95,col="green")
+        curve(sn::dsn(x,  xi=final.estimates_C_0.95$Estimate[1], omega=final.estimates_C_0.95$Estimate[2],
+                      alpha= final.estimates_C_0.95$Estimate[3]),  add=TRUE,col="green",lwd=3)
 
         if (!is.na(cc)){
             lines(df3$x,df3$y,col="blue",lwd=2)
             abline(v=cc,col="blue")
-            curve(sn::dsn(x,  xi=mm1.df3.estimates$Estimate[1], omega=mm1.df3.estimates$Estimate[2],
-                          alpha= mm1.df3.estimates$Estimate[3]),  add=TRUE,col="blue",lwd=3)
+            curve(sn::dsn(x,  xi=final.estimates_cc$Estimate[1], omega=final.estimates_cc$Estimate[2],
+                          alpha= final.estimates_cc$Estimate[3]),  add=TRUE,col="blue",lwd=3)
         }
         legend("topright",c("C","cc"),col=c("green","blue"),lty=1)
         dev.off()
     }
     
-    final.estimates <- fit.to.data.set( df2<-data.frame(x[x< C],y[x< C]),imp1,debug.flag=debug.flag,plot.string="final",temp.dir=temp.dir)$Estimate
-    #should we use the cc option and C as a fallback? User settable option?
 
+    
     
     if (debug.flag >0){
         png(paste(temp.dir,"/fit.to.data.set_df2.png",sep=""))
         plot(x,y,type="l",col="grey90",lwd=2)
         lines(df2$x,df2$y,col="green",lwd=2)
-        lines(x,my.dsn(x,xi=final.estimates[1], omega=final.estimates[2],
-                       lambda= final.estimates[3]))
+        lines(x,my.dsn(x,xi=final.estimates_C_0.95$Estimate[1], omega=final.estimates_C_0.95$Estimate[2],  lambda= final.estimates_C_0.95$Estimate[3]))
         dev.off()
     }
     
     ###############################################################################################
     # determine p0
-    ppp<-sn::psn(imp1, xi=final.estimates[1], omega=final.estimates[2], alpha= final.estimates[3])
+    ppp<-sn::psn(imp1, xi=final.estimates_C_0.95$Estimate[1], omega=final.estimates_C_0.95$Estimate[2], alpha= final.estimates_C_0.95$Estimate[3])
     p0 <- propTrueNullByLocalFDR(ppp)  
     if (debug.flag==1){
         writeLines(paste(p0, "p0"), fileConn)
@@ -148,21 +151,23 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL){
     ###############################################################################################
     
     
-    aa<-local.fdr(f_fit,df$x,FUN=my.dsn, xi=final.estimates[1], omega=final.estimates[2],
-                  lambda= final.estimates[3],p0 = p0, debug.flag=debug.flag,plot.string="final",temp.dir=temp.dir)
+    aa_C_0.95<-local.fdr(f_fit,df$x,FUN=my.dsn, xi=final.estimates_C_0.95$Estimate[1], omega=final.estimates_C_0.95$Estimate[2],
+                  lambda= final.estimates_C_0.95$Estimate[3],p0 = p0, debug.flag=debug.flag,plot.string="final",temp.dir=temp.dir)
+    aa_cc<-local.fdr(f_fit,df$x,FUN=my.dsn, xi=final.estimates_cc$Estimate[1], omega=final.estimates_cc$Estimate[2],
+                  lambda= final.estimates_cc$Estimate[3],p0 = p0, debug.flag=debug.flag,plot.string="final",temp.dir=temp.dir)
     ## mean.aa<- which.min(abs(aa-mean(imp1)))
     ## ww<-which.min(abs(aa[mean.aa:119]-0.2)) 
     ## num.sig.genes <-sum(imp1> x[as.numeric(names(ww))])  
 
     if (debug.flag >0){
-        plot(x,aa)
+        plot(x,aa_C_0.95)
         abline(h=0.2)
         abline(v=x[as.numeric(names(ww))])
         cat(sum(imp1> x[as.numeric(names(ww))]),"sum(imp1> x[as.numeric(names(ww))])","\n")
     }
     if (debug.flag >0){
         hist(imp1, breaks = 200,freq=FALSE)
-        abline(v=sn::qsn(0.95,  xi=final.estimates[1], omega=final.estimates[2], alpha= final.estimates[3]))
+        abline(v=sn::qsn(0.95,  xi=final.estimates_C_0.95$Estimate[1], omega=final.estimates_C_0.95$Estimate[2], alpha= final.estimates_C_0.95$Estimate[3]))
         abline(v=x[as.numeric(names(ww))])
         cat(names(imp1)[imp1> x[as.numeric(names(ww))]],"\n\n\n\n")
     }
@@ -181,8 +186,8 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL){
         close(fileConn)
     }
 
-    temp<-list(aa,df$x,final.estimates,temp.dir,C,cc,p0)
-    names(temp)<-c("fdr","x","estimates","temp.dir","C","cc","p0")
+    temp<-list(aa_C_0.95,aa_cc,df$x,final.estimates_C_0.95,final.estimates_cc,temp.dir,C_0.95,cc,p0)
+    names(temp)<-c("fdr_0.95","fdr_cc","x","estimates_C_0.95,","estimates_cc","temp.dir","C_0.95","cc","p0")
     temp
 }
 
