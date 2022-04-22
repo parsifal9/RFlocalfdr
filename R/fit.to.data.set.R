@@ -8,41 +8,42 @@
 #' @export
 #' @examples
 #' cat_function()
-fit.to.data.set<-function(df,imp,debug.flag=0,plot.string="",temp.dir=NULL){
+fit.to.data.set<-function(df,imp,debug.flag=0,plot.string="",temp.dir=NULL,try.counter=3){
 
     mm1.df <- NA
-    try.counter <- NA
     class(mm1.df) <- "try-error"
     x<-df$x
     y<-df$y
 
-    if (class(mm1.df)=="try-error"){
-    mm1.df <-try(
-        minpack.lm::nlsLM(y ~ my.dsn(x,xi=xi, omega=omega, lambda=lambda), 
-                          start = list(xi=  1   , omega=2, lambda= 1   ),
-                          data = df,control=minpack.lm::nls.lm.control(maxiter=400))
-       ,silent = TRUE)
-    try.counter <- 1
+    if (class(mm1.df)=="try-error" & try.counter == 0 ){
+        mm1.df <-try(
+            minpack.lm::nlsLM(y ~ my.dsn(x,xi=xi, omega=omega, lambda=lambda), 
+                              start = list(xi=  1   , omega=2, lambda= 1   ),
+                              data = df,control=minpack.lm::nls.lm.control(maxiter=400))
+           ,silent = TRUE)
+        try.counter <- 1
+        
+        
+        if  (debug.flag >1 ){
+            cat(class(mm1.df), "class(mm1.df) -- try 1","\n")
+        }
     }
 
-    if  (debug.flag >1 ){
-        cat(class(mm1.df), "class(mm1.df) -- try 1","\n")
-    }
-    
-    if (class(mm1.df)=="try-error"){
+    if (class(mm1.df)=="try-error" & (try.counter < 2)){
         mm1.df <-try(
             minpack.lm::nlsLM(y ~ my.dsn(x,xi=xi, omega=omega, lambda=lambda), 
                               start = list(xi=  mean(x)   , omega=2, lambda= 1   ),
                               data = df,control=minpack.lm::nls.lm.control(maxiter=400))
            ,silent = TRUE)
         try.counter <- 2
+        
+        
+        if  (debug.flag >1 ){
+            cat(class(mm1.df), "class(mm1.df) -- try 2","\n")
+        }
     }
 
-    if  (debug.flag >1 ){
-    cat(class(mm1.df), "class(mm1.df) -- try 2","\n")
-    }
-
-    if (class(mm1.df) == "try-error"){
+    if (class(mm1.df) == "try-error" & try.counter == 3){
         vip.sn.mle <- fitdistrplus::fitdist(imp, "sn",start=list( xi = mean(imp),omega = 1, alpha= 0),
                               lower=c(-Inf,0,-Inf),fix.arg=list( tau=0),method = c("mle"))
         mm1.df <-try( minpack.lm::nlsLM(y ~ my.dsn(x,xi=xi, omega=omega, lambda=lambda), 
