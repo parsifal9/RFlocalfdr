@@ -68,7 +68,7 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL){
     if (debug.flag > 0){
         writeLines(paste(class(qq), "class(determine.C)"), fileConn)
     }
-    cc <- NA
+    cc <- final.estimates_cc <- aa_cc <- NA 
     if (class(qq) == "numeric"){
         cc<-x[which.min(qq)]
         if (debug.flag > 0 ){
@@ -153,8 +153,8 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL){
     
     aa_C_0.95<-local.fdr(f_fit,df$x,FUN=my.dsn, xi=final.estimates_C_0.95$Estimate[1], omega=final.estimates_C_0.95$Estimate[2],
                   lambda= final.estimates_C_0.95$Estimate[3],p0 = p0, debug.flag=debug.flag,plot.string="final",temp.dir=temp.dir)
-    aa_cc<-local.fdr(f_fit,df$x,FUN=my.dsn, xi=final.estimates_cc$Estimate[1], omega=final.estimates_cc$Estimate[2],
-                  lambda= final.estimates_cc$Estimate[3],p0 = p0, debug.flag=debug.flag,plot.string="final",temp.dir=temp.dir)
+    try(aa_cc<-local.fdr(f_fit,df$x,FUN=my.dsn, xi=final.estimates_cc$Estimate[1], omega=final.estimates_cc$Estimate[2],
+                  lambda= final.estimates_cc$Estimate[3],p0 = p0, debug.flag=debug.flag,plot.string="final",temp.dir=temp.dir),silent=TRUE)
     ## mean.aa<- which.min(abs(aa-mean(imp1)))
     ## ww<-which.min(abs(aa[mean.aa:119]-0.2)) 
     ## num.sig.genes <-sum(imp1> x[as.numeric(names(ww))])  
