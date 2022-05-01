@@ -11,10 +11,11 @@
 #' @examples
 #' cat_function()
 significant.genes <-function(object,imp,cutoff=0.2,do.plot=0,debug.flag=0){
+    imp <- imp - min(imp) + .Machine$double.eps
     if (length(names(imp)) != length(imp)){
         print("imp should have names as this is what is returned\n")
         return()
-        }
+    }
     
     start.x <- which.min(abs(object$x-mean(imp)))
     ww<-which.min(abs(object$fdr_0.95[start.x:119]-cutoff)) 
