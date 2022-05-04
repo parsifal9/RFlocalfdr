@@ -22,18 +22,16 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL){
     if (debug.flag > 0 ){
          writeLines(paste(length(imp1), "length(imp1)"), fileConn)
          writeLines(paste(unlist(range(imp1)), "range(imp1)"), fileConn)
-         png(paste(temp.dir,"/density_importances.png",sep=""))
-         plot(density(imp1))
-         dev.off()
     }
 
-    f_fit<- f.fit(imp1,debug.flag=debug.flag,temp.dir=temp.dir)
+    f_fit<- f.fit(imp1,debug.flag=debug.flag,temp.dir=temp.dir) #makes the plot histogram_of_variable_importances.png
     y<-f_fit$zh$density
     x<-f_fit$x
     
     if (debug.flag >0){
-        png(paste(temp.dir,"/density_importances2.png",sep=""))
-        plot(x,y,type="l")
+        png(paste(temp.dir,"/density_importances.png",sep=""))
+        plot(density(imp1),main="histogramand fitted spline")
+        lines(x,y,col="red")
         dev.off()
     }
 
@@ -43,16 +41,22 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL){
 
     if (debug.flag >0){
         writeLines(paste("initial estimates", initial.estimates[1],  initial.estimates[2], initial.estimates[3]), fileConn)
-
         writeLines("we calcualte the fdr using the initial estimates", fileConn)
+
+        #set debug.flag=0 for local.fdr (turns off the plot  local_fdr_initial.png)
         aa<-local.fdr(f_fit,df$x,FUN=my.dsn, xi=initial.estimates[1], omega=initial.estimates[2],
-                      lambda= initial.estimates[3], debug.flag=debug.flag,plot.string="initial",temp.dir=temp.dir)
+                      lambda= initial.estimates[3], debug.flag=0,plot.string="initial",temp.dir=temp.dir)
+
+        #and do our own plot with the significance level x[as.numeric(names(ww))] indicated
+        png(paste(temp.dir,"/fdr_using_initial_estiamtes.png",sep=""))
         plot(x,aa,main="fdr using initial estiamtes")
         abline(h=0.2)
         ww<-which.min(abs(aa[50:119]-0.2))  #this 50 may need to be tidied up
         sum(imp1> x[as.numeric(names(ww))])  
         tt<- sum(imp1> x[as.numeric(names(ww))])
         abline(v=x[as.numeric(names(ww))])
+        dev.off()
+
         writeLines(paste("sum(imp1> x[as.numeric(names(ww))])", tt), fileConn)
     }
     ####################################################################################################
@@ -159,19 +163,56 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL){
     ## ww<-which.min(abs(aa[mean.aa:119]-0.2)) 
     ## num.sig.genes <-sum(imp1> x[as.numeric(names(ww))])  
 
+    ## if (debug.flag >0){
+    ##     png(paste(temp.dir,"/temp1.png",sep=""))
+    ##     plot(x,aa_C_0.95)
+    ##     abline(h=0.2)
+    ##     abline(v=x[as.numeric(names(ww))])
+    ##     dev.off()
+    ##     cat(sum(imp1> x[as.numeric(names(ww))]),"sum(imp1> x[as.numeric(names(ww))])","\n")
+    ## }
+    ## if (debug.flag >0){
+    ##     png(paste(temp.dir,"/temp2.png",sep=""))
+    ##     hist(imp1, breaks = 200,freq=FALSE)
+    ##     abline(v=sn::qsn(0.95,  xi=final.estimates_C_0.95$Estimate[1], omega=final.estimates_C_0.95$Estimate[2], alpha= final.estimates_C_0.95$Estimate[3]))
+    ##     abline(v=x[as.numeric(names(ww))])
+    ##     dev.off()
+    ##     cat(names(imp1)[imp1> x[as.numeric(names(ww))]],"\n\n\n\n")
+    ## }
+
     if (debug.flag >0){
-        plot(x,aa_C_0.95)
-        abline(h=0.2)
-        abline(v=x[as.numeric(names(ww))])
-        cat(sum(imp1> x[as.numeric(names(ww))]),"sum(imp1> x[as.numeric(names(ww))])","\n")
-    }
-    if (debug.flag >0){
-        hist(imp1, breaks = 200,freq=FALSE)
-        abline(v=sn::qsn(0.95,  xi=final.estimates_C_0.95$Estimate[1], omega=final.estimates_C_0.95$Estimate[2], alpha= final.estimates_C_0.95$Estimate[3]))
-        abline(v=x[as.numeric(names(ww))])
-        cat(names(imp1)[imp1> x[as.numeric(names(ww))]],"\n\n\n\n")
+        png(paste(temp.dir,"/run.it.importances_final_plot.png",sep=""))
+        par(mar = c(4, 4, 4, 6)) # Set the margin on all sides to 2
+        aa<- hist(imp1, col = 6, lwd = 2, breaks = 100, main = "", 
+                  freq = FALSE, xlab = "importances", ylab = "density",axes=FALSE)
+        curve(my.dsn(x,  xi=final.estimates_C_0.95$Estimate[1], omega=final.estimates_C_0.95$Estimate[2], lambda= final.estimates_C_0.95$Estimate[3]), 
+              add = TRUE, col = "red",   lwd = 2)
+        abline(v = sn::qsn(0.95, xi = final.estimates_C_0.95$Estimate[1], omega = final.estimates_C_0.95$Estimate[2], 
+                            alpha = final.estimates_C_0.95$Estimate[3]), col = "red", lwd = 2)
+        curve(my.dsn(x,  xi=final.estimates_cc$Estimate[1], omega=final.estimates_cc$Estimate[2], lambda= final.estimates_cc$Estimate[3]), 
+              add = TRUE, col = "red",   lwd = 2)
+
+        abline(v = x[as.numeric(names(ww))], lwd = 2,  col = "orange")
+        #looks like it misses the intersection
+        abline(v = C_0.95, lwd = 2, col = "blue")
+        abline(v = cc, lwd = 2, col = "purple")
+        
+        axis(2, pretty( c(0,max(aa$density)+0.5*max(aa$density)),10))
+        par(new=TRUE)
+        plot(c(0,max(x)),c(0,1),type="n",axes=FALSE, xlab = "", ylab = "")
+        lines(x, aa_C_0.95, lwd = 3)
+        abline(h = 0.2,col="orange")
+        axis(4, pretty(c(0,1),10))
+        mtext(side=4,line=3,  "local fdr")
+        axis(1,pretty(range(1:max(x)),10))
+        legend("topright", c("fitted curve", "95% quantile", 
+                             "cutoff", "C", "cc","fdr"), col = c("red", "red", "orange", 
+                                                                 "blue", "purple","black"), lty = 1, lwd = 2)
+        box() #
+        dev.off()
     }
 
+    
 
     if (debug.flag >1){
         cat(names(imp1)[imp1> x[as.numeric(names(ww))]],"\n\n\n\n")
