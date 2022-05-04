@@ -189,9 +189,12 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL){
               add = TRUE, col = "red",   lwd = 2)
         abline(v = sn::qsn(0.95, xi = final.estimates_C_0.95$Estimate[1], omega = final.estimates_C_0.95$Estimate[2], 
                             alpha = final.estimates_C_0.95$Estimate[3]), col = "red", lwd = 2)
-        curve(my.dsn(x,  xi=final.estimates_cc$Estimate[1], omega=final.estimates_cc$Estimate[2], lambda= final.estimates_cc$Estimate[3]), 
-              add = TRUE, col = "red",   lwd = 2)
 
+        curve(my.dsn(x,  xi=final.estimates_cc$Estimate[1], omega=final.estimates_cc$Estimate[2], lambda= final.estimates_cc$Estimate[3]), 
+              add = TRUE, col = "lawngreen"   ,   lwd = 2)
+        abline(v = sn::qsn(0.95, xi = final.estimates_cc$Estimate[1], omega = final.estimates_cc$Estimate[2], 
+                            alpha = final.estimates_cc$Estimate[3]), col = "lawngreen" , lwd = 2)
+        
         abline(v = x[as.numeric(names(ww))], lwd = 2,  col = "orange")
         #looks like it misses the intersection
         abline(v = C_0.95, lwd = 2, col = "blue")
