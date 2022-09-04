@@ -7,7 +7,7 @@
 #' @export
 #' @examples
 #' cat_function()
-run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL){
+run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL,try.counter=3){
 
     if (debug.flag > 0){
         if ( length(temp.dir)==0){
@@ -36,7 +36,7 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL){
     }
 
     df<-data.frame(x,y)
-    initial.estimates <- fit.to.data.set(df,imp1,debug.flag=debug.flag,plot.string="initial",temp.dir=temp.dir)
+    initial.estimates <- fit.to.data.set(df,imp1,debug.flag=debug.flag,plot.string="initial",temp.dir=temp.dir,try.counter=try.counter)
     initial.estimates <-initial.estimates$Estimate
 
     if (debug.flag >0){
