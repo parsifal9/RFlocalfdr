@@ -104,7 +104,7 @@ fit.to.data.set<-function(df,imp,debug.flag=0,plot.string="",temp.dir=NULL,try.c
         dev.off()
     }
 
-    if (return.all=TRUE){
+    if (return.all == TRUE){
         aa<-mm1.df
     } else{
         aa<- data.frame(summary(mm1.df)$parameters)

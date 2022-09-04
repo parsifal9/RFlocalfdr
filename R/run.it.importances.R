@@ -36,8 +36,9 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL,try.counter=3){
     }
 
     df<-data.frame(x,y)
-    initial.estimates <- fit.to.data.set.wraper(df,imp1,debug.flag=debug.flag,plot.string="initial",temp.dir=temp.dir,try.counter=try.counter)
-    initial.estimates <-initial.estimates$Estimate
+    initial.estimates <- fit.to.data.set.wrapper(df,imp1,debug.flag=debug.flag,plot.string="initial",temp.dir=temp.dir,try.counter=try.counter)
+#    initial.estimates <-(summary(initial.estimates)$parameters)[,"Estimate"]
+    initial.estimates <- data.frame(summary(initial.estimates)$parameters)$Estimate
 
     if (debug.flag >0){
         writeLines(paste("initial estimates", initial.estimates[1],  initial.estimates[2], initial.estimates[3]), fileConn)
