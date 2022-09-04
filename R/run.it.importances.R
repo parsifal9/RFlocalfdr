@@ -36,7 +36,7 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL,try.counter=3){
     }
 
     df<-data.frame(x,y)
-    initial.estimates <- fit.to.data.set(df,imp1,debug.flag=debug.flag,plot.string="initial",temp.dir=temp.dir,try.counter=try.counter)
+    initial.estimates <- fit.to.data.set.wraper(df,imp1,debug.flag=debug.flag,plot.string="initial",temp.dir=temp.dir,try.counter=try.counter)
     initial.estimates <-initial.estimates$Estimate
 
     if (debug.flag >0){
@@ -88,7 +88,7 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL,try.counter=3){
 
     df2<-data.frame(x[x< C_0.95],y[x< C_0.95])
     names(df2)<-c("x","y")
-    final.estimates_C_0.95 <- fit.to.data.set( df2,imp1,debug.flag=debug.flag,plot.string="final",temp.dir=temp.dir)
+    final.estimates_C_0.95 <- fit.to.data.set.wrapper( df2,imp1,debug.flag=debug.flag,plot.string="final",temp.dir=temp.dir)
     #    mm1.df2.estimates <- fit.to.data.set( df2,imp1,debug.flag=debug.flag,plot.string="C",temp.dir=temp.dir)
 
     #should we use the cc option and C as a fallback? User settable option?
@@ -96,7 +96,7 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL,try.counter=3){
     if (!is.na(cc)){
         df3<-data.frame(x[x< cc],y[x< cc])
         names(df3)<-c("x","y")
-        final.estimates_cc <- fit.to.data.set( df3,imp1,debug.flag=debug.flag,plot.string="cc",temp.dir=temp.dir)
+        final.estimates_cc <- fit.to.data.set.wrapper( df3,imp1,debug.flag=debug.flag,plot.string="cc",temp.dir=temp.dir)
     }
 
     

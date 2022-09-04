@@ -8,7 +8,7 @@
 #' @export
 #' @examples
 #' cat_function()
-fit.to.data.set<-function(df,imp,debug.flag=0,plot.string="",temp.dir=NULL,try.counter=3){
+fit.to.data.set<-function(df,imp,debug.flag=0,plot.string="",temp.dir=NULL,try.counter=3,return.all=FALSE){
 
     mm1.df <- NA
     class(mm1.df) <- "try-error"
@@ -103,6 +103,11 @@ fit.to.data.set<-function(df,imp,debug.flag=0,plot.string="",temp.dir=NULL,try.c
         }
         dev.off()
     }
-    
-    data.frame(summary(mm1.df)$parameters)
+
+    if (return.all=TRUE){
+        aa<-mm1.df
+    } else{
+        aa<- data.frame(summary(mm1.df)$parameters)
+    }
+    aa
 }
