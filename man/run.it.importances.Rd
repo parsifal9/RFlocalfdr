@@ -4,12 +4,12 @@
 \alias{run.it.importances}
 \title{run.it.importances}
 \usage{
-run.it.importances(imp1, debug.flag = 0)
+run.it.importances(imp1, debug.flag = 0, temp.dir = NULL, try.counter = 3)
 }
 \description{
 This function allows you to express your love of cats.
-#' @param imp importances
-#' @param debug.flag debug
+#' @param imp "reduction in impurity" importances fraom a random forest model
+#' @param debug.flag debug.flag  either 0 (no debugging information), 1 or 2
 #' @keywords cats
 }
 \examples{

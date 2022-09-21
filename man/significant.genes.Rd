@@ -7,20 +7,21 @@
 significant.genes(object, imp, cutoff = 0.2, do.plot = 0, debug.flag = 0)
 }
 \arguments{
-\item{object}{object}
+\item{object}{object retruned by run.it.importance}
 
 \item{imp}{importances}
 
 \item{cutoff}{cutoff}
 
-\item{do.plot}{do.plot}
+\item{do.plot}{do.plot either 0 (no plot), 1 (plot) or 2 (more detailed plot)}
 
-\item{debug.flag}{debug.flag}
+\item{debug.flag}{debug.flag  either 0 (no debugging information), 1 or 2}
 }
 \description{
-This function allows you to express your love of cats.
+This function sepects the significant "genes" and makes some plots
 }
 \examples{
 cat_function()
 }
-\keyword{cats}
+\keyword{genes}
+\keyword{significant}

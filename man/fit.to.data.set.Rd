@@ -4,7 +4,15 @@
 \alias{fit.to.data.set}
 \title{fit.to.data.set}
 \usage{
-fit.to.data.set(df, imp, debug.flag = 0, plot.string = "", temp.dir = NULL)
+fit.to.data.set(
+  df,
+  imp,
+  debug.flag = 0,
+  plot.string = "",
+  temp.dir = NULL,
+  try.counter = 3,
+  return.all = FALSE
+)
 }
 \arguments{
 \item{imp}{importances}
