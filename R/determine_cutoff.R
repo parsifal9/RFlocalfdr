@@ -34,7 +34,7 @@ determine_cutoff <- function(imp, t2, cutoff=c(0,1,4,10,15,20), Q = 0.75, plot =
         C <- quantile(temp,probs=Q)
         df2 <- data.frame(x[x < C], y[x < C])
 
-        initial.estimates <- my.fit.to.data.set.wrapper(df2, temp)
+        initial.estimates <- fit.to.data.set.wrapper(df2, temp)
         if(class(initial.estimates) != "nls"){
             return(res1)
         }
