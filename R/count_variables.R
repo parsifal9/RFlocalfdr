@@ -1,6 +1,6 @@
-#' count the number of times each varaible is used in the a ranger forest
+#' count the number of times each variable is used in the a ranger forest
 #'
-#' count the number of times each varaible is used in the a ranger forest.
+#' count the number of times each variable is used in the a ranger forest.
 #' help(treeInfo) warns
 #' "splitvarID -- ID of the splitting variable, 0-indexed. Caution, the variable order changes if the formula interface is used"
 #' this should be investigated

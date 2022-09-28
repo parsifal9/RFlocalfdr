@@ -2,7 +2,7 @@
 % Please edit documentation in R/count_variables.R
 \name{count_variables}
 \alias{count_variables}
-\title{count the number of times each varaible is used in the a ranger forest}
+\title{count the number of times each variable is used in the a ranger forest}
 \usage{
 count_variables(object)
 }
@@ -10,7 +10,7 @@ count_variables(object)
 \item{object}{a ranger forest object}
 }
 \description{
-count the number of times each varaible is used in the a ranger forest.
+count the number of times each variable is used in the a ranger forest.
 help(treeInfo) warns
 "splitvarID -- ID of the splitting variable, 0-indexed. Caution, the variable order changes if the formula interface is used"
 this should be investigated

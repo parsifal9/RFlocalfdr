@@ -3,6 +3,7 @@
 export(cat_function)
 export(count_variables)
 export(determine.C)
+export(determine_cutoff)
 export(dsn)
 export(f.fit)
 export(fit.to.data.set)
