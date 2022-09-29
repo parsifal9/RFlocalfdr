@@ -1,12 +1,8 @@
-#' count the number of times each variable is used in the a ranger forest
+#' evaluate a measure that can be used to determing the varaible and cutoff value for a RF model
 #'
-#' count the number of times each varaible is used in the a ranger forest.
-#' help(treeInfo) warns
-#' "splitvarID -- ID of the splitting variable, 0-indexed. Caution, the variable order changes if the formula interface is used"
-#' this should be investigated
-#' @param  imp importances
-#' @param  t2 number of times each variable is used in the a ranger forest.
-#' @param  cutoff
+#' @param  imp vector of MDI varaible importances importances
+#' @param  t2 number of times each variable is used in the a ranger forest. Returned by count_variables for a ranger RF
+#' @param  cutoff values to evaluate 
 #' @param  Q 
 #' @param  plot
 #' @export

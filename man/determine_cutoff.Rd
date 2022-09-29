@@ -2,7 +2,7 @@
 % Please edit documentation in R/determine_cutoff.R
 \name{determine_cutoff}
 \alias{determine_cutoff}
-\title{count the number of times each variable is used in the a ranger forest}
+\title{evaluate a measure that can be used to determing the varaible and cutoff value for a RF model}
 \usage{
 determine_cutoff(
   imp,
@@ -13,21 +13,18 @@ determine_cutoff(
 )
 }
 \arguments{
-\item{imp}{importances}
+\item{imp}{vector of MDI varaible importances importances}
 
-\item{t2}{number of times each variable is used in the a ranger forest.}
+\item{t2}{number of times each variable is used in the a ranger forest. Returned by count_variables for a ranger RF}
 
-\item{cutoff}{}
+\item{cutoff}{values to evaluate}
 
 \item{Q}{}
 
 \item{plot}{}
 }
 \description{
-count the number of times each varaible is used in the a ranger forest.
-help(treeInfo) warns
-"splitvarID -- ID of the splitting variable, 0-indexed. Caution, the variable order changes if the formula interface is used"
-this should be investigated
+evaluate a measure that can be used to determing the varaible and cutoff value for a RF model
 }
 \examples{
 library(ranger)
