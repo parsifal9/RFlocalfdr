@@ -1,13 +1,26 @@
-#' fit a spline 
+#' fit a spline to the histogram of zz
 #'
-#' fit a spline 
-#' @param zz the varaible importances
+#' 
+#' @param zz the variable importances
 #' @param df the degrees of freedom for the spline fit
 #' @keywords spline
 #' @export
+#' @return a list with the following components
+#'  "x" -- midpoints of the histogram
+#' "zh" -- a histogram object as returned by "hist"
+#' "f.spline" -- the spline fit. The fit is given by a glm mode glm(zh$counts ~ splines:::ns(x), poisson)
+#' "counts" the counts from the histogram
 #' @examples
+#' data(imp1)                          
+#' res <- f.fit(imp1)                  
+#' plot(res$zh)                        
+#' plot(res$x,res$counts)              
+#' plot(res$zh$breaks[-1],res$f.spline)
 
 f.fit <-function(zz,df=10,debug.flag=0,temp.dir=NULL){
+    # histogram is calculated twice!!  
+    # do we want to set the number of breakpoints as a parameter
+    #check diagnostic plot
     bre = 120
     lo <- min(zz)
     up <- max(zz)

@@ -1,6 +1,7 @@
 #' propTrueNullByLocalFDR
 #'
-#' propTrueNullByLocalFDR
+#' Estimate proportion of NULL p-values. Based on  .propTrueNullByLocalFDR in  limma: Linear Models for Microarray Data
+#' written by Belinda Phipson and Gordon Smyth
 #' @param p  probabilities
 #' @keywords cats
 #' @export

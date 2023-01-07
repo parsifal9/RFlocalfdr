@@ -1,42 +1,67 @@
 #' run.it.importances
 #'
-#' This function allows you to express your love of cats.
-#' #' @param imp "reduction in impurity" importances fraom a random forest model
-#' #' @param debug.flag debug.flag  either 0 (no debugging information), 1 or 2 
-#' #' @keywords cats
+#' @param imp "reduction in impurity" importances from a random forest model
+#' @param debug.flag  either 0 (no debugging information), 1 or 2
+#' @param temp.dir if debug flag is >0 then information is written to temp.dir
+#' @param try.counter where to explain this?
+#' @keywords variable importance 
 #' @export
 #' @examples
-#' cat_function()
-run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL,try.counter=3){
+#' data(ch22)                                                                                 
+#' ? ch22                                                                                     
+#' #document how the data set is created                                                      
+#' plot(density(log(ch22$imp)))                                                               
+#' t2 <-ch22$C                                                                                
+#' imp<-log(ch22$imp)                                                                         
+#' #Detemine a cutoff to get a unimodal density.                                              
+#' res.temp <- determine_cutoff(imp, t2 ,cutoff=c(1,10,20,30),plot=c(1,10,20,30),Q=0.75)      
+#' plot(c(1,2,3,4),res.temp[,3])                                                              
+#'                                                                                            
+#' res.temp <- determine_cutoff(imp, t2 ,cutoff=c(25,30,35,40),plot=c(25,30,35,40),Q=0.75)    
+#' plot(c(25,30,35,40),res.temp[,3])                                                          
+#' imp<-imp[t2 > 30]                                                                          
+#' ppp<-run.it.importances(imp,debug=0)                                                       
+#' aa<-significant.genes(ppp,imp,cutoff=0.2,debug.flag=0,do.plot=2)                           
+#' length(aa$probabilities) # 6650                                                            
+#' aa<-significant.genes(ppp,imp,cutoff=0.05,debug.flag=0,do.plot=2)                          
+#' length(aa$probabilities) # 3653                                                            
 
+
+run.it.importances<-function(imp,debug.flag=0, temp.dir=NULL,try.counter=3){
+    #calls
+    #f.fit
+    #fit.to.data.set.wrapper
+    # local.fdr
+    # determine.C
+    # sn::dsn why not use my.dsn?
     if (debug.flag > 0){
         if ( length(temp.dir)==0){
             temp.dir <-  tempdir()
         }
-        fileConn<-file(paste(temp.dir,"/output.txt",sep=""), open = "wt")
+        fileConn<-file(paste(temp.dir,"/output_from_run_it_importances.txt",sep=""), open = "wt")
         writeLines(c("Hello","World"), fileConn)
-        }
+    }
     
-    imp1 <- imp1 - min(imp1) + .Machine$double.eps
+    imp <- imp - min(imp) + .Machine$double.eps
 
     if (debug.flag > 0 ){
-         writeLines(paste(length(imp1), "length(imp1)"), fileConn)
-         writeLines(paste(unlist(range(imp1)), "range(imp1)"), fileConn)
+         writeLines(paste(length(imp), "length(imp)"), fileConn)
+         writeLines(paste(unlist(range(imp)), "range(imp)"), fileConn)
     }
 
-    f_fit<- f.fit(imp1,debug.flag=debug.flag,temp.dir=temp.dir) #makes the plot histogram_of_variable_importances.png
+    f_fit<- f.fit(imp,debug.flag=debug.flag,temp.dir=temp.dir) #makes the plot histogram_of_variable_importances.png
     y<-f_fit$zh$density
     x<-f_fit$x
     
     if (debug.flag >0){
         png(paste(temp.dir,"/density_importances.png",sep=""))
-        plot(density(imp1),main="histogramand fitted spline")
+        plot(density(imp),main="histogram and fitted spline")
         lines(x,y,col="red")
         dev.off()
     }
 
     df<-data.frame(x,y)
-    initial.estimates <- fit.to.data.set.wrapper(df,imp1,debug.flag=debug.flag,plot.string="initial",temp.dir=temp.dir,try.counter=try.counter)
+    initial.estimates <- fit.to.data.set.wrapper(df,imp,debug.flag=debug.flag,plot.string="initial",temp.dir=temp.dir,try.counter=try.counter)
 #    initial.estimates <-(summary(initial.estimates)$parameters)[,"Estimate"]
     initial.estimates <- data.frame(summary(initial.estimates)$parameters)$Estimate
 
@@ -45,7 +70,7 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL,try.counter=3){
         writeLines("we calcualte the fdr using the initial estimates", fileConn)
 
         #set debug.flag=0 for local.fdr (turns off the plot  local_fdr_initial.png)
-        aa<-local.fdr(f_fit,df$x,FUN=my.dsn, xi=initial.estimates[1], omega=initial.estimates[2],
+        aa<- local.fdr(f_fit,df$x,FUN=my.dsn, xi=initial.estimates[1], omega=initial.estimates[2],
                       lambda= initial.estimates[3], debug.flag=0,plot.string="initial",temp.dir=temp.dir)
 
         #and do our own plot with the significance level x[as.numeric(names(ww))] indicated
@@ -53,12 +78,12 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL,try.counter=3){
         plot(x,aa,main="fdr using initial estiamtes")
         abline(h=0.2)
         ww<-which.min(abs(aa[50:119]-0.2))  #this 50 may need to be tidied up
-        sum(imp1> x[as.numeric(names(ww))])  
-        tt<- sum(imp1> x[as.numeric(names(ww))])
+        sum(imp> x[as.numeric(names(ww))])  
+        tt<- sum(imp> x[as.numeric(names(ww))])
         abline(v=x[as.numeric(names(ww))])
         dev.off()
 
-        writeLines(paste("sum(imp1> x[as.numeric(names(ww))])", tt), fileConn)
+        writeLines(paste("sum(imp> x[as.numeric(names(ww))])", tt), fileConn)
     }
     ####################################################################################################
     #take C = qsn(0.95)
@@ -89,16 +114,16 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL,try.counter=3){
 
     df2<-data.frame(x[x< C_0.95],y[x< C_0.95])
     names(df2)<-c("x","y")
-    final.estimates_C_0.95 <- fit.to.data.set.wrapper( df2,imp1,debug.flag=debug.flag,plot.string="final",temp.dir=temp.dir)
+    final.estimates_C_0.95 <- fit.to.data.set.wrapper( df2,imp,debug.flag=debug.flag,plot.string="final",temp.dir=temp.dir)
     final.estimates_C_0.95  <- data.frame(summary(final.estimates_C_0.95)$parameters)
-    #    mm1.df2.estimates <- fit.to.data.set( df2,imp1,debug.flag=debug.flag,plot.string="C",temp.dir=temp.dir)
+    #    mm1.df2.estimates <- fit.to.data.set( df2,imp,debug.flag=debug.flag,plot.string="C",temp.dir=temp.dir)
 
     #should we use the cc option and C as a fallback? User settable option?
     
     if (!is.na(cc)){
         df3<-data.frame(x[x< cc],y[x< cc])
         names(df3)<-c("x","y")
-        final.estimates_cc <- fit.to.data.set.wrapper( df3,imp1,debug.flag=debug.flag,plot.string="cc",temp.dir=temp.dir)
+        final.estimates_cc <- fit.to.data.set.wrapper( df3,imp,debug.flag=debug.flag,plot.string="cc",temp.dir=temp.dir)
         final.estimates_cc <- data.frame(summary(final.estimates_cc)$parameters)
     }
 
@@ -107,7 +132,7 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL,try.counter=3){
     if (debug.flag > 1 ){
         #compare C and cc and the resulting fits
         png(paste(temp.dir,"/compare_C_and_cc_and_the_resulting_fits.png",sep=""))
-        hist(imp1,col=6,lwd=2,breaks=100,main="compare C and cc and the resulting fits")
+        hist(imp,col=6,lwd=2,breaks=100,main="compare C and cc and the resulting fits")
         abline(v=C_0.95,col="red",lwd=2)
 
         if (!is.na(cc)){
@@ -119,12 +144,12 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL,try.counter=3){
         
         #compare the plots
         png(paste(temp.dir,"/compare_C_and_cc_and_the_resulting_fits_2.png",sep=""))
-        hist(imp1,breaks=200,freq=FALSE)
+        hist(imp,breaks=200,freq=FALSE)
         lines(x,y,type="l",col="grey90",lwd=2,xlim=c(0,12))
         lines(df2$x,df2$y,col="green",lwd=2)
         abline(v=C_0.95,col="green")
         curve(sn::dsn(x,  xi=final.estimates_C_0.95$Estimate[1], omega=final.estimates_C_0.95$Estimate[2],
-                      alpha= final.estimates_C_0.95$Estimate[3]),  add=TRUE,col="green",lwd=3)
+                      alpha= final.estimates_C_0.95$Estimate[3]),  add=TRUE,col="green",lwd=3)   #why not use my.dsn
 
         if (!is.na(cc)){
             lines(df3$x,df3$y,col="blue",lwd=2)
@@ -149,7 +174,7 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL,try.counter=3){
     
     ###############################################################################################
     # determine p0
-    ppp<-sn::psn(imp1, xi=final.estimates_C_0.95$Estimate[1], omega=final.estimates_C_0.95$Estimate[2], alpha= final.estimates_C_0.95$Estimate[3])
+    ppp<-sn::psn(imp, xi=final.estimates_C_0.95$Estimate[1], omega=final.estimates_C_0.95$Estimate[2], alpha= final.estimates_C_0.95$Estimate[3])
     p0 <- propTrueNullByLocalFDR(ppp)  
     if (debug.flag==1){
         writeLines(paste(p0, "p0"), fileConn)
@@ -162,9 +187,9 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL,try.counter=3){
                   lambda= final.estimates_C_0.95$Estimate[3],p0 = p0, debug.flag=debug.flag,plot.string="final",temp.dir=temp.dir)
     try(aa_cc<-local.fdr(f_fit,df$x,FUN=my.dsn, xi=final.estimates_cc$Estimate[1], omega=final.estimates_cc$Estimate[2],
                   lambda= final.estimates_cc$Estimate[3],p0 = p0, debug.flag=debug.flag,plot.string="final",temp.dir=temp.dir),silent=TRUE)
-    ## mean.aa<- which.min(abs(aa-mean(imp1)))
+    ## mean.aa<- which.min(abs(aa-mean(imp)))
     ## ww<-which.min(abs(aa[mean.aa:119]-0.2)) 
-    ## num.sig.genes <-sum(imp1> x[as.numeric(names(ww))])  
+    ## num.sig.genes <-sum(imp> x[as.numeric(names(ww))])  
 
     ## if (debug.flag >0){
     ##     png(paste(temp.dir,"/temp1.png",sep=""))
@@ -172,21 +197,21 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL,try.counter=3){
     ##     abline(h=0.2)
     ##     abline(v=x[as.numeric(names(ww))])
     ##     dev.off()
-    ##     cat(sum(imp1> x[as.numeric(names(ww))]),"sum(imp1> x[as.numeric(names(ww))])","\n")
+    ##     cat(sum(imp> x[as.numeric(names(ww))]),"sum(imp> x[as.numeric(names(ww))])","\n")
     ## }
     ## if (debug.flag >0){
     ##     png(paste(temp.dir,"/temp2.png",sep=""))
-    ##     hist(imp1, breaks = 200,freq=FALSE)
+    ##     hist(imp, breaks = 200,freq=FALSE)
     ##     abline(v=sn::qsn(0.95,  xi=final.estimates_C_0.95$Estimate[1], omega=final.estimates_C_0.95$Estimate[2], alpha= final.estimates_C_0.95$Estimate[3]))
     ##     abline(v=x[as.numeric(names(ww))])
     ##     dev.off()
-    ##     cat(names(imp1)[imp1> x[as.numeric(names(ww))]],"\n\n\n\n")
+    ##     cat(names(imp)[imp> x[as.numeric(names(ww))]],"\n\n\n\n")
     ## }
 
     if (debug.flag >0){
         png(paste(temp.dir,"/run.it.importances_final_plot.png",sep=""))
         par(mar = c(4, 4, 4, 6)) # Set the margin on all sides to 2
-        aa<- hist(imp1, col = 6, lwd = 2, breaks = 100, main = "", 
+        aa<- hist(imp, col = 6, lwd = 2, breaks = 100, main = "", 
                   freq = FALSE, xlab = "importances", ylab = "density",axes=FALSE)
         curve(my.dsn(x,  xi=final.estimates_C_0.95$Estimate[1], omega=final.estimates_C_0.95$Estimate[2], lambda= final.estimates_C_0.95$Estimate[3]), 
               add = TRUE, col = "red",   lwd = 2)
@@ -221,12 +246,12 @@ run.it.importances<-function(imp1,debug.flag=0, temp.dir=NULL,try.counter=3){
     
 
     if (debug.flag >1){
-        cat(names(imp1)[imp1> x[as.numeric(names(ww))]],"\n\n\n\n")
+        cat(names(imp)[imp> x[as.numeric(names(ww))]],"\n\n\n\n")
     }
 
-    ## a1<- match(names(imp1)[imp1> x[as.numeric(names(ww))]],names(imp1))
-    ## ppp<- 1-sn::psn(imp1[a1], xi=final.estimates[1], omega=final.estimates[2], alpha= final.estimates[3])
-    ## names(ppp) <-names(imp1)[imp1> x[as.numeric(names(ww))]]
+    ## a1<- match(names(imp)[imp> x[as.numeric(names(ww))]],names(imp))
+    ## ppp<- 1-sn::psn(imp[a1], xi=final.estimates[1], omega=final.estimates[2], alpha= final.estimates[3])
+    ## names(ppp) <-names(imp)[imp> x[as.numeric(names(ww))]]
     ## ppp
 
     if (debug.flag > 0){

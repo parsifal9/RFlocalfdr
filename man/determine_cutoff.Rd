@@ -23,13 +23,28 @@ determine_cutoff(
 
 \item{plot}{}
 }
+\value{
+res a matrix if size length(cutoff) by 3.
+We model the histogrma of imp with a kernel density estimate, y.
+Let t1 be  fitted value of the skew normal. Then res contians three columns
+sum((y-t1)^2) , sum(abs(y-t1)) and max(abs(y-t1))
+}
 \description{
 evaluate a measure that can be used to determing the varaible and cutoff value for a RF model
 }
 \examples{
+rm(list=ls())
+library(sparse.inv.cov)
 library(ranger)
-rf1 <-ranger(Species ~ ., data = iris,importance="impurity",seed=123)
-imp<-log(importance(rf1))
-t2 <- count_variables(rf1)
-aa <- determine_cutoff(imp, t2, cutoff=c(0,1,2), Q = 0.75, plot = NULL)
+data(smoking)
+y<-smoking$y
+smoking_data<-smoking$rma
+y.numeric <-ifelse((y=="never-smoked"),0,1)
+rf1 <- ranger(y=y.numeric ,x=smoking_data,importance="impurity",seed=123, num.trees = 10000,classification=TRUE)
+t2 <-count_variables(rf1)
+imp<-log(rf1$variable.importance)
+plot(density((imp)))
+#Detemine a cutoff to get a unimodal density.
+res.temp <- determine_cutoff(imp, t2 ,cutoff=c(1,2,3,4),plot=c(1,2,3,4),Q=0.75)
+plot(c(1,2,3,4),res.temp[,3])
 }

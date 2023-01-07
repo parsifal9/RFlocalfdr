@@ -2,12 +2,12 @@
 % Please edit documentation in R/my.dsn.R
 \name{my.dsn}
 \alias{my.dsn}
-\title{density of skew-normal}
+\title{density of skew-normal using the appromimation of Ashour, Samir K. and Abdel-hameed, Mahmood A.}
 \usage{
 my.dsn(x, xi = 0, omega = 1, lambda = 1)
 }
 \arguments{
-\item{x}{param}
+\item{x}{data}
 
 \item{xi}{param}
 
@@ -16,6 +16,24 @@ my.dsn(x, xi = 0, omega = 1, lambda = 1)
 \item{lambda}{param}
 }
 \description{
-This function allows you to express your love of cats.
+See \url{https://en.wikipedia.org/wiki/Skew_normal_distribution} for discussion of the skew
+Using the appromimation of Ashour, Samir K. and Abdel-hameed, Mahmood A.
+"Approximate Skew Normal Distribution", Journal of Advanced Research, 2010, 1:4.
+It accepts the parameters xi, omega, lambda (see Ashour et. al. 2010). Other foumulations may use
+different parameterizations. The sn (skew normal) package incluse the extended skew-normal (ESN) distribution. For the SN the
+tau parameter is 0.
 }
-\keyword{cats}
+\examples{
+library(sn)
+curve(dsn(x,xi=0, omega=1, alpha=1, tau=0),xlim=c(-10,10),col="blue")
+curve(dsn(x,xi=0, omega=1, alpha=0.1, tau=0),xlim=c(-10,10),col="blue",add=TRUE)
+curve(dsn(x,xi=1, omega=2, alpha=2, tau=0),xlim=c(-10,20),col="blue",add=TRUE)
+curve(dsn(x,xi=3, omega=4, alpha=4, tau=0),xlim=c(-10,20),col="blue",add=TRUE)
+
+curve(my.dsn(x),xlim=c(-10,10),col="red",add=TRUE)
+curve(my.dsn(x,lambda=0.1),xlim=c(-10,10),col="red",add=TRUE)
+curve(my.dsn(x,xi=1, omega=2, lambda=2),xlim=c(-10,20),col="red",add=TRUE)
+curve(my.dsn(x,xi=3, omega=4, lambda=4),xlim=c(-10,20),col="red",add=TRUE)
+}
+\keyword{normal}
+\keyword{skew}

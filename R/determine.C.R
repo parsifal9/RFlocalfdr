@@ -1,17 +1,44 @@
 #' determine.C 
 #'
-#' This function allows you to express your love of cats.
+#' by assumption, there is a point $q$ such that to the left of $q$ $f_B \sim  f_0 (z)$. That is, there is a $q$
+#' such that there are only null values to the left of $q$. We determine $q$ using a
+#' change point method related to penalized model selection. See
+#' Gauran, Iris Ivy M. and Park, Junyong and Lim, Johan and Park, DoHwan and Zylstra, John and Peterson,
+#' Thomas and Kann, Maricel and Spouge, John L. "Empirical null estimation using zero-inflated discrete
+#' mixture distributions and its application to protein domain data" Biometrics, 2018 74:2
 #' @param f_fit object returned by f.fit
-#' @param df data frame 
-#' @param t1 initial estimates
-#' @param trace.plot Do you love cats? Defaults to TRUE.
-#' @param starting_value Do you love cats? Defaults to TRUE.
-#' @param start_at Do you love cats? Defaults to TRUE.
-#' @param debug  Do you love cats? Defaults to TRUE.
-#' #' @keywords cats
+#' @param df data frame containg x and y
+#' @param t1 initial estimates  xi.xi  omega.omega lambda. Probablgt returned by fit.to.data.set.wrapper
+#' @param trace.plot -- produce a plot of each fit with a 1 second sleep. Can be watched as a movie.
+#' @param starting_value -- needs discussion
+#' @param start_at       -- needs discussion
+#' @param debug             -- needs discussion
+#' @keywords 
 #' @export
 #' @examples
-#' cat_function()
+#' data(ch22)                                                                                    
+#' ? ch22                                                                                        
+#' t2 <-ch22$C                                                                                   
+#' imp<-log(ch22$imp)                                                                            
+#' #Detemine a cutoff to get a unimodal density.                                                 
+#' res.temp <- determine_cutoff(imp, t2 ,cutoff=c(25,30,35,40),plot=c(25,30,35,40),Q=0.75)       
+#' plot(c(25,30,35,40),res.temp[,3])                                                             
+#' imp<-imp[t2 > 30]
+#'
+#' f_fit<- f.fit(imp,debug.flag=debug.flag,temp.dir=temp.dir) #makes the plot histogram_of_variable_importances.png                              
+#' y<-f_fit$zh$density                                                                                                                           
+#' x<-f_fit$x                                                                                                                                    
+#' plot(density(imp),main="histogram and fitted spline")                                                                                     
+#' lines(x,y,col="red")                                                                                                                      
+#' df<-data.frame(x,y)                                                                                                                           
+#' initial.estimates <- fit.to.data.set.wrapper(df,imp,debug.flag=debug.flag,plot.string="initial",temp.dir=temp.dir,try.counter=try.counter)    
+#' initial.estimates <- data.frame(summary(initial.estimates)$parameters)$Estimate                                                               
+#'
+#' qq<- determine.C(f_fit,df,initial.estimates,starting_value = 2,start_at=37,trace.plot = TRUE)    
+#' cc<-x[which.min(qq)]                                                                             
+#' plot(x,qq,main="determine cc")                                                                   
+#' abline(v=cc)                                                                                     
+
 determine.C<-function (f_fit, df, t1,trace.plot = FALSE, starting_value = 1,start_at=30,debug.flag=0) 
 {
     f <- f_fit$f.spline
@@ -61,10 +88,6 @@ determine.C<-function (f_fit, df, t1,trace.plot = FALSE, starting_value = 1,star
     }
     qq
 }
-
-
-
-
 
 
 
