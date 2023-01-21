@@ -49,7 +49,7 @@ imp<-imp[t2 > 30]
 
 f_fit<- f.fit(imp,debug.flag=debug.flag,temp.dir=temp.dir) #makes the plot histogram_of_variable_importances.png                              
 y<-f_fit$zh$density                                                                                                                           
-x<-f_fit$x                                                                                                                                    
+x<-f_fit$midpoints                                                                                                                                    
 plot(density(imp),main="histogram and fitted spline")                                                                                     
 lines(x,y,col="red")                                                                                                                      
 df<-data.frame(x,y)                                                                                                                           

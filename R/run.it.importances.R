@@ -51,7 +51,7 @@ run.it.importances<-function(imp,debug.flag=0, temp.dir=NULL,try.counter=3){
 
     f_fit<- f.fit(imp,debug.flag=debug.flag,temp.dir=temp.dir) #makes the plot histogram_of_variable_importances.png
     y<-f_fit$zh$density
-    x<-f_fit$x
+    x<-f_fit$midpoints
     
     if (debug.flag >0){
         png(paste(temp.dir,"/density_importances.png",sep=""))

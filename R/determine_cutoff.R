@@ -1,14 +1,21 @@
-#' evaluate a measure that can be used to determing the varaible and cutoff value for a RF model
+#' evaluate a measure that can be used to determining a significance level for the Mean Decrease in Impurity measure returned by a Random Forest model
 #'
-#' @param  imp vector of MDI varaible importances importances
+#' @param  imp vector of MDI variable importances 
 #' @param  t2 number of times each variable is used in the a ranger forest. Returned by count_variables for a ranger RF
 #' @param  cutoff values to evaluate 
-#' @param  Q 
-#' @param  plot
+#' @param  Q -- we examine the fit up the to quartile Q
+#' @param  plot for 4 values of the cutoff. The plot contains
+#' - The data (black) and  the  fitted density  (red)
+#' - The skew-normal fit (blue)
+#' - The quantile Q (vertical red line)
+#' @md
 #' @return res a matrix if size length(cutoff) by 3.
-#' We model the histogrma of imp with a kernel density estimate, y.
-#' Let t1 be  fitted value of the skew normal. Then res contians three columns
-#' sum((y-t1)^2) , sum(abs(y-t1)) and max(abs(y-t1)) 
+#' We model the histogram of imp with a kernel density estimate, y.
+#' Let t1 be  fitted values of the skew normal. Then res contains three columns
+#' - sum((y-t1)^2)
+#' - sum(abs(y-t1)) and
+#' - max(abs(y-t1)),
+#' evaluated up to the quantile Q
 #' @export
 #' @examples
 #' rm(list=ls())
@@ -22,9 +29,10 @@
 #' t2 <-count_variables(rf1)
 #' imp<-log(rf1$variable.importance)
 #' plot(density((imp)))
-#'#Detemine a cutoff to get a unimodal density.
+#' # Detemine a cutoff to get a unimodal density.
 #' res.temp <- determine_cutoff(imp, t2 ,cutoff=c(1,2,3,4),plot=c(1,2,3,4),Q=0.75)
 #' plot(c(1,2,3,4),res.temp[,3])
+
 determine_cutoff <- function(imp, t2, cutoff=c(0,1,4,10,15,20), Q = 0.75, plot = NULL){
 # calls f.fit, fit.to.data.set.wrapper, my.dsn
     res1  <- matrix(0, length(cutoff), 3)
@@ -35,11 +43,11 @@ determine_cutoff <- function(imp, t2, cutoff=c(0,1,4,10,15,20), Q = 0.75, plot =
     for ( ii in 1:length(steps )  ) {
         cat("i=", ii, "cutoff =", steps[ii], "\n")
         temp <- imp[t2 > steps[ii]]
-        temp <- temp[temp != -Inf]
+        temp <- temp[temp != -Inf] #this changes the length of temp, so we always go back to imp for imp[t2 > steps[ii]]
         temp <- temp - min(temp) + .Machine$double.eps
         f_fit <- f.fit(temp )
         y <- f_fit$zh$density
-        x <- f_fit$x
+        x <- f_fit$midpoints
 
         C <- quantile(temp,probs=Q)
         df2 <- data.frame(x[x < C], y[x < C])
@@ -57,7 +65,7 @@ determine_cutoff <- function(imp, t2, cutoff=c(0,1,4,10,15,20), Q = 0.75, plot =
 
         if (!is.null(plot)){
             if (steps[ii] %in% plot){
-                plot(density(temp),main=paste("cutoff = ",steps[ii]))
+                plot(density(temp),main=paste("cutoff = ",steps[ii])) #in black
                 lines(df2$x, df2$y,col="red",lwd=2)
                 abline(v=C,col="red" )
                 lines(df2$x,t1,col="blue",lwd=2)

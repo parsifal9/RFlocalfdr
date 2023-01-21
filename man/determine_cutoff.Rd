@@ -2,7 +2,7 @@
 % Please edit documentation in R/determine_cutoff.R
 \name{determine_cutoff}
 \alias{determine_cutoff}
-\title{evaluate a measure that can be used to determing the varaible and cutoff value for a RF model}
+\title{evaluate a measure that can be used to determining a significance level for the Mean Decrease in Impurity measure returned by a Random Forest model}
 \usage{
 determine_cutoff(
   imp,
@@ -13,24 +13,34 @@ determine_cutoff(
 )
 }
 \arguments{
-\item{imp}{vector of MDI varaible importances importances}
+\item{imp}{vector of MDI variable importances}
 
 \item{t2}{number of times each variable is used in the a ranger forest. Returned by count_variables for a ranger RF}
 
 \item{cutoff}{values to evaluate}
 
-\item{Q}{}
+\item{Q}{-- we examine the fit up the to quartile Q}
 
-\item{plot}{}
+\item{plot}{for 4 values of the cutoff. The plot contains
+\itemize{
+\item The data (black) and  the  fitted density  (red)
+\item The skew-normal fit (blue)
+\item The quantile Q (vertical red line)
+}}
 }
 \value{
 res a matrix if size length(cutoff) by 3.
-We model the histogrma of imp with a kernel density estimate, y.
-Let t1 be  fitted value of the skew normal. Then res contians three columns
-sum((y-t1)^2) , sum(abs(y-t1)) and max(abs(y-t1))
+We model the histogram of imp with a kernel density estimate, y.
+Let t1 be  fitted values of the skew normal. Then res contains three columns
+\itemize{
+\item sum((y-t1)^2)
+\item sum(abs(y-t1)) and
+\item max(abs(y-t1)),
+evaluated up to the quantile Q
+}
 }
 \description{
-evaluate a measure that can be used to determing the varaible and cutoff value for a RF model
+evaluate a measure that can be used to determining a significance level for the Mean Decrease in Impurity measure returned by a Random Forest model
 }
 \examples{
 rm(list=ls())
@@ -44,7 +54,7 @@ rf1 <- ranger(y=y.numeric ,x=smoking_data,importance="impurity",seed=123, num.tr
 t2 <-count_variables(rf1)
 imp<-log(rf1$variable.importance)
 plot(density((imp)))
-#Detemine a cutoff to get a unimodal density.
+# Detemine a cutoff to get a unimodal density.
 res.temp <- determine_cutoff(imp, t2 ,cutoff=c(1,2,3,4),plot=c(1,2,3,4),Q=0.75)
 plot(c(1,2,3,4),res.temp[,3])
 }

@@ -1,6 +1,6 @@
 #' local fdr 
 #'
-#' This function allows you to express your love of cats.
+#' calculate the local 
 #' @param f  f 
 #' @param x  x 
 #' @param FUN FUN

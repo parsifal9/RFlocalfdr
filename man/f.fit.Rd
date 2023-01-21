@@ -2,30 +2,33 @@
 % Please edit documentation in R/f.fit.R
 \name{f.fit}
 \alias{f.fit}
-\title{fit a spline to the histogram of zz}
+\title{fit a spline to the histogram of imp}
 \usage{
-f.fit(zz, df = 10, debug.flag = 0, temp.dir = NULL)
+f.fit(imp, df = 10, debug.flag = 0, temp.dir = NULL)
 }
 \arguments{
-\item{zz}{the variable importances}
+\item{imp}{the variable importances}
 
 \item{df}{the degrees of freedom for the spline fit}
 }
 \value{
 a list with the following components
-"x" -- midpoints of the histogram
-"zh" -- a histogram object as returned by "hist"
-"f.spline" -- the spline fit. The fit is given by a glm mode glm(zh$counts ~ splines:::ns(x), poisson)
-"counts" the counts from the histogram
+\itemize{
+\item "x" -- midpoints of the histogram
+\item "zh" -- a histogram object as returned by "hist"
+\item "f.spline" -- the spline fit. The fit is given by a glm mode glm(zh$counts ~ splines:::ns(x), poisson)
+\item "counts" the counts from the histogram
+}
 }
 \description{
-fit a spline to the histogram of zz
+fit a spline to the histogram of imp
 }
 \examples{
-data(imp1)                          
-res <- f.fit(imp1)                  
-plot(res$zh)                        
-plot(res$x,res$counts)              
-plot(res$zh$breaks[-1],res$f.spline)
+data(imp1)                                                       
+res <- f.fit(imp1)                                               
+plot(res$zh, xlab="importances", main="histogram of importances")
+points(res$midpoints,res$counts, col="grey90")                           
+lines(res$zh$breaks[-1],res$f.spline,col="blue", lwd=3)          
+legend(1.5,800,c("spline fit"), col="blue", lwd=3)               
 }
 \keyword{spline}

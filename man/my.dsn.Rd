@@ -16,11 +16,11 @@ my.dsn(x, xi = 0, omega = 1, lambda = 1)
 \item{lambda}{param}
 }
 \description{
-See \url{https://en.wikipedia.org/wiki/Skew_normal_distribution} for discussion of the skew
+See \url{https://en.wikipedia.org/wiki/Skew_normal_distribution} for discussion of the skew-normal.
 Using the appromimation of Ashour, Samir K. and Abdel-hameed, Mahmood A.
 "Approximate Skew Normal Distribution", Journal of Advanced Research, 2010, 1:4.
-It accepts the parameters xi, omega, lambda (see Ashour et. al. 2010). Other foumulations may use
-different parameterizations. The sn (skew normal) package incluse the extended skew-normal (ESN) distribution. For the SN the
+It accepts the parameters xi, omega, lambda (Ashour et. al. 2010). Other foumulations may use
+different parameterizations. The sn (skew-normal) package incluse the extended skew-normal (ESN) distribution. For the SN the
 tau parameter is 0.
 }
 \examples{

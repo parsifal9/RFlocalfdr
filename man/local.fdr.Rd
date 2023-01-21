@@ -23,7 +23,7 @@ local.fdr(
 \item{FUN}{FUN}
 }
 \description{
-This function allows you to express your love of cats.
+calculate the local
 }
 \examples{
 local.fdr()
