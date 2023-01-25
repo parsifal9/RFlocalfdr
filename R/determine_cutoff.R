@@ -3,8 +3,8 @@
 #' @param  imp vector of MDI variable importances 
 #' @param  t2 number of times each variable is used in the a ranger forest. Returned by count_variables for a ranger RF
 #' @param  cutoff values to evaluate 
-#' @param  Q -- we examine the fit up the to quartile Q
-#' @param  plot for 4 values of the cutoff. The plot contains
+#' @param  Q -- we examine the fit up to the quartile Q
+#' @param  plot for 4 selected values of the cutoff. The plot contains
 #' - The data (black) and  the  fitted density  (red)
 #' - The skew-normal fit (blue)
 #' - The quantile Q (vertical red line)
@@ -19,8 +19,6 @@
 #' @export
 #' @examples
 #' rm(list=ls())
-#' library(sparse.inv.cov)
-#' library(ranger)
 #' data(smoking)
 #' y<-smoking$y
 #' smoking_data<-smoking$rma

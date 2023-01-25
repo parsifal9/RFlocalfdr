@@ -19,9 +19,9 @@ determine_cutoff(
 
 \item{cutoff}{values to evaluate}
 
-\item{Q}{-- we examine the fit up the to quartile Q}
+\item{Q}{-- we examine the fit up to the quartile Q}
 
-\item{plot}{for 4 values of the cutoff. The plot contains
+\item{plot}{for 4 selected values of the cutoff. The plot contains
 \itemize{
 \item The data (black) and  the  fitted density  (red)
 \item The skew-normal fit (blue)
