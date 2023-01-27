@@ -1,51 +1,124 @@
 ---
-title: "RFlocalfdr"
-output: rmarkdown::html_vignette
+title: "RFlocagfdr Smoking Data Example"
+author: "Rob Dunne"
+date: "Saturday, August  8, 2020"
+output: 
+     rmarkdown::html_vignette:
+	   toc: true
+       toc_depth: 2
 vignette: >
-  %\VignetteIndexEntry{RFlocalfdr}
+  %\VignetteIndexEntry{Smoking data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: paper.bib
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
-)
+  )
+knitr::opts_chunk$set(fig.width=6, fig.height=6, dpi=300,echo = FALSE)
+knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
+
 ```
 
 ```{r, eval=FALSE}
 library(RFlocalfdr)
+data(smoking)
+?smoking  ##
+y<-smoking$y
+smoking_data<-smoking$rma
+y.numeric <-ifelse((y=="never-smoked"),0,1)
 
 ```
 
 A small example using the smoking  data set. 
 
 ```{r,  eval=FALSE}
-rm(list=ls())
-library(sparse.inv.cov)
 library(ranger)
-data(smoking)
-y<-smoking$y
-smoking_data<-smoking$rma
-y.numeric <-ifelse((y=="never-smoked"),0,1)
-
 rf1 <-ranger(y=y.numeric ,x=smoking_data,importance="impurity",seed=123, num.trees = 10000,classification=TRUE)
 t2 <-count_variables(rf1)
 imp<-log(rf1$variable.importance)
 plot(density((imp)))
+
 ```
 Detemine a cutoff to get a unimodal density.
 ```{r , eval=FALSE}
-hist(imp[t2 > 2],col=6,lwd=2,breaks=10)
-imp <- imp[t2 > 2]
+
+cutoffs <- c(2,3,4,5)
+#png("./supp_figures/simulated_data_determine_cutoff.png")
+res.con<- determine_cutoff(imp,t2,cutoff=cutoffs,plot=c(2,3,4,5))
+#dev.off()
+#1: In fitdistrplus::fitdist(imp, "sn", start = list(xi = mean(imp),  :
+#  The dsn function should return a zero-length vector when input has length zero and not raise an error
+#2: In fitdistrplus::fitdist(imp, "sn", start = list(xi = mean(imp),  :
+#  The psn function should have its first argument named: q as in base R
+#3: In min(x) : no non-missing arguments to min; returning Inf
+#4: In max(x) : no non-missing arguments to max; returning -Inf
+#5: In par(old.par) : graphical parameter "cin" cannot be set
+#6: In par(old.par) : graphical parameter "cra" cannot be set
+#7: In par(old.par) : graphical parameter "csi" cannot be set
+#8: In par(old.par) : graphical parameter "cxy" cannot be set
+#9: In par(old.par) : graphical parameter "din" cannot be set
+#10: In par(old.par) : graphical parameter "page" cannot be set
+
+plot(cutoffs,res.con[,3])
+cutoffs[which.min(res.con[,3])]
 ```
+```{r , eval=FALSE}
+temp<-imp[t2 > 3]
+ppp<-run.it.importances(temp,debug=0)
+aa<-significant.genes(ppp,temp,cutoff=0.05,do.plot=2)
+length(aa$probabilities) # 95
+
+tt1 <-as.numeric(gsub("X([0-9]*)","\\1",names(aa$probabilities)))
+tt2 <- table(ifelse((tt1 < 127),1,2))
+# 1  2 
+
+# The false discovery rate is 0.3789474
+tt2[2]/(tt2[1]+tt2[2])
+#59 36   36/(36+59) = 0.3789474
+
+predicted_values<-rep(0, 6350);predicted_values[tt1]<-1
+
+conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
+conf_matrix
+sensitivity(conf_matrix) #0.994215 TP/(TP+FN)
+specificity(conf_matrix) #0.4645669 TN/(FP+TN)
+
+roccurve <- roc(c(rep(1,127),rep(0,6350-127)),predicted_values)
+plot(roccurve)
+auc(roccurve) #0.7294
+
+accuracy<-(conf_matrix[1,1]+conf_matrix[2,2])/(sum(conf_matrix))
+accuracy # 0.983622
+
+```
+The FDR is 0.379. We can also calculate the sensitivity, sensitivity and accruacy.
+
+
+
+
+
+
+
+
+
+
+
+
+#old
+
+```{r , eval=FALSE}
+
+hist(imp[t2 >  3 ],col=6,lwd=2,breaks=10)
+imp <- imp[t2 > 3]
 
 After making the cutoff, translate the data
 ```{r , eval=FALSE}
 imp <- imp - min(imp) + .Machine$double.eps 
 length(imp)
-
 head(imp)
 #     121_at     1431_at   1494_f_at   1598_g_at     1729_at 200000_s_at 
 #   2.408754    2.157128    3.919858    3.144564    2.931158    1.174730
@@ -53,9 +126,9 @@ head(imp)
 
 Fit the model
 ```{r , eval=FALSE}
-ppp<-run.it.importances(imp,debug=0)
+temp<-imp[t2 > 3]
+ppp<-run.it.importances(temp,debug=0)
+aa<-significant.genes(ppp,temp,cutoff=0.05,do.plot=2)
+length(aa$probabilities) # 95
 
-aa<-significant.genes(ppp,imp,cutoff=0.2,do.plot=2)
-length(aa)
-#[1] 189
 ```
