@@ -83,11 +83,11 @@ cutoffs[which.min(res.con[,3])]
 
 ```
 
-```{r smoking_data_determine_cutoff, echo=FALSE, fig.align="center", fig.show='hold', fig.cap="", out.width = '40%', out.height = '40%'}
-knitr::include_graphics("./supp_figures/smoking_data_determine_cutoff.png")
-knitr::include_graphics("./supp_figures/smoking_data_determine_cutoffs_2.png")
+<!-- ```{r smoking_data_determine_cutoff, echo=FALSE, fig.align="center", fig.show='hold', fig.cap="", out.width = '40%', out.height = '40%'} -->
+<!-- knitr::include_graphics("./supp_figures/smoking_data_determine_cutoff.png") -->
+<!-- knitr::include_graphics("./supp_figures/smoking_data_determine_cutoffs_2.png") -->
 
-```
+<!-- ``` -->
 
 <!-- why cant I get them side by side -->
 <!-- https://stackoverflow.com/questions/25415365/insert-side-by-side-png-images-using-knitr -->
@@ -125,7 +125,7 @@ The option **do.plot=2** returns the same plot with the addition of
 - abline(v = object$C_0.95, lwd = 2, col = "blue")   what are these
 - abline(v = object$cc, lwd = 2, col = "purple")
 
-```{r smoking_significant_genes, echo=FALSE, fig.cap="", fig.align="center", out.width = '50%'}
-knitr::include_graphics("./supp_figures/smoking_significant_genes.png")
+<!-- ```{r smoking_significant_genes, echo=FALSE, fig.cap="", fig.align="center", out.width = '50%'} -->
+<!-- knitr::include_graphics("./supp_figures/smoking_significant_genes.png") -->
 
-```
+<!-- ``` -->
