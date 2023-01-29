@@ -53,11 +53,11 @@ plot(density(imp),xlab="log importances",main="")
 
 ```
 
-```{r log_importances, echo=FALSE, fig.cap="", fig.align="center", out.width = '50%'}
-#knitr::include_graphics("./supp_figures/smoking_log_importances.png")
-knitr::include_graphics("./supp_figures/smoking_data_determine_cutoff.png")
+<!-- ```{r log_importances, echo=FALSE, fig.cap="", fig.align="center", out.width = '50%'} -->
+<!-- #knitr::include_graphics("./supp_figures/smoking_log_importances.png") -->
+<!-- knitr::include_graphics("./supp_figures/smoking_data_determine_cutoff.png") -->
 
-```
+<!-- ``` -->
 
 
 
