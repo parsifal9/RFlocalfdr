@@ -190,7 +190,7 @@ length(aa$probabilities) # 95
 tt1 <-as.numeric(gsub("X([0-9]*)","\\1",names(aa$probabilities)))
 tt2 <- table(ifelse((tt1 < 127),1,2))
 # 1  2 
-
+# 59 36 
 # The false discovery rate is 0.3789474
 tt2[2]/(tt2[1]+tt2[2])
 #59 36   36/(36+59) = 0.3789474
@@ -331,7 +331,6 @@ We take the @{vita.2015} _Variable Importance Testing Approaches_
 
 ```{r eval=FALSE,echo=TRUE}
 library(vita) #vita: Variable Importance Testing Approaches
-source("./script12/my.pimp.s")
 y<-factor(y)
 X<-data.frame(X)
 cl.ranger <- ranger(y~. , X,mtry = 3,num.trees = 1000, importance = 'impurity')
@@ -358,6 +357,7 @@ table(ifelse((tt < 127),1,2))
 
 
 ```{r eval=FALSE,echo=FALSE}
+#jhow to make a neat html tablein Rmarkdown
 library(tables)
 X <- rnorm(125, sd=100)
 Group <- factor(sample(letters[1:5], 125, rep=TRUE))
@@ -380,10 +380,7 @@ table_options(doCSS = FALSE)
 
 # Conclusion
 
-
-
 ```{r table3, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
-
 tabl <- "
     Method     | true positives | false positives | Sensitivity        | AUC            |
     RFlocalfdr | 59             | 36              | 0.99               | 0.73           |
@@ -394,14 +391,15 @@ tabl <- "
 --------------------------------------------------------------------------- 
 "
 cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
+
 ```
 
 
 Performance of variable selection for the simulated example by several methods. The best outcomes for each category are in bold face.
-RFE has performed better than Boruta but apart from that, ordering the methods will depend on the cost of false positives versus the cost of false negatives.
+RFE has performed better than Boruta but apart from that, ordering the methods wi  ll depend on the cost of false positives versus the cost of false negatives.
 
 
-How do I get boldface in a table? neither  **0.99**  or  $\textbf{0.99}$ work
+<!-- How do I get boldface in a table? neither  **0.99**  or  $\textbf{0.99}$ work -->
 
 
 

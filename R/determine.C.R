@@ -1,7 +1,7 @@
 #' determine.C 
 #'
-#' by assumption, there is a point $q$ such that to the left of $q$ $f_B \sim  f_0 (z)$. That is, there is a $q$
-#' such that there are only null values to the left of $q$. We determine $q$ using a
+#' by assumption, there is a point q such that to the left of q, f_B sim  f_0 (z). That is, there is a q
+#' such that there are only null values to the left of q. We determine q using a
 #' change point method related to penalized model selection. See
 #' Gauran, Iris Ivy M. and Park, Junyong and Lim, Johan and Park, DoHwan and Zylstra, John and Peterson,
 #' Thomas and Kann, Maricel and Spouge, John L. "Empirical null estimation using zero-inflated discrete
@@ -13,7 +13,6 @@
 #' @param starting_value -- needs discussion
 #' @param start_at       -- needs discussion
 #' @param debug             -- needs discussion
-#' @keywords 
 #' @export
 #' @examples
 #' data(ch22)                                                                                    

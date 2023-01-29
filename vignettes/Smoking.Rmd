@@ -1,5 +1,5 @@
 ---
-title: "RFlocagfdr Smoking Data Example"
+title: "Smoking data"
 author: "Rob Dunne"
 date: "Saturday, August  8, 2020"
 output: 
@@ -13,6 +13,7 @@ vignette: >
 bibliography: paper.bib
 ---
 
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -22,113 +23,104 @@ knitr::opts_chunk$set(fig.width=6, fig.height=6, dpi=300,echo = FALSE)
 knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
 
 ```
+A small example using the smoking  data set, containing normalized transcript measurements for 51 subjects (23 "never-smoked" and 34 "smokers")
+and 22283 transcripts of lung tissue. See @Spira.et.al.2004
 
-```{r, eval=FALSE}
+
+# load the data
+```{r, echo=TRUE, eval=FALSE}
 library(RFlocalfdr)
 data(smoking)
-?smoking  ##
+?smoking 
 y<-smoking$y
 smoking_data<-smoking$rma
 y.numeric <-ifelse((y=="never-smoked"),0,1)
 
 ```
 
-A small example using the smoking  data set. 
 
-```{r,  eval=FALSE}
+# fit a ranger model
+
+```{r,  echo=TRUE,  eval=FALSE}
 library(ranger)
-rf1 <-ranger(y=y.numeric ,x=smoking_data,importance="impurity",seed=123, num.trees = 10000,classification=TRUE)
+rf1 <-ranger(y=y.numeric ,x=smoking_data,importance="impurity",seed=123, num.trees = 10000,
+             classification=TRUE)
 t2 <-count_variables(rf1)
 imp<-log(rf1$variable.importance)
-plot(density((imp)))
+#png("./supp_figures/smoking_log_importances.png")
+plot(density(imp),xlab="log importances",main="")
+#dev.off()
 
 ```
-Detemine a cutoff to get a unimodal density.
-```{r , eval=FALSE}
 
+```{r log_importances, echo=FALSE, fig.cap="", fig.align="center", out.width = '50%'}
+knitr::include_graphics("./supp_figures/smoking_log_importances.png")
+
+```
+
+
+
+# Determine a cutoff to get a unimodal density.
+
+See \@ref(fig:log_importances) for the log importances. They are clearly multimodal and we try to determine a cutoff so
+that we are left with a unimodal distribution.
+
+```{r ,echo=TRUE, eval=FALSE}
 cutoffs <- c(2,3,4,5)
-#png("./supp_figures/simulated_data_determine_cutoff.png")
+#png("./supp_figures/smoking_data_determine_cutoff.png")
 res.con<- determine_cutoff(imp,t2,cutoff=cutoffs,plot=c(2,3,4,5))
 #dev.off()
-#1: In fitdistrplus::fitdist(imp, "sn", start = list(xi = mean(imp),  :
-#  The dsn function should return a zero-length vector when input has length zero and not raise an error
-#2: In fitdistrplus::fitdist(imp, "sn", start = list(xi = mean(imp),  :
-#  The psn function should have its first argument named: q as in base R
-#3: In min(x) : no non-missing arguments to min; returning Inf
-#4: In max(x) : no non-missing arguments to max; returning -Inf
-#5: In par(old.par) : graphical parameter "cin" cannot be set
-#6: In par(old.par) : graphical parameter "cra" cannot be set
-#7: In par(old.par) : graphical parameter "csi" cannot be set
-#8: In par(old.par) : graphical parameter "cxy" cannot be set
-#9: In par(old.par) : graphical parameter "din" cannot be set
-#10: In par(old.par) : graphical parameter "page" cannot be set
 
-plot(cutoffs,res.con[,3])
+#png("./supp_figures/smoking_data_determine_cutoffs_2.png")
+plot(cutoffs,res.con[,3],pch=15,col="red",cex=1.5,ylab="max(abs(y - t1))")
+#dev.off()
 cutoffs[which.min(res.con[,3])]
+
 ```
-```{r , eval=FALSE}
+
+```{r smoking_data_determine_cutoff, echo=FALSE, fig.align="center", fig.show='hold', fig.cap="", out.width = '40%', out.height = '40%'}
+knitr::include_graphics("./supp_figures/smoking_data_determine_cutoff.png")
+knitr::include_graphics("./supp_figures/smoking_data_determine_cutoffs_2.png")
+
+```
+
+<!-- why cant I get them side by side -->
+<!-- https://stackoverflow.com/questions/25415365/insert-side-by-side-png-images-using-knitr -->
+
+
+
+
+# fit RFlocalfdr
+
+We select a cutoff of 3 and fit the RFlocalfdr model
+
+```{r , echo=TRUE,eval=FALSE}
 temp<-imp[t2 > 3]
 ppp<-run.it.importances(temp,debug=0)
-aa<-significant.genes(ppp,temp,cutoff=0.05,do.plot=2)
-length(aa$probabilities) # 95
 
-tt1 <-as.numeric(gsub("X([0-9]*)","\\1",names(aa$probabilities)))
-tt2 <- table(ifelse((tt1 < 127),1,2))
-# 1  2 
+png("./supp_figures/smoking_significant_genes.png")
+aa<-significant.genes(ppp,temp,cutoff=0.05,do.plot=1)
+dev.off()
 
-# The false discovery rate is 0.3789474
-tt2[2]/(tt2[1]+tt2[2])
-#59 36   36/(36+59) = 0.3789474
-
-predicted_values<-rep(0, 6350);predicted_values[tt1]<-1
-
-conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
-conf_matrix
-sensitivity(conf_matrix) #0.994215 TP/(TP+FN)
-specificity(conf_matrix) #0.4645669 TN/(FP+TN)
-
-roccurve <- roc(c(rep(1,127),rep(0,6350-127)),predicted_values)
-plot(roccurve)
-auc(roccurve) #0.7294
-
-accuracy<-(conf_matrix[1,1]+conf_matrix[2,2])/(sum(conf_matrix))
-accuracy # 0.983622
+length(aa$probabilities) # 17
 
 ```
-The FDR is 0.379. We can also calculate the sensitivity, sensitivity and accruacy.
+The option **do.plot=1** returns a plot containing the
+
+- histogram of the importances in magenta
+- fdr in black                     -- axis scale on right
+- alpha value for significance --   axis scale on right
 
 
+The option **do.plot=2** returns the same plot with the addition of 
 
+- fitted curve using estimates_C_0.95 in red
+- 0.95 quantile of the fitted distribution, also in red
+- cutoff for significant genes (in orange)
+- abline(v = object$C_0.95, lwd = 2, col = "blue")   what are these
+- abline(v = object$cc, lwd = 2, col = "purple")
 
-
-
-
-
-
-
-
-
-#old
-
-```{r , eval=FALSE}
-
-hist(imp[t2 >  3 ],col=6,lwd=2,breaks=10)
-imp <- imp[t2 > 3]
-
-After making the cutoff, translate the data
-```{r , eval=FALSE}
-imp <- imp - min(imp) + .Machine$double.eps 
-length(imp)
-head(imp)
-#     121_at     1431_at   1494_f_at   1598_g_at     1729_at 200000_s_at 
-#   2.408754    2.157128    3.919858    3.144564    2.931158    1.174730
-```
-
-Fit the model
-```{r , eval=FALSE}
-temp<-imp[t2 > 3]
-ppp<-run.it.importances(temp,debug=0)
-aa<-significant.genes(ppp,temp,cutoff=0.05,do.plot=2)
-length(aa$probabilities) # 95
+```{r smoking_significant_genes, echo=FALSE, fig.cap="", fig.align="center", out.width = '50%'}
+knitr::include_graphics("./supp_figures/smoking_significant_genes.png")
 
 ```
