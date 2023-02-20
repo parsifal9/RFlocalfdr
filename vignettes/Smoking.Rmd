@@ -61,6 +61,7 @@ plot(density(imp),xlab="log importances",main="")
 
 ```{r simulation2, echo=FALSE, fig.cap="A small simulated data set. Each band contains blocks of size {1, 2, 4, 8, 16, 32, 64}, and each block consists of correlated (identical variables).", fig.align="center", out.width = '50%'}
 knitr::include_graphics("./supp_figures/smoking_log_importances.png")
+
 ```
 
 
@@ -128,3 +129,9 @@ The option **do.plot=2** returns the same plot with the addition of
 <!-- knitr::include_graphics("./supp_figures/smoking_significant_genes.png") -->
 
 <!-- ``` -->
+
+
+```{r , echo=TRUE,eval=FALSE}
+sessionInfo()
+
+```

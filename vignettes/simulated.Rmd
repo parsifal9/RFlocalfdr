@@ -8,7 +8,7 @@ output:
       toc_depth: 2
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Simulated Data Example}
+  %\VignetteIndexEntry{RFlocalfdr Simulated Data Example}
   %\VignetteEncoding{UTF-8}
 bibliography: paper.bib
 header-includes:
@@ -327,7 +327,23 @@ accuracy #  0.9570079
 
 # PIMP
 
-We take the @{vita.2015} _Variable Importance Testing Approaches_ 
+
+note that pimp
+
+- permutes the $S$ times 
+- For each permutation of the response vector $y^{*s}$, a new RF is grown and the permutation
+  variable importance measure (VarImp^{*s}) for all predictor variables X is computed. 
+- The vector ‘perVarImp’ of $S$ VarImp measures for every predictor variables are used to approximate the null importance distributions (‘PimpTest’).
+- the null importance distribution is calculated for each variable, we are doing $p$ tests
+- hence a multiple testing correction is in order
+- we base our work on the  PIMP implementation provided by  @{vita.2015} _Variable Importance Testing Approaches_ 
+- pump as described by Altman is only applicable to permutation importance.
+- however we see no impediment in extending the method to Gini importance
+- we have done thtat in our code and also 
+
+    - fixed a small error
+	- extended the code to use ranger as well as randomForest implementations of RF 
+
 
 ```{r eval=FALSE,echo=TRUE}
 library(vita) #vita: Variable Importance Testing Approaches
