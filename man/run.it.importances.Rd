@@ -4,7 +4,7 @@
 \alias{run.it.importances}
 \title{run.it.importances}
 \usage{
-run.it.importances(imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
+run.it.importances(qq, imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
 }
 \arguments{
 \item{imp}{"reduction in impurity" importances from a random forest model}
