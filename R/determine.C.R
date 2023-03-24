@@ -23,14 +23,16 @@
 #' res.temp <- determine_cutoff(imp, t2 ,cutoff=c(25,30,35,40),plot=c(25,30,35,40),Q=0.75)       
 #' plot(c(25,30,35,40),res.temp[,3])                                                             
 #' imp<-imp[t2 > 30]
-#'
-#' f_fit<- f.fit(imp,debug.flag=debug.flag,temp.dir=temp.dir) #makes the plot histogram_of_variable_importances.png                              
+#' debug.flag <- 0
+#' f_fit<- f.fit(imp,debug.flag=debug.flag,temp.dir=temp.dir)
+#' #makes the plot histogram_of_variable_importances.png                              
 #' y<-f_fit$zh$density                                                                                                                           
 #' x<-f_fit$midpoints                                                                                                                                    
 #' plot(density(imp),main="histogram and fitted spline")                                                                                     
 #' lines(x,y,col="red")                                                                                                                      
 #' df<-data.frame(x,y)                                                                                                                           
-#' initial.estimates <- fit.to.data.set.wrapper(df,imp,debug.flag=debug.flag,plot.string="initial",temp.dir=temp.dir,try.counter=try.counter)    
+#' initial.estimates <- fit.to.data.set.wrapper(df,imp,debug.flag=debug.flag,plot.string="initial",
+#'                                               temp.dir=temp.dir,try.counter=try.counter)    
 #' initial.estimates <- data.frame(summary(initial.estimates)$parameters)$Estimate                                                               
 #'
 #' qq<- determine.C(f_fit,df,initial.estimates,starting_value = 2,start_at=37,trace.plot = TRUE)    

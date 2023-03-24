@@ -1,5 +1,5 @@
 Package: RFlocalfdr
-Title:  Sets a significance level for Random Forest Mean Decrease in Impurity variable importance scores.
+Title:  Sets a Significance Level for Random Forest Mean Decrease in Impurity Variable Importance Scores.
 Version: 0.0.1
 Authors@R: 
     person(given = "Robert",
@@ -16,7 +16,11 @@ RoxygenNote: 7.2.3
 Imports: 
     minpack.lm,
     sn,
-    fitdistrplus
+    fitdistrplus,
+    grDevices,
+    graphics,
+    methods,
+    stats
 Depends: 
     R (>= 2.10)
 Suggests: 

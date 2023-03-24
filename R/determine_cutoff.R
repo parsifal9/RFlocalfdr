@@ -19,6 +19,7 @@
 #' @export
 #' @examples
 #' rm(list=ls())
+#' library(ranger)
 #' data(smoking)
 #' y<-smoking$y
 #' smoking_data<-smoking$rma
@@ -51,7 +52,7 @@ determine_cutoff <- function(imp, t2, cutoff=c(0,1,4,10,15,20), Q = 0.75, plot =
         df2 <- data.frame(x[x < C], y[x < C])
 
         initial.estimates <- fit.to.data.set.wrapper(df2, temp)
-        if(class(initial.estimates) != "nls"){
+        if (is(initial.estimates,"nls")){
             return(res1)
         }
         initial.estimates <- summary(initial.estimates)$parameters

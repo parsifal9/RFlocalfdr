@@ -29,6 +29,7 @@
 run.it.importances <- function(qq, imp, debug.flag = 0, temp.dir = NULL, try.counter = 3){
     x <- qq$df$x
     y <- qq$df$y
+    df <- qq$df
     
     final.estimates_C_0.95 <- qq$final.estimates_C_0.95  
     final.estimates_cc      <- qq$final.estimates_cc    

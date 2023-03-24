@@ -6,7 +6,6 @@
 #' \describe{
 #'   \item{imp1}{importaces }
 #' }
-#' @source \url{http://www.diamondse.info/}
 #' @examples
 #' library(ranger)
 #' inv.logit <-function (x) {
@@ -41,18 +40,16 @@
 #'
 #'
 #'colnames(X) <- c(make.names(1:20000))
-#'library(ranger)
 #'rf1<-ranger(y=y,x=X, num.trees = 20000,importance="impurity")
 #'table(y,predict(rf1,data=X)$predictions)
 #'#OOB prediction error:             51.70 % 
 #'table(y,predict(rf1,data=X)$predictions)
 #'
-#'system.time(t2<- table(factor(aa1[aa2 != 0],levels=1:10000))) # 6.620   
+#'t2 <-count_variables(rf1)
 #'head(t2)
 #'dim(t2)
 #'
 #'imp<-rf1$variable.importance
-#'
 #'imp<-log(imp)
 #'plot(density((imp)))
 #'hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
@@ -70,29 +67,30 @@
 #' }
 #' @source "A Global Reference for Human Genetic Variation", Auton et al., Nature, 2015, 526:7571 pp 68--74
 #' @examples
+#' \dontrun{
 #' library(ranger)
 #' system.time(fit.ranger.7 <- ranger(dependent.variable.name= "V1", data = aa2,
 #'                                 importance = "impurity",
 #'                                  num.threads=20,num.trees = 100000,
 #'                                  seed=123))
-#'
-#' Ranger result
-#' Call:
-#' ranger(dependent.variable.name = "V1", data = aa2, importance = "impurity", 
-#'                               num.threads = 20, num.trees = 1e+05, seed = 123) 
-#' Type:                             Classification 
-#' Number of trees:                  1e+05 
-#' Sample size:                      2504 
-#' Number of independent variables:  1103547 
-#' Mtry:                             1050 
-#' Target node size:                 1 
-#' Variable importance mode:         impurity 
-#' Splitrule:                        gini 
-#' OOB prediction error:             4.27 %
+#' }
+#' #Ranger result
+#' #Call:
+#' #ranger(dependent.variable.name = "V1", data = aa2, importance = "impurity", 
+#' #                              num.threads = 20, num.trees = 1e+05, seed = 123) 
+#' #Type:                             Classification 
+#' #Number of trees:                  1e+05 
+#' #Sample size:                      2504 
+#' #Number of independent variables:  1103547 
+#' #Mtry:                             1050 
+#' #Target node size:                 1 
+#' #Variable importance mode:         impurity 
+#' #Splitrule:                        gini 
+#' #OOB prediction error:             4.27 %
 "ch22"
 
 #' Effects of cigarette smoke on the human airway epithelial cell transcriptome
-#'
+#' 
 #' A dataset containing normalized transcript measurements for 51 subjects and 22283 transcripts.
 #' See Spira et al (2004). "Gene Expression Profiling of Human Lung Tissue from Smokers with Severe Emphysema",
 #' Am J Respir Cell Mol Biol.

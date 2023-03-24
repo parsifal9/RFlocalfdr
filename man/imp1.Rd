@@ -10,9 +10,6 @@ A vector with 2000 values
 \item{imp1}{importaces }
 }
 }
-\source{
-\url{http://www.diamondse.info/}
-}
 \usage{
 imp1
 }
@@ -53,18 +50,16 @@ y <- make_response(X.temp, w)
 
 
 colnames(X) <- c(make.names(1:20000))
-library(ranger)
 rf1<-ranger(y=y,x=X, num.trees = 20000,importance="impurity")
 table(y,predict(rf1,data=X)$predictions)
 #OOB prediction error:             51.70 \% 
 table(y,predict(rf1,data=X)$predictions)
 
-system.time(t2<- table(factor(aa1[aa2 != 0],levels=1:10000))) # 6.620   
+t2 <-count_variables(rf1)
 head(t2)
 dim(t2)
 
 imp<-rf1$variable.importance
-
 imp<-log(imp)
 plot(density((imp)))
 hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
