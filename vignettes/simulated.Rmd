@@ -485,7 +485,7 @@ RFE has performed better than Boruta but apart from that, ordering the methods w
 <!-- ) -->
 
 
-```{r table3, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+```{r table4, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
 tabl <- "
     Method     | true positives | false positives | FDR  | Sensitivity|specificity | AUC   |
     RFlocalfdr | 59             | 36              | 0.38  | 0.99       |  *         | 0.73  |
