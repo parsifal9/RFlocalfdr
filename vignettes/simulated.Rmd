@@ -37,7 +37,7 @@ We
 
    - Boruta (@Kursa.and.Rudnicki.2010)
    - Recursive Fearure Elimination
-   - AIR (@{Nembrini.et.al.2018})
+   - AIR (@Nembrini.et.al.2018)
    - PIMP (@Altmann.et.al.2010) 
 
 as comparators.
@@ -64,6 +64,7 @@ library(pROC)
 ```
 ```{r ,  eval=FALSE,echo=FALSE}
 packageDescription("RFlocalfdr")$GithubSHA1
+source("/home/dun280/Dropbox/R_libraries/RF_localfdr/RFlocalfdr/R/my.pimp.s")
 
 ```
 ```{r eval=FALSE,echo=TRUE}
@@ -152,7 +153,7 @@ plot(density(imp))
 library(pROC)
 roccurve <- roc(c(rep(1,127),rep(0,6350-127)),imp)
 plot(roccurve)
-auc(roccurve) #0.9912
+auc(roccurve) # 0.9912
 
 ```
 
@@ -303,14 +304,16 @@ accuracy #  0.9831496
 
 # AIR
 
-See @{Nembrini.et.al.2018}. AIR is provided in the package _ranger_, using the option _impurity_corrected_.
+See @Nembrini.et.al.2018. AIR is provided in the package _ranger_, using the option _impurity_corrected_.
 ```{r eval=FALSE,echo=TRUE}
 rfModel2 <- ranger(data=data,dependent.variable.name="y", importance="impurity_corrected",
        classification=TRUE,  mtry=100,num.trees = 10000, replace=TRUE, seed  = 17 )
 
 ww<- importance_pvalues( rfModel2, method = "janitza")
-p<-ww[,2]
-cc<-which(p< 0.05)  
+
+
+p <- ww[,"pvalue"]
+cc <- which(p< 0.05)  
 #  1   2 
 #127 273    0.6825
 predicted_values <-rep(0,6350);predicted_values[cc]<-1
@@ -325,24 +328,48 @@ accuracy<-(conf_matrix[1,1]+conf_matrix[2,2])/(sum(conf_matrix))
 accuracy #  0.9570079
 ```
 
+```{r eval=FALSE,echo=TRUE}
+plot(density(ww[,"importance"]))
+imp <- ww[,"importance"]
+imp <-imp/sqrt(var(imp))
+plot(density(imp))
+library(locfdr)
+
+aa<-locfdr(imp,df=13)
+which( (aa$fdr< 0.05) & (imp>0))
+cc <-  which( (aa$fdr< 0.05) & (imp>0))
+(length(cc)  - length(which(cc <= 127)))/length(cc) #[1] 0.6019417  fdr
+predicted_values <-rep(0,6350);predicted_values[cc]<-1
+conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
+conf_matrix
+sensitivity(conf_matrix) # 0.9701109 TP/(TP+FN)
+specificity(conf_matrix) #0.9685039         TN/(FP+TN)
+roccurve <- roc(c(rep(1,127),rep(0,6350-127)),predicted_values)
+plot(roccurve)
+auc(roccurve) # 0.9693
+accuracy<-(conf_matrix[1,1]+conf_matrix[2,2])/(sum(conf_matrix))
+accuracy #   0.9700787
+
+```
+
 # PIMP
 
 
-note that pimp
+note that PIMP
 
-- permutes the $S$ times 
-- For each permutation of the response vector $y^{*s}$, a new RF is grown and the permutation
-  variable importance measure (VarImp^{*s}) for all predictor variables X is computed. 
-- The vector ‘perVarImp’ of $S$ VarImp measures for every predictor variables are used to approximate the null importance distributions (‘PimpTest’).
-- the null importance distribution is calculated for each variable, we are doing $p$ tests
-- hence a multiple testing correction is in order
-- we base our work on the  PIMP implementation provided by  @{vita.2015} _Variable Importance Testing Approaches_ 
+- permutes the response vector $y$ $S$ times to give $y^{*s}$
+- For each permutation, a new RF is grown and the permutation
+  variable importance measure (VarImp$^{*s}$) for all predictor variables X is computed. 
+- The vector ‘perVarImp’ of $S$ VarImp measures for every predictor variable is  used to approximate the null importance distributions
+   for each variable  (see **PimpTest**)
+- we are doing $p$ tests, hence a multiple testing correction is in order
+- we base our work on the  PIMP implementation provided by  @vita.2015 _Variable Importance Testing Approaches_ 
 - pump as described by Altman is only applicable to permutation importance.
 - however we see no impediment in extending the method to Gini importance
-- we have done thtat in our code and also 
+- we have done that in our code and also 
 
     - fixed a small error
-	- extended the code to use ranger as well as randomForest implementations of RF 
+	- extended the code to use **ranger** as well as **randomForest** implementations of RF 
 
 
 ```{r eval=FALSE,echo=TRUE}
@@ -353,6 +380,7 @@ cl.ranger <- ranger(y~. , X,mtry = 3,num.trees = 1000, importance = 'impurity')
 system.time(pimp.varImp.cl<-my.ranger.PIMP(X,y,cl.ranger,S=10, parallel=TRUE, ncores=3)) 
 pimp.t.cl <- PimpTest(pimp.varImp.cl,para = FALSE)
 aa <- summary(pimp.t.cl,pless = 0.1)
+
 
 predicted_values <-rep(0,6350);predicted_values[which(aa$cmat2[,"p-value"]< 0.05)]<-1
 conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
@@ -372,8 +400,21 @@ table(ifelse((tt < 127),1,2))
 # 39 556      556 /(556+39) = 0.9344538
 
 
+library(twilight)
+p.values <- aa$cmat2[,"p-value"]
+ans <- twilight(p.values)
+fdr <- ans$result$fdr
+sum(fdr < 0.05) #[1] 0
+
+
+```
+
+
+
+
+
 ```{r eval=FALSE,echo=FALSE}
-#jhow to make a neat html tablein Rmarkdown
+#how to make a neat html table in Rmarkdown
 library(tables)
 X <- rnorm(125, sd=100)
 Group <- factor(sample(letters[1:5], 125, rep=TRUE))
@@ -387,7 +428,7 @@ table_options(CSS =
 #ID .center { 
   text-align:center;
   background-color: aliceblue;
-}
+} 
 </style>", doCSS = TRUE)
 tab
 table_options(doCSS = FALSE)
@@ -401,7 +442,7 @@ tabl <- "
     Method     | true positives | false positives | Sensitivity        | AUC            |
     RFlocalfdr | 59             | 36              | 0.99               | 0.73           |
     Boruta     | 2              | 2               | 0.99               | 0.50           |
-    RFE        | 22             | 2               | 0.99}              | 0.58           |
+    RFE        | 22             | 2               | 0.99               | 0.58           |
     AIR        | 176            | 273             | 0.96               | 0.98           |
     PIMP       | 39             | 556             | 0.91               | 0.61           |
 --------------------------------------------------------------------------- 
@@ -442,3 +483,19 @@ RFE has performed better than Boruta but apart from that, ordering the methods w
 <!--   \label{table:simulation_results} -->
 <!-- \end{table} -->
 <!-- ) -->
+
+
+```{r table3, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+tabl <- "
+    Method     | true positives | false positives | FDR  | Sensitivity|specificity | AUC   |
+    RFlocalfdr | 59             | 36              | 0.38  | 0.99       |  *         | 0.73  |
+    Boruta     | 2              | 2               | *    | 0.99       |  *         | 0.50  |
+    RFE        | 22             | 2               | 0.08  | 0.99       |  *         | 0.58  |
+    AIR        | 176            | 273             | 0.68  | 0.96       |  *         | 0.98  |
+    AIR+locfdr | 123             | 186             | 0.61  | 0.97       | 0.97        | 0.97  |
+    PIMP       | 39             | 556             | 0.93  | 0.91       |  *         | 0.61  |
+--------------------------------------------------------------------------- 
+"
+cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
+
+```

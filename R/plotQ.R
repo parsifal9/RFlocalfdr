@@ -1,5 +1,15 @@
 #' plotQ
+#' produces a plot showing the q values 
+#' * q_95, the 95th quantile of the data
+#' * q using the penalized selection method of ****
+#' 
+#' The method of ** may not work in cases where the data distribution is not well modelled by a skew-normal.
+#' The q_95 value can be uses as a workaround in these case.
 #'
+#' In many cases they will be very similar
+#' 
+#'
+#' 
 #' @param imp "reduction in impurity" importances from a random forest model
 #' @param debug.flag  either 0 (no debugging information), 1 or 2
 #' @param temp.dir if debug flag is >0 then information is written to temp.dir
@@ -19,8 +29,9 @@
 #'                                                                                            
 #' res.temp <- determine_cutoff(imp, t2 ,cutoff=c(25,30,35,40),plot=c(25,30,35,40),Q=0.75)    
 #' plot(c(25,30,35,40),res.temp[,3])                                                          
-#' imp<-imp[t2 > 30]                                                                          
-#' ppp<-run.it.importances(imp,debug=0)                                                       
+#' imp<-imp[t2 > 30]
+#' qq <- plotQ(imp,debug.flag = 0)
+#' ppp<-run.it.importances(qq,imp,debug=0)                                                       
 #' aa<-significant.genes(ppp,imp,cutoff=0.2,debug.flag=0,do.plot=2)                           
 #' length(aa$probabilities) # 6650                                                            
 #' aa<-significant.genes(ppp,imp,cutoff=0.05,debug.flag=0,do.plot=2)                          
@@ -111,23 +122,23 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
 
     if (1) {
         print(" I got here")
-        aa<-hist(imp, col = 6, lwd = 2, breaks = 100, main = "", 
+        aa<-hist(imp, col = "grey", lwd = 2, breaks = 100, main = "", 
                  freq = FALSE, xlab = "importances", ylab = "density",
                  axes = FALSE)
         abline(v = C_0.95, col = "red", lwd = 2)
         if (!is.na(cc)) {
             abline(v = cc, col = "purple", lwd = 2)
         }
-        legend("topright", c("C", "cc"), col = c("red", "purple"), 
+        legend("topright", c("q_95", "q"), col = c("red", "purple"), 
                lty = 1)
         axis(2, pretty(c(0, max(aa$density) + 0.5 * max(aa$density)),10))
         lines(x, y, type = "l", col = "grey90", lwd = 2, xlim = c(0,   12))
-        lines(df2$x, df2$y, col = "green", lwd = 2)
-        lines(df3$x, df3$y, col = "blue", lwd = 2)
+        lines(df2$x, df2$y, col = "red", lwd = 2)
+        lines(df3$x, df3$y, col = "purple", lwd = 2)
         if (class(qq) == "numeric") {
             par(new = TRUE)
-            plot(x, qq, type="l",lwd=2,axes = FALSE,xlab = "", ylab = "")
-            axis(4, pretty(c(0, max(qq,na.rm=TRUE) + 0.5 * max(qqna.rm=TRUE)),10))
+            plot(x, qq, type="l",lwd=2,axes = FALSE,xlab = "", ylab = "",col="purple")
+            axis(4, pretty(c(min(qq,na.rm=TRUE) , max(qq,na.rm=TRUE) + 0.5 * max(qq,na.rm=TRUE)),10))
         }
         box()
         
@@ -135,7 +146,6 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
                      final.estimates_cc, temp.dir, C_0.95, cc,fileConn ,f_fit, ww,aa_cc)
         names(temp) <- c("df", "final.estimates_C_0.95,", 
                          "final.estimates_cc", "temp.dir", "C_0.95", "cc", "fileConn", "f_fit", "ww","aa_cc")
-        
     }
     temp
 }
