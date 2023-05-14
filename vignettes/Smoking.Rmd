@@ -101,13 +101,21 @@ We select a cutoff of 3 and fit the RFlocalfdr model
 
 ```{r , echo=TRUE,eval=FALSE}
 temp<-imp[t2 > 3]
-ppp<-run.it.importances(temp,debug=0)
+temp <- temp - min(temp) + .Machine$double.eps
+qq <- plotQ(temp,debug.flag = 1)
+ppp<-run.it.importances(qq,temp,debug.flag = 0)
+
 
 png("./supp_figures/smoking_significant_genes.png")
-aa<-significant.genes(ppp,temp,cutoff=0.05,do.plot=1)
+#aa<-significant.genes(ppp,temp,cutoff=0.05,do.plot=1)
+aa<-significant.genes(ppp,temp,cutoff=0.05,debug.flag=0,do.plot=TRUE,use_95_q=TRUE)
 dev.off()
-
 length(aa$probabilities) # 17
+
+aa<-significant.genes(ppp,temp,cutoff=0.05,debug.flag=0,do.plot=TRUE,use_95_q=FALSE)
+length(aa$probabilities) # 19
+
+
 
 ```
 The option **do.plot=1** returns a plot containing the

@@ -52,9 +52,9 @@ determine_cutoff <- function(imp, t2, cutoff=c(0,1,4,10,15,20), Q = 0.75, plot =
         df2 <- data.frame(x[x < C], y[x < C])
 
         initial.estimates <- fit.to.data.set.wrapper(df2, temp)
-        if (is(initial.estimates,"nls")){
-            return(res1)
-        }
+#        if (is(initial.estimates,"nls")){#what is this for?
+#            return(res1)
+#        }
         initial.estimates <- summary(initial.estimates)$parameters
         initial.estimates <- data.frame( initial.estimates)
         t1<-my.dsn(x, xi = initial.estimates$Estimate[ 1], 

@@ -39,6 +39,10 @@
 
 plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3) 
 {
+    fileConn <- NULL
+    ww <- NULL
+    # these are returned but only created if debug.flag > 0
+    
     if (debug.flag > 0) {
         if (length(temp.dir) == 0) {
             temp.dir <- tempdir()

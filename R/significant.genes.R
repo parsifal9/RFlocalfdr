@@ -30,7 +30,7 @@
 
 
 
-my.significant.genes<-function (object, imp, cutoff = 0.2, use_95_q=TRUE, do.plot = TRUE, debug.flag = 0) 
+significant.genes<-function (object, imp, cutoff = 0.2, use_95_q=TRUE, do.plot = TRUE, debug.flag = 0) 
 {
     imp <- imp - min(imp) + .Machine$double.eps
     if (length(names(imp)) != length(imp)) {

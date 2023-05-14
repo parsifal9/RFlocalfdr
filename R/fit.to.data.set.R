@@ -1,15 +1,32 @@
 #' fit.to.data.set
 #'
-#' This function allows you to express your love of cats.
+#' This function fit a skew normal to a set of data
 #' @param f_fit object returned by f.fit
 #' @param imp importances
 #' @param debug.flag debug flag
 #' #' @keywords cats
 #' @export
 #' @examples
-#' cat_function()
+#' data(ch22)                                       
+#' imp<-log(ch22$imp)                               
+#' t2<-ch22$C                                       
+#' temp<-imp[t2 > 30]   #                           
+#' temp<-temp[temp != -Inf]                         
+#' temp <- temp - min(temp) + .Machine$double.eps   
+#' f_fit <- f.fit(temp)                             
+#' y <- f_fit$zh$density                            
+#' x <- f_fit$midpoints                             
+#' df <- data.frame(x, y)                           
+#' mm.df3 <- fit.to.data.set(df, temp)              
+#' mm.df3
+#' ##              Estimate Std..Error  t.value     Pr...t..
+#' ## xi.xi        1.102303 0.03669284 30.04136 1.485263e-56
+#' ## omega.omega  1.246756 0.04716184 26.43569 6.276349e-51
+#' ## lambda.alpha 1.799169 0.17343872 10.37351 3.103195e-18
+
 fit.to.data.set<-function(df,imp,debug.flag=0,plot.string="",temp.dir=NULL,try.counter=3,return.all=FALSE){
 
+    debug <- FALSE
     mm1.df <- NA
     class(mm1.df) <- "try-error"
     x<-df$x

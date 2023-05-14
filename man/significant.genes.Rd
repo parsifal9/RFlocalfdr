@@ -4,7 +4,14 @@
 \alias{significant.genes}
 \title{significant.genes}
 \usage{
-significant.genes(object, imp, cutoff = 0.2, do.plot = 0, debug.flag = 0)
+significant.genes(
+  object,
+  imp,
+  cutoff = 0.2,
+  use_95_q = TRUE,
+  do.plot = TRUE,
+  debug.flag = 0
+)
 }
 \arguments{
 \item{object}{object retruned by run.it.importance}
