@@ -270,7 +270,7 @@ accuracy #0.98
 - Positive predictive value(PPV)= [TP/(TP+FP)]×100
 - Negative predictive value(NPV)=[TN/(FN+TN)]×100.
 
-# Recursive Fearure Elimination
+# Recursive Feature Elimination
 This is provided by the package Pomona (@Pomona.2022)
 ```{r eval=FALSE,echo=TRUE}
 library(Pomona)
