@@ -184,8 +184,10 @@ just $t2>0$
 ## Rflocalfdr
 ```{r eval=FALSE,echo=TRUE}
 temp<-imp[t2 > 0]
+
+qq <- plotQ(temp,debug.flag = 1)
 ppp<-run.it.importances(temp,debug=0)
-aa<-significant.genes(ppp,temp,cutoff=0.05,do.plot=2)
+aa<-significant.genes(qq, ppp,temp,cutoff=0.05,do.plot=2)
 length(aa$probabilities) # 95
 
 tt1 <-as.numeric(gsub("X([0-9]*)","\\1",names(aa$probabilities)))

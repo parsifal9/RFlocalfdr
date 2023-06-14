@@ -36,6 +36,7 @@ run.it.importances <- function(qq, imp, debug.flag = 0, temp.dir = NULL, try.cou
     temp.dir <- qq$temp.dir  
     C_0.95 <- qq$C_0.95 
     cc <- qq$cc
+    imp <- imp - min(imp) + .Machine$double.eps
     if (!is.na(cc)) {
         df3 <- data.frame(x[x < cc], y[x < cc])
         names(df3) <- c("x", "y")
