@@ -186,8 +186,8 @@ just $t2>0$
 temp<-imp[t2 > 0]
 
 qq <- plotQ(temp,debug.flag = 1)
-ppp<-run.it.importances(temp,debug=0)
-aa<-significant.genes(qq, ppp,temp,cutoff=0.05,do.plot=2)
+ppp<-run.it.importances(qq,temp,debug=0)
+aa<-significant.genes(ppp,temp,cutoff=0.05,do.plot=2)
 length(aa$probabilities) # 95
 
 tt1 <-as.numeric(gsub("X([0-9]*)","\\1",names(aa$probabilities)))
@@ -379,7 +379,7 @@ library(vita) #vita: Variable Importance Testing Approaches
 y<-factor(y)
 X<-data.frame(X)
 cl.ranger <- ranger(y~. , X,mtry = 3,num.trees = 1000, importance = 'impurity')
-system.time(pimp.varImp.cl<-my.ranger.PIMP(X,y,cl.ranger,S=10, parallel=TRUE, ncores=3)) 
+system.time(pimp.varImp.cl<-my_ranger_PIMP(X,y,cl.ranger,S=10, parallel=TRUE, ncores=3)) 
 pimp.t.cl <- PimpTest(pimp.varImp.cl,para = FALSE)
 aa <- summary(pimp.t.cl,pless = 0.1)
 
