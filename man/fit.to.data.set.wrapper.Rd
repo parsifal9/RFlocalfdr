@@ -14,12 +14,19 @@ fit.to.data.set.wrapper(
 )
 }
 \arguments{
+\item{df, }{contains x and y, midpoints and counts from a histogram of imp}
+
 \item{imp}{importances}
 
-\item{debug.flag}{debug flag
-#' @keywords cats}
+\item{debug.flag}{debug flag}
 
-\item{f_fit}{object returned by f.fit}
+\item{plot.string, }{file name for a debugging plot}
+
+\item{temp.dir, }{directory for debugging output}
+
+\item{try.counter}{try.counter=1 my.dsn xi=  1
+try.counter=2  xi=  mean(x)
+try.counter=3 start xi, omega, lambda from the parameters retuned by fitdistrplus::fitdist}
 }
 \description{
 This function allows you to express your love of cats.

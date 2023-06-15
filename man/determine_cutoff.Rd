@@ -15,7 +15,8 @@ determine_cutoff(
 \arguments{
 \item{imp}{vector of MDI variable importances}
 
-\item{t2}{number of times each variable is used in the a ranger forest. Returned by count_variables for a ranger RF}
+\item{t2}{number of times each variable is used in the a ranger forest. Returned by
+count_variables for a ranger RF}
 
 \item{cutoff}{values to evaluate}
 
@@ -49,7 +50,8 @@ data(smoking)
 y<-smoking$y
 smoking_data<-smoking$rma
 y.numeric <-ifelse((y=="never-smoked"),0,1)
-rf1 <- ranger(y=y.numeric ,x=smoking_data,importance="impurity",seed=123, num.trees = 10000,classification=TRUE)
+rf1 <- ranger(y=y.numeric ,x=smoking_data,importance="impurity",seed=123, num.trees = 10000,     
+         classification=TRUE)
 t2 <-count_variables(rf1)
 imp<-log(rf1$variable.importance)
 plot(density((imp)))

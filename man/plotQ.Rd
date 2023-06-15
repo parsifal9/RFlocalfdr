@@ -17,16 +17,17 @@ plotQ(imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
 }
 \value{
 \itemize{
-\item df
-\item final.estimates_C_0.95
-\item final.estimates_cc
-\item temp.dir
-\item C_0.95
-\item cc
-\item fileConn
-\item f_fit
-\item ww
-\item aa_cc
+\item df, contains x and y, midpoints and counts from a histogram of imp
+\item final.estimates_C_0.95, the output from the fitting routine nlsLM in minpack.lm, where df has been truncated
+at the value C_0.95 (the 0.95 quantile of the skew-Normal distribution fitted to the imp histogram
+\item final.estimates_cc, as for final.estimates_C_0.95 but with cc determined by the procedure of Gauran et.al 2018
+\item temp.dir,  the directory where debugging information may be written
+\item C_0.95, the 0.95 quantile of the skew-Normal distribution fitted to the imp histogram
+\item cc,  determined by the procedure of Gauran et.al 2018
+\item fileConn, a file connectin for writing debugging information
+\item f_fit, a spline fit to the histogram
+\item ww, debugging inpormation
+\item aa_cc, debugging inpormation
 }
 }
 \description{
@@ -45,6 +46,7 @@ The q_95 value can be uses as a workaround in these case.
 In many cases they will be very similar
 }
 \examples{
+\dontrun{
 data(ch22)                                                                                 
 ?ch22                                                                                     
 #document how the data set is created                                                      
@@ -55,7 +57,7 @@ imp<-log(ch22$imp)
 # This was calculated previously. See determine_cutoff
 imp<-imp[t2 > 30]
 qq <- plotQ(imp,debug.flag = 0)
-
+}
 data(smoking)
 ?smoking 
 y<-smoking$y
@@ -67,21 +69,16 @@ rf1 <-ranger(y=y.numeric ,x=smoking_data,importance="impurity",seed=123, num.tre
              classification=TRUE)
 t2 <-count_variables(rf1)
 imp<-log(rf1$variable.importance)
-#png("./supp_figures/smoking_log_importances.png")
 plot(density(imp),xlab="log importances",main="")
 cutoffs <- c(2,3,4,5)
-#png("./supp_figures/smoking_data_determine_cutoff.png")
 res.con<- determine_cutoff(imp,t2,cutoff=cutoffs,plot=c(2,3,4,5))
-#dev.off()
 
-#png("./supp_figures/smoking_data_determine_cutoffs_2.png")
 plot(cutoffs,res.con[,3],pch=15,col="red",cex=1.5,ylab="max(abs(y - t1))")
-#dev.off()
 cutoffs[which.min(res.con[,3])]
 
 temp<-imp[t2 > 3]
 temp <- temp - min(temp) + .Machine$double.eps
-qq <- plotQ(temp,debug.flag = 1)
+qq <- plotQ(temp)
 ppp<-run.it.importances(qq,temp,debug.flag = 0)
 aa<-significant.genes(ppp,temp,cutoff=0.05,debug.flag=0,do.plot=TRUE,use_95_q=TRUE)
 length(aa$probabilities) # 17

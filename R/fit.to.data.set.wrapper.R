@@ -1,10 +1,15 @@
 #' fit.to.data.set.wrapper
 #'
 #' This function allows you to express your love of cats.
-#' @param f_fit object returned by f.fit
 #' @param imp importances
 #' @param debug.flag debug flag
-#' #' @keywords cats
+#' @param df, contains x and y, midpoints and counts from a histogram of imp
+#' @param plot.string, file name for a debugging plot
+#' @param temp.dir, directory for debugging output
+#' @param try.counter
+#'        try.counter=1 my.dsn xi=  1  
+#'        try.counter=2  xi=  mean(x)
+#'        try.counter=3 start xi, omega, lambda from the parameters retuned by fitdistrplus::fitdist
 #' @export
 #' @examples
 #' cat_function()

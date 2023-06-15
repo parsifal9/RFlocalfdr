@@ -27,7 +27,7 @@ determine.C(
 
 \item{start_at}{-- needs discussion}
 
-\item{debug}{-- needs discussion}
+\item{debug.flag}{-- debugging level}
 }
 \description{
 by assumption, there is a point q such that to the left of q, f_B sim  f_0 (z). That is, there is a q

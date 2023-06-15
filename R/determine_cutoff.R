@@ -1,7 +1,8 @@
 #' evaluate a measure that can be used to determining a significance level for the Mean Decrease in Impurity measure returned by a Random Forest model
 #'
 #' @param  imp vector of MDI variable importances 
-#' @param  t2 number of times each variable is used in the a ranger forest. Returned by count_variables for a ranger RF
+#' @param  t2 number of times each variable is used in the a ranger forest. Returned by             
+#'         count_variables for a ranger RF
 #' @param  cutoff values to evaluate 
 #' @param  Q -- we examine the fit up to the quartile Q
 #' @param  plot for 4 selected values of the cutoff. The plot contains
@@ -24,7 +25,8 @@
 #' y<-smoking$y
 #' smoking_data<-smoking$rma
 #' y.numeric <-ifelse((y=="never-smoked"),0,1)
-#' rf1 <- ranger(y=y.numeric ,x=smoking_data,importance="impurity",seed=123, num.trees = 10000,classification=TRUE)
+#' rf1 <- ranger(y=y.numeric ,x=smoking_data,importance="impurity",seed=123, num.trees = 10000,     
+#'          classification=TRUE)
 #' t2 <-count_variables(rf1)
 #' imp<-log(rf1$variable.importance)
 #' plot(density((imp)))
@@ -42,7 +44,8 @@ determine_cutoff <- function(imp, t2, cutoff=c(0,1,4,10,15,20), Q = 0.75, plot =
     for ( ii in 1:length(steps )  ) {
         cat("i=", ii, "cutoff =", steps[ii], "\n")
         temp <- imp[t2 > steps[ii]]
-        temp <- temp[temp != -Inf] #this changes the length of temp, so we always go back to imp for imp[t2 > steps[ii]]
+        temp <- temp[temp != -Inf]
+        #this changes the length of temp, so we always go back to imp for imp[t2 > steps[ii]]       
         temp <- temp - min(temp) + .Machine$double.eps
         f_fit <- f.fit(temp )
         y <- f_fit$zh$density

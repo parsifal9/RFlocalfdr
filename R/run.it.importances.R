@@ -1,5 +1,6 @@
 #' run.it.importances
 #'
+#' @param qq object retuned by plotQ
 #' @param imp "reduction in impurity" importances from a random forest model
 #' @param debug.flag  either 0 (no debugging information), 1 or 2
 #' @param temp.dir if debug flag is >0 then information is written to temp.dir

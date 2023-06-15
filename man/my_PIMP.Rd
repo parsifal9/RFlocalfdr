@@ -10,19 +10,31 @@ classification and regression.}
 my_PIMP(X, y, rForest, S = 100, parallel = FALSE, ncores = 0, seed = 123, ...)
 }
 \arguments{
-\item{X}{}
+\item{X, }{data matrix of size n by p}
 
-\item{y}{}
+\item{y, }{class labels for classification (factor) or real values for regression. Of length n}
 
-\item{rForest}{}
+\item{rForest, }{an object of class randomForest, importance must be set to "impurity".}
 
-\item{S}{}
+\item{S, }{The number of permutations for the response vector ‘y’. Default is ‘S=100}
 
-\item{parallel}{}
+\item{parallel}{Should the PIMP-algorithm run parallel?  Default is
+\code{parallel=FALSE} and the number of cores is set to one. The
+parallelized version of the PIMP-algorithm are based on
+mclapply and so is not available on Windows}
 
-\item{ncores}{}
+\item{ncores, }{The number of cores to use, i.e. at most how many child
+processes will be run simultaneously. Must be at least one,
+and parallelization requires at least two cores.  If
+‘ncores=0’, then the half of CPU cores on the current host
+are used.}
 
-\item{seed}{}
+\item{seed}{a single integer value to specify seeds. The "combined
+multiple-recursive generator" from L'Ecuyer (1999) is set as
+random number generator for the parallelized version of the
+PIMP-algorithm.  Default is ‘ seed = 123’.}
+
+\item{...}{additional arguments passed to randomForest}
 }
 \value{
 an object of class PIMP
@@ -33,6 +45,7 @@ my_PIMP applies the same method as PIMP but to the MDI (mean decrease in impurit
 }
 \examples{
 library(RFlocalfdr)
+library(ranger)
 library(vita) #vita: Variable Importance Testing Approaches
 data(smoking)
 ?smoking 
@@ -40,8 +53,9 @@ y<-smoking$y
 y<-factor(y)
 smoking_data<-smoking$rma
 
-cl.ranger <- ranger(y=y, x=smoking_data,mtry = 3,num.trees = 1000, importance = 'impurity')
-system.time(pimp.varImp.cl<-my_ranger_PIMP(X,y,cl.ranger,S=10, parallel=TRUE, ncores=3)) 
+cl.ranger <- ranger::ranger(y=y, x=smoking_data,mtry = 3,num.trees = 1000, importance = 'impurity')
+system.time(pimp.varImp.cl<-my_ranger_PIMP(smoking_data,y,cl.ranger,S=10, parallel=TRUE, ncores=2))
+#CRAN limits the number of cores available to packages to 2, for performance reasons.
 pimp.t.cl <- PimpTest(pimp.varImp.cl,para = FALSE)
 aa <- summary(pimp.t.cl,pless = 0.05)
 length(which(aa$cmat2[,"p-value"]< 0.05))

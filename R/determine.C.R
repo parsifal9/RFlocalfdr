@@ -12,7 +12,9 @@
 #' @param trace.plot -- produce a plot of each fit with a 1 second sleep. Can be watched as a movie.
 #' @param starting_value -- needs discussion
 #' @param start_at       -- needs discussion
-#' @param debug             -- needs discussion
+#' @param debug.flag     -- debugging level
+#' @importFrom graphics abline axis box curve legend lines mtext par
+#' @importFrom  stats density predict quantile
 #' @export
 #' @examples
 #' data(ch22)                                                                                    

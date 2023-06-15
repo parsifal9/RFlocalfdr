@@ -3,13 +3,19 @@
 #' 
 #' @param imp the variable importances
 #' @param df the degrees of freedom for the spline fit
+#' @param debug.flag either 0 (no debugging information), 1 or 2
+#' @param temp.dir if debug flag is >0 then information is written to temp.dir
 #' @keywords spline
 #' @export
 #' @return a list with the following components
 #' - "x" -- midpoints of the histogram
 #' - "zh" -- a histogram object as returned by "hist"
-#' - "f.spline" -- the spline fit. The fit is given by a glm mode glm(zh$counts ~ splines:::ns(x), poisson)
+#' - "f.spline" -- the spline fit. The fit is given by a glm mode glm(zh$counts ~ splines::ns(x), poisson)
 #' - "counts" the counts from the histogram
+#' @importFrom graphics box legend lines curve abline axis box hist mtext par
+#' @importFrom  stats density glm poisson predict quantile
+#' @importFrom grDevices dev.off png
+#' 
 #' @md
 #' @examples
 #' data(imp1)                                                       
@@ -30,7 +36,7 @@ f.fit <-function(imp,df=10,debug.flag=0,temp.dir=NULL){
     zh <- hist(zzz, breaks = breaks, plot = FALSE)
     x <- (breaks[-1] + breaks[-length(breaks)])/2 #midpoints
     y <- zh$counts  
-    f.spline <- glm(y ~ splines:::ns(x, df = df), poisson)$fit
+    f.spline <- glm(y ~ splines::ns(x, df = df), poisson)$fit
 
     if (debug.flag > 0){
         png(paste(temp.dir,"/histogram_of_variable_importances.png",sep=""))

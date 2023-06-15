@@ -7,6 +7,8 @@
 run.it.importances(qq, imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
 }
 \arguments{
+\item{qq}{object retuned by plotQ}
+
 \item{imp}{"reduction in impurity" importances from a random forest model}
 
 \item{debug.flag}{either 0 (no debugging information), 1 or 2}

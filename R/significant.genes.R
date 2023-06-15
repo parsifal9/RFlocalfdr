@@ -6,6 +6,7 @@
 #' @param cutoff cutoff
 #' @param do.plot do.plot either 0 (no plot), 1 (plot) or 2 (more detailed plot)
 #' @param debug.flag debug.flag  either 0 (no debugging information), 1 or 2 
+#' @param use_95_q use the 0.95 q value
 #' @keywords significant genes
 #' @export
 #' @examples

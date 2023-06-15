@@ -10,13 +10,17 @@ f.fit(imp, df = 10, debug.flag = 0, temp.dir = NULL)
 \item{imp}{the variable importances}
 
 \item{df}{the degrees of freedom for the spline fit}
+
+\item{debug.flag}{either 0 (no debugging information), 1 or 2}
+
+\item{temp.dir}{if debug flag is >0 then information is written to temp.dir}
 }
 \value{
 a list with the following components
 \itemize{
 \item "x" -- midpoints of the histogram
 \item "zh" -- a histogram object as returned by "hist"
-\item "f.spline" -- the spline fit. The fit is given by a glm mode glm(zh$counts ~ splines:::ns(x), poisson)
+\item "f.spline" -- the spline fit. The fit is given by a glm mode glm(zh$counts ~ splines::ns(x), poisson)
 \item "counts" the counts from the histogram
 }
 }

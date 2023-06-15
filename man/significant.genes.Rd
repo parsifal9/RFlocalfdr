@@ -20,6 +20,8 @@ significant.genes(
 
 \item{cutoff}{cutoff}
 
+\item{use_95_q}{use the 0.95 q value}
+
 \item{do.plot}{do.plot either 0 (no plot), 1 (plot) or 2 (more detailed plot)}
 
 \item{debug.flag}{debug.flag  either 0 (no debugging information), 1 or 2}

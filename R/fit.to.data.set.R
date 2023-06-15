@@ -1,11 +1,21 @@
 #' fit.to.data.set
 #'
 #' This function fit a skew normal to a set of data
-#' @param f_fit object returned by f.fit
 #' @param imp importances
 #' @param debug.flag debug flag
-#' #' @keywords cats
+#' @param df, contains x and y, midpoints and counts from a histogram of imp
+#' @param plot.string, file name for a debugging plot
+#' @param temp.dir, directory for debugging output
+#' @param try.counter
+#'        try.counter=1 my.dsn xi=  1  
+#'        try.counter=2  xi=  mean(x)
+#'        try.counter=3 start xi, omega, lambda from the parameters retuned by fitdistrplus::fitdist
+#' @param return.all TRUE, return the full ouput of minpack.lm::nlsLM,
+#'                   FALSE , return summary of parameters
 #' @export
+#' @importFrom graphics box legend lines hist
+#' @importFrom  stats glm poisson
+#' @importFrom grDevices dev.off png
 #' @examples
 #' data(ch22)                                       
 #' imp<-log(ch22$imp)                               
