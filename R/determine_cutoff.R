@@ -38,7 +38,7 @@ determine_cutoff <- function(imp, t2, cutoff=c(0,1,4,10,15,20), Q = 0.75, plot =
 # calls f.fit, fit.to.data.set.wrapper, my.dsn
     res1  <- matrix(0, length(cutoff), 3)
     steps <- cutoff
-    old.par <- par()
+    old.par <- par(no.readonly = TRUE )
     par(mfrow=c(2,2))    # set the plotting area into a 2*2 array
 
     for ( ii in 1:length(steps )  ) {

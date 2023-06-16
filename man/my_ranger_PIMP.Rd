@@ -66,8 +66,8 @@ smoking_data<-smoking$rma
 cl.ranger <- ranger(y=y, x=smoking_data,mtry = 3,num.trees = 1000, importance = 'impurity')
 system.time(pimp.varImp.cl<-my_ranger_PIMP(smoking_data,y,cl.ranger,S=10, parallel=TRUE, ncores=2))
 #CRAN limits the number of cores available to packages to 2, for performance reasons.
-pimp.t.cl <- PimpTest(pimp.varImp.cl,para = FALSE)
-aa <- summary(pimp.t.cl,pless = 0.05)
+pimp.t.cl <- vita::PimpTest(pimp.varImp.cl,para = FALSE)
+aa <- vita::summary(pimp.t.cl,pless = 0.05)
 length(which(aa$cmat2[,"p-value"]< 0.05))
 hist(aa$cmat2[,"p-value"],breaks=20)
 }

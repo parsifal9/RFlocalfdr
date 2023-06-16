@@ -40,8 +40,8 @@
 #' cl.ranger <- ranger::ranger(y=y, x=smoking_data,mtry = 3,num.trees = 1000, importance = 'impurity')
 #' system.time(pimp.varImp.cl<-my_ranger_PIMP(smoking_data,y,cl.ranger,S=10, parallel=TRUE, ncores=2))
 #' #CRAN limits the number of cores available to packages to 2, for performance reasons.
-#' pimp.t.cl <- PimpTest(pimp.varImp.cl,para = FALSE)
-#' aa <- summary(pimp.t.cl,pless = 0.05)
+#' pimp.t.cl <- vita::PimpTest(pimp.varImp.cl,para = FALSE)
+#' aa <- vita::summary(pimp.t.cl,pless = 0.05)
 #' length(which(aa$cmat2[,"p-value"]< 0.05))
 #' hist(aa$cmat2[,"p-value"],breaks=20)
 
@@ -120,75 +120,3 @@ my_PIMP <- function(X, y, rForest, S = 100, parallel = FALSE, ncores = 0,
 }
 
 
-
-
-
-my.ranger.PIMP <- function (X, y, rForest, S = 100, parallel = FALSE, ncores = 0, 
-    seed = 123, ...) 
-{
-    if (!inherits(rForest, "ranger")) 
-        stop("rForest is not of class ranger")
-    mtry <- rForest$mtry
-    num.trees <- rForest$num.trees
-    n <- nrow(X)
-    p <- ncol(X)
-    if (parallel) {
-        d_ncores = parallel::detectCores()
-        if (ncores > d_ncores) 
-            stop("ncores: The number of cores is too large")
-        if (ncores == 0) {
-            ncores = max(c(1, floor(d_ncores/2)))
-        }
-        if ("L'Ecuyer-CMRG" != RNGkind()[1]) {
-            cat("\n The random number generator was set to L'Ecuyer-CMRG !! \n")
-            RNGkind("L'Ecuyer-CMRG")
-        }
-    }
-    else {
-        ncores = 1
-    }
-    set.seed(seed)
-    classRF = is.factor(y)
-    if (classRF) {
-        y.s = replicate(S, sample(as.integer(y)))
-        i = 1:S
-        varip <- parallel::mclapply(i, function(i) {
-           aa<- ranger::ranger(y=as.factor(y.s[, i]), x=X,
-                mtry = mtry, importance = "impurity", num.trees = num.trees
-                )$variable.importance
-#           aa<- ranger::ranger(as.factor(y.s[, i])~., X,
-#                mtry = mtry, importance = "impurity", num.trees = num.trees
-#                )$variable.importance
-        }, mc.cores = ncores)
-        varip <- simplify2array(varip)
-    }
-     else {
-         y.s = replicate(S, sample(y))
-         i = 1:S
-         varip = parallel::mclapply(i, function(i) {
-             ranger::ranger(y=y.s[, i],x= X, mtry = mtry, 
-                 importance = "impurity", num.trees = num.trees)$variable.importance
-#             ranger::ranger(y.s[, i]~., X, mtry = mtry, 
-#                 importance = "impurity", num.trees = num.trees)$variable.importance
-         }, mc.cores = ncores)
-         varip = simplify2array(varip)
-     }
-    ##dimNames <-  names(rForest$variable.importance)
-
-    ## if (classRF) {
-    ##     VarImp <- rForest$variable.importance
-    ##     }
-    ##     else {
-    ##         VarImp = rForest$importance[, 1]
-    ##         }
-            
-    out = list(VarImp = matrix(rForest$variable.importance, ncol = 1, 
-                               dimnames = list(names(rForest$variable.importance))), PerVarImp = varip, 
-               type = if (classRF) {
-                          "classification"
-                      } else {
-                          "regression"
-                      }, call = match.call())
-    class(out) = "PIMP"
-    return(out)
-}

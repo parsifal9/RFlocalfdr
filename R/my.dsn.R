@@ -15,10 +15,10 @@
 #' @export
 #' @examples
 #' library(sn)
-#' curve(dsn(x,xi=0, omega=1, alpha=1, tau=0),xlim=c(-10,10),col="blue")
-#' curve(dsn(x,xi=0, omega=1, alpha=0.1, tau=0),xlim=c(-10,10),col="blue",add=TRUE)
-#' curve(dsn(x,xi=1, omega=2, alpha=2, tau=0),xlim=c(-10,20),col="blue",add=TRUE)
-#' curve(dsn(x,xi=3, omega=4, alpha=4, tau=0),xlim=c(-10,20),col="blue",add=TRUE)
+#' curve(sn::dsn(x,xi=0, omega=1, alpha=1, tau=0),xlim=c(-10,10),col="blue")
+#' curve(sn::dsn(x,xi=0, omega=1, alpha=0.1, tau=0),xlim=c(-10,10),col="blue",add=TRUE)
+#' curve(sn::dsn(x,xi=1, omega=2, alpha=2, tau=0),xlim=c(-10,20),col="blue",add=TRUE)
+#' curve(sn::dsn(x,xi=3, omega=4, alpha=4, tau=0),xlim=c(-10,20),col="blue",add=TRUE)
 #'
 #' curve(my.dsn(x),xlim=c(-10,10),col="red",add=TRUE)
 #' curve(my.dsn(x,lambda=0.1),xlim=c(-10,10),col="red",add=TRUE)

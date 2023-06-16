@@ -33,8 +33,9 @@ plot(c(1,2,3,4),res.temp[,3])
                                                                                            
 res.temp <- determine_cutoff(imp, t2 ,cutoff=c(25,30,35,40),plot=c(25,30,35,40),Q=0.75)    
 plot(c(25,30,35,40),res.temp[,3])                                                          
-imp<-imp[t2 > 30]                                                                          
-ppp<-run.it.importances(imp,debug=0)                                                       
+imp<-imp[t2 > 30]
+qq <- plotQ(imp,debug.flag = 0)                                                          
+ppp<-run.it.importances(qq,imp,debug=0)                                                       
 aa<-significant.genes(ppp,imp,cutoff=0.2,debug.flag=0,do.plot=2)                           
 length(aa$probabilities) # 6650                                                            
 aa<-significant.genes(ppp,imp,cutoff=0.05,debug.flag=0,do.plot=2)                          
