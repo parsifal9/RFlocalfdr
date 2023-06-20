@@ -50,9 +50,7 @@ This dataset consist of _bands_, with _blocks_ of $\{1, 2, 4, 8, 16, 32, 64\}$ o
 identical variables (see figure \@ref(fig:simulation2). The variables are $\in \{0,1,2\}$, a common encoding for
 genomic data where the numbers represent the number of copies of the minor allele. Only band 1 is used to calculate the
 $y$ vector and $y$ is 1 if any of $X[, c(1, 2, 4, 8, 16, 32, 64)]$ is non-zero, so $y$ is unbalanced, containing more
-1's than 0's.  We plot a small data set of $300\times  508$ to explore the data generation method.
-
-
+1's than 0's. 
 
 
 ```{r eval=FALSE,echo=TRUE}
@@ -64,7 +62,7 @@ library(pROC)
 ```
 ```{r ,  eval=FALSE,echo=FALSE}
 packageDescription("RFlocalfdr")$GithubSHA1
-source("/home/dun280/Dropbox/R_libraries/RF_localfdr/RFlocalfdr/R/my.pimp.s")
+#source("/home/dun280/Dropbox/R_libraries/RF_localfdr/RFlocalfdr/R/my.pimp.s")
 
 ```
 ```{r eval=FALSE,echo=TRUE}
@@ -107,6 +105,7 @@ knitr::include_graphics("./supp_figures/small_simulated_data_set.png")
 ```
 
 ## data
+We now generate the daa for the simulation. 
 We have 50 bands and 300 observations so $X$ is $300 \times 6350$ with 127 non-null variables.  We fit a
 standard RF to this dataset and record the resulting MDI importance score.
 
@@ -150,7 +149,6 @@ imp <-log(ranger::importance(rfModel))
 t2 <-count_variables(rfModel)
 plot(density(imp))
 
-library(pROC)
 roccurve <- roc(c(rep(1,127),rep(0,6350-127)),imp)
 plot(roccurve)
 auc(roccurve) # 0.9912
@@ -199,7 +197,6 @@ tt2[2]/(tt2[1]+tt2[2])
 #59 36   36/(36+59) = 0.3789474
 
 predicted_values<-rep(0, 6350);predicted_values[tt1]<-1
-
 conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
 conf_matrix
 sensitivity(conf_matrix) #0.994215 TP/(TP+FN)
@@ -215,28 +212,24 @@ accuracy # 0.983622
 ```
 The FDR is 0.379. We can also calculate the sensitivity, sensitivity and accruacy.
 
+```{r eval=FALSE,echo=TRUE}
+install.packages("Boruta")
+install.packages("Pomona")
+install.packages("locfdr")
+install.packages("vita") 
+install.packages("locfdr") 
 
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("twilight")
 
-
-
-
+```
 # Boruta
 
 We try the Boruta algorithm (@Kursa.and.Rudnicki.2010).
 
 ```{r eval=FALSE,echo=TRUE}
 library(Boruta)
-#set.seed(120)  
-#boruta1 <- Boruta(X,as.factor(y),  num.threads = 7)
-#print(boruta1)
-##Boruta performed 99 iterations in 20.27062 secs.
-## 2 attributes confirmed important: X116, X6142;
-## 6341 attributes confirmed unimportant: X1, X10, X100, X1000, X1001 and 6336 more;
-## 7 tentative attributes left: X108, X34, X40, X45, X48 and 2 more;
-#plotImpHistory(boruta1)
-#aa<-which(boruta1$finalDecision=="Confirmed") # 116 6142
-#bb<-which(boruta1$finalDecision=="Tentative")  # 34   40   45   48   50  108 5473
-
 set.seed(120)  
 boruta1 <- Boruta(X,as.factor(y),  num.threads = 7,getImp=getImpRfGini)
 print(boruta1)
@@ -277,20 +270,21 @@ This is provided by the package Pomona (@Pomona.2022)
 ```{r eval=FALSE,echo=TRUE}
 library(Pomona)
 colnames(X) <- make.names(1:dim(X)[2])
-system(res <- var.sel.rfe(X, y, prop.rm = 0.2,  recalculate = TRUE, tol = 10, 
+set.seed(111)
+res <- var.sel.rfe(X, y, prop.rm = 0.2,  recalculate = TRUE, tol = 10, 
     ntree = 500, mtry.prop = 0.2, nodesize.prop = 0.1, no.threads = 7, 
     method = "ranger", type = "classification", importance = "impurity", 
-    case.weights = NULL) )
+    case.weights = NULL) 
  res$var
-# [1] "X1"    "X108"  "X12"   "X13"   "X14"   "X18"   "X19"   "X2"    "X25"  
-#[10] "X29"   "X3"    "X4"    "X5"    "X50"   "X53"   "X5469" "X6"    "X61"  
-#[19] "X6135" "X62"   "X65"   "X7"    "X72"   "X81"  
-tt<-as.numeric(gsub("X([0-9]*)","\\1", res$var))
+#[1] "X1"    "X106"  "X11"   "X12"   "X127"  "X13"   "X15"   "X16"   "X2"   
+#[10] "X23"   "X24"   "X3"    "X4"    "X44"   "X46"   "X4885" "X5"    "X54"  
+#[19] "X5474" "X6"    "X7"    "X72"   "X9"    "X91"  
+tt <-as.numeric(gsub("X([0-9]*)","\\1", res$var))
 table(ifelse((tt < 127),1,2))
 # 1  2 
-#22  2 0.0833
+#21  3 0.0833
 
-res<-c(1, 108,12, 13, 14, 18, 19, 2,25,29, 3,4,5,50, 53, 5469,6,61, 6135,62, 65, 7,72, 81)
+res<-c(1,106, 11, 12, 127, 13, 15, 16,  2, 23, 24,  3,  4, 44, 46,  4885,  5, 54, 5474,  6,  7, 72,  9, 91)
 predicted_values <-rep(0,6350);predicted_values[c(res)]<-1
 conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
 conf_matrix
@@ -310,17 +304,18 @@ See @Nembrini.et.al.2018. AIR is provided in the package _ranger_, using the opt
 ```{r eval=FALSE,echo=TRUE}
 rfModel2 <- ranger(data=data,dependent.variable.name="y", importance="impurity_corrected",
        classification=TRUE,  mtry=100,num.trees = 10000, replace=TRUE, seed  = 17 )
-
 ww<- importance_pvalues( rfModel2, method = "janitza")
-
 
 p <- ww[,"pvalue"]
 cc <- which(p< 0.05)  
-#  1   2 
-#127 273    0.6825
 predicted_values <-rep(0,6350);predicted_values[cc]<-1
 conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
 conf_matrix
+#predicted_values    0    1
+#               0 5950    0
+#               1  273  127
+#FDR is 273/(127+273) = 0.6825
+
 sensitivity(conf_matrix) #0.9561305 TP/(TP+FN)
 specificity(conf_matrix) #1          TN/(FP+TN)
 roccurve <- roc(c(rep(1,127),rep(0,6350-127)),predicted_values)
@@ -328,20 +323,28 @@ plot(roccurve)
 auc(roccurve) # 0.9781
 accuracy<-(conf_matrix[1,1]+conf_matrix[2,2])/(sum(conf_matrix))
 accuracy #  0.9570079
+
 ```
+As the null values, as modelled bt the AIR procedure, are symmetric around 0, the
+question arises as to whether we can apply the locfdr (@locfdr.2015) procedure.
+In this case, it reduces the FDR from 0.682 to 0.601.
+
 
 ```{r eval=FALSE,echo=TRUE}
 plot(density(ww[,"importance"]))
 imp <- ww[,"importance"]
-imp <-imp/sqrt(var(imp))
-plot(density(imp))
+#imp <-imp/sqrt(var(imp))
+#plot(density(imp))
 library(locfdr)
 
 aa<-locfdr(imp,df=13)
 which( (aa$fdr< 0.05) & (imp>0))
-cc <-  which( (aa$fdr< 0.05) & (imp>0))
-(length(cc)  - length(which(cc <= 127)))/length(cc) #[1] 0.6019417  fdr
-predicted_values <-rep(0,6350);predicted_values[cc]<-1
+cc2 <-  which( (aa$fdr< 0.05) & (imp>0))
+length(cc2) # [1] 309
+length(intersect(cc,cc2)) #[1] 309
+
+(length(cc2)  - length(which(cc2 <= 127)))/length(cc2) #[1] 0.6019417  fdr
+predicted_values <-rep(0,6350);predicted_values[cc2]<-1
 conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
 conf_matrix
 sensitivity(conf_matrix) # 0.9701109 TP/(TP+FN)
@@ -378,42 +381,38 @@ note that PIMP
 library(vita) #vita: Variable Importance Testing Approaches
 y<-factor(y)
 X<-data.frame(X)
+set.seed(117)
 cl.ranger <- ranger(y~. , X,mtry = 3,num.trees = 1000, importance = 'impurity')
 system.time(pimp.varImp.cl<-my_ranger_PIMP(X,y,cl.ranger,S=10, parallel=TRUE, ncores=3)) 
 pimp.t.cl <- PimpTest(pimp.varImp.cl,para = FALSE)
 aa <- summary(pimp.t.cl,pless = 0.1)
 
+tt<-as.numeric(gsub("X([0-9]*)","\\1",  names(which(aa$cmat2[,"p-value"]< 0.05))))
+table(ifelse((tt < 127),1,2))
+# 1  2 
+# 38 527      527 /(527+38) = 00.9327434
 
 predicted_values <-rep(0,6350);predicted_values[which(aa$cmat2[,"p-value"]< 0.05)]<-1
 conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
 conf_matrix
-sensitivity(conf_matrix) #0.910654 TP/(TP+FN)
+sensitivity(conf_matrix) #0.9154749 TP/(TP+FN)
 specificity(conf_matrix) #0.3070866          TN/(FP+TN)
 roccurve <- roc(c(rep(1,127),rep(0,6350-127)),predicted_values)
 plot(roccurve)
-auc(roccurve) #  0.6089
+auc(roccurve) #  0.6113
 accuracy<-(conf_matrix[1,1]+conf_matrix[2,2])/(sum(conf_matrix))
-accuracy # 0.8985827
+accuracy # 0.9033071
+```
 
-
-tt<-as.numeric(gsub("X([0-9]*)","\\1",  names(which(aa$cmat2[,"p-value"]< 0.05))))
-table(ifelse((tt < 127),1,2))
-# 1  2 
-# 39 556      556 /(556+39) = 0.9344538
-
-
+```{r eval=FALSE,echo=FALSE}
+# twilight uses a stochastic downhill search algorithm for estimating the local false discovery rate
 library(twilight)
 p.values <- aa$cmat2[,"p-value"]
 ans <- twilight(p.values)
 fdr <- ans$result$fdr
 sum(fdr < 0.05) #[1] 0
 
-
 ```
-
-
-
-
 
 ```{r eval=FALSE,echo=FALSE}
 #how to make a neat html table in Rmarkdown
