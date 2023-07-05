@@ -212,18 +212,25 @@ accuracy # 0.983622
 ```
 The FDR is 0.379. We can also calculate the sensitivity, sensitivity and accruacy.
 
+
+In  order to make the comparisons with other methods, the following packages amy need to be installed.
+
 ```{r eval=FALSE,echo=TRUE}
 install.packages("Boruta")
-install.packages("Pomona")
 install.packages("locfdr")
 install.packages("vita") 
-install.packages("locfdr") 
+install.packages("locfdr")
+devtools::install_github("silkeszy/Pomona")
 
+```
+
+```{r eval=FALSE,echo=FALSE}
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("twilight")
 
 ```
+
 # Boruta
 
 We try the Boruta algorithm (@Kursa.and.Rudnicki.2010).

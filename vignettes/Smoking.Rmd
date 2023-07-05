@@ -143,3 +143,54 @@ The option **do.plot=2** returns the same plot with the addition of
 sessionInfo()
 
 ```
+
+```{r , echo=TRUE,eval=FALSE}
+devtools::install_github("parsifal9/RFlocalfdr", build_vignettes = TRUE, force = TRUE)
+
+library(RFlocalfdr)
+data(smoking)
+?smoking 
+y<-smoking$y
+smoking_data<-smoking$rma
+y.numeric <-ifelse((y=="never-smoked"),0,1)
+
+library(ranger)
+rf1 <-ranger(y=y.numeric ,x=smoking_data,importance="impurity",seed=123, num.trees = 10000,
+             classification=TRUE)
+t2 <-count_variables(rf1)
+imp<-log(rf1$variable.importance)
+#png("./supp_figures/smoking_log_importances.png")
+plot(density(imp),xlab="log importances",main="")
+#dev.off()
+
+
+
+cutoffs <- c(2,3,4,5)
+#png("./supp_figures/smoking_data_determine_cutoff.png")
+res.con<- determine_cutoff(imp,t2,cutoff=cutoffs,plot=c(2,3,4,5))
+#dev.off()
+
+#png("./supp_figures/smoking_data_determine_cutoffs_2.png")
+plot(cutoffs,res.con[,3],pch=15,col="red",cex=1.5,ylab="max(abs(y - t1))")
+#dev.off()
+cutoffs[which.min(res.con[,3])]
+
+
+temp<-imp[t2 > 3]
+temp <- temp - min(temp) + .Machine$double.eps
+qq <- plotQ(temp,debug.flag = 1)
+ppp<-run.it.importances(qq,temp,debug.flag = 0)
+
+
+#png("./supp_figures/smoking_significant_genes.png")
+#aa<-significant.genes(ppp,temp,cutoff=0.05,do.plot=1)
+aa<-significant.genes(ppp,temp,cutoff=0.05,debug.flag=0,do.plot=TRUE,use_95_q=TRUE)
+#dev.off()
+length(aa$probabilities) # 17  -- Roc gets 30
+
+aa<-significant.genes(ppp,temp,cutoff=0.05,debug.flag=0,do.plot=TRUE,use_95_q=FALSE)
+length(aa$probabilities) # 19-- Roc gets 30
+
+```
+
+
