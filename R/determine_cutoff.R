@@ -21,11 +21,12 @@
 #' @examples
 #' rm(list=ls())
 #' library(ranger)
+#' library(RFlocafdr)
 #' data(smoking)
 #' y<-smoking$y
 #' smoking_data<-smoking$rma
 #' y.numeric <-ifelse((y=="never-smoked"),0,1)
-#' rf1 <- ranger(y=y.numeric ,x=smoking_data,importance="impurity",seed=123, num.trees = 10000,     
+#' rf1 <- ranger::ranger(y=y.numeric ,x=smoking_data,importance="impurity",seed=123, num.trees = 10000,     
 #'          classification=TRUE)
 #' t2 <-count_variables(rf1)
 #' imp<-log(rf1$variable.importance)

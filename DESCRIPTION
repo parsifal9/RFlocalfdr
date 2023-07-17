@@ -20,7 +20,6 @@ Imports:
     fitdistrplus,
     grDevices,
     graphics,
-    methods,
     stats
 Depends: 
     R (>= 3.5.0)

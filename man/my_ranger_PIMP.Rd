@@ -63,7 +63,7 @@ y<-smoking$y
 y<-factor(y)
 smoking_data<-smoking$rma
 
-cl.ranger <- ranger(y=y, x=smoking_data,mtry = 3,num.trees = 1000, importance = 'impurity')
+cl.ranger <- ranger::ranger(y=y, x=smoking_data,mtry = 3,num.trees = 1000, importance = 'impurity')
 system.time(pimp.varImp.cl<-my_ranger_PIMP(smoking_data,y,cl.ranger,S=10, parallel=TRUE, ncores=2))
 #CRAN limits the number of cores available to packages to 2, for performance reasons.
 pimp.t.cl <- vita::PimpTest(pimp.varImp.cl,para = FALSE)

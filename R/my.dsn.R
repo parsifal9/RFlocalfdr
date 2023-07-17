@@ -38,3 +38,6 @@ my.dsn<-function(x,xi=0, omega = 1,lambda=1){
         ))))
     (1/omega)*hx
 }
+
+
+

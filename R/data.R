@@ -40,7 +40,7 @@
 #'
 #'
 #'colnames(X) <- c(make.names(1:20000))
-#'rf1<-ranger(y=y,x=X, num.trees = 20000,importance="impurity")
+#'rf1<-ranger::ranger(y=y,x=X, num.trees = 20000,importance="impurity")
 #'table(y,predict(rf1,data=X)$predictions)
 #'#OOB prediction error:             51.70 % 
 #'table(y,predict(rf1,data=X)$predictions)

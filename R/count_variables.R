@@ -1,6 +1,6 @@
-#' count the number of times each variable is used in the a ranger forest
+#' count the number of times each variable is used in a ranger random forest
 #'
-#' count the number of times each variable is used in the a ranger forest.
+#' count the number of times each variable is used in a ranger random forest.
 #' help(treeInfo) warns
 #' "splitvarID -- ID of the splitting variable, 0-indexed. Caution, the variable order changes if the formula interface is used"
 #' this should be investigated
@@ -8,9 +8,11 @@
 #' @keywords counts
 #' @export
 #' @examples
+#' \dontrun{
 #' library(ranger)
 #' rf1<-ranger(Species ~ ., data = iris,importance="impurity",seed=123)
 #' count_variables(rf1)
+#' }
 count_variables<-function(object){
     if (!inherits(object, "ranger")) {
         stop("Error: Invalid class of input object.")
