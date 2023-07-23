@@ -42,6 +42,10 @@ fit.to.data.set<-function(df,imp,debug.flag=0,plot.string="",temp.dir=NULL,try.c
     x<-df$x
     y<-df$y
 
+    #df must have names "x" and "y"
+
+
+    
     if (class(mm1.df)=="try-error" & try.counter == 0 ){
         mm1.df <-try(
             minpack.lm::nlsLM(y ~ my.dsn(x,xi=xi, omega=omega, lambda=lambda), 

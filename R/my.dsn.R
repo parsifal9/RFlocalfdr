@@ -40,4 +40,45 @@ my.dsn<-function(x,xi=0, omega = 1,lambda=1){
 }
 
 
+dsn<-function(x, xi = 0, omega = 1, alpha = 0, tau = 0, dp = NULL,  log = FALSE){
+    if (length(x)==0){
+        return( x)
+    }
+    else{
+        res <- sn::dsn(x=x, xi = xi, omega =omega, alpha=alpha ,tau = tau,dp=dp,log=log)
+    }
+    res
+}
+
+psn <- function(q, xi = -Inf, omega =1, alpha=0 ,tau = 0,dp=NULL) {
+    x <- q
+    sn::psn(x=q, xi = xi, omega =omega, alpha=alpha ,tau = tau,dp=dp)
+
+}
+
+qsn <- function(p, xi = Inf, omega =1, alpha=0 ,tau = 0,dp=NULL) {
+    inconsistent <- FALSE
+    if (xi >0){
+        inconsistent <- TRUE
+    }
+    if(omega < 0){
+        inconsistent <- TRUE
+    }
+
+    if (inconsistent){
+        return(rep(NaN,length(p)))
+    }
+    
+    if (length(p)==0){
+        return( p)
+    }
+
+    if (any(x <0) |  any(is.nan(x))| any(x>1)){
+        return(rep(NaN,length(p)))
+    }
+    
+    sn::qsn(x=p, xi = xi, omega =omega, alpha=alpha ,tau = tau,dp=dp)
+
+}
+
 

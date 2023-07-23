@@ -170,7 +170,9 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
         axis(2, pretty(c(0, max(aa$density) + 0.5 * max(aa$density)),10))
         lines(x, y, type = "l", col = "grey90", lwd = 2, xlim = c(0,   12))
         lines(df2$x, df2$y, col = "red", lwd = 2)
-        lines(df3$x, df3$y, col = "purple", lwd = 2)
+        if (!is.na(cc)) {
+            lines(df3$x, df3$y, col = "purple", lwd = 2)
+        }
         if (class(qq) == "numeric") {
             par(new = TRUE)
             plot(x, qq, type="l",lwd=2,axes = FALSE,xlab = "", ylab = "",col="purple")
