@@ -157,7 +157,7 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
     }
 
     if (1) {
-        print(" I got here")
+#        print(" I got here")
         aa<-hist(imp, col = "grey", lwd = 2, breaks = 100, main = "", 
                  freq = FALSE, xlab = "importances", ylab = "density",
                  axes = FALSE)

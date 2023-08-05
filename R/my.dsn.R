@@ -1,3 +1,5 @@
+#' my.dsn
+#'
 #' density of skew-normal using the appromimation of Ashour, Samir K. and Abdel-hameed, Mahmood A.
 #'
 #' See \url{https://en.wikipedia.org/wiki/Skew_normal_distribution} for discussion of the skew-normal.
@@ -6,13 +8,27 @@
 #' It accepts the parameters xi, omega, lambda (Ashour et. al. 2010). Other foumulations may use
 #' different parameterizations. The sn (skew-normal) package incluse the extended skew-normal (ESN) distribution. For the SN the
 #' tau parameter is 0.
+#'
+#' fitdistrplus::fitdist(imp, "sn", start = list(xi = mean(imp)...
+#' returns warnings such as
+#' The dsn function should return a zero-length vector when input has length zero and not raise an error
+#' The psn function should have its first argument named: q as in base R
+#' These wrappers ensure conformity with the expectations of fitdistrplus::fitdist
 #' 
-#' @param x data
-#' @param xi param
-#' @param omega param
+#' @param x vector of quantiles. Missing values (‘NA’'s) and ‘Inf’'s are   allowed.
+#' @param p vector of probabilities. Missing values (‘NA’'s) are allowed
+#' @param q vector of quantiles
+#' @param xi vector of location parameters.
+#' @param alpha vector of slant parameter(s)
+#' @param omega vector of scale parameters; must be positive
+#' @param tau = 0
 #' @param lambda param
+#' @param ... arguments passed to sn
 #' @keywords skew normal
-#' @export
+#' @export my.dsn
+#' @export dsn
+#' @export psn
+#' @export qsn
 #' @examples
 #' library(sn)
 #' curve(sn::dsn(x,xi=0, omega=1, alpha=1, tau=0),xlim=c(-10,10),col="blue")
@@ -39,24 +55,44 @@ my.dsn<-function(x,xi=0, omega = 1,lambda=1){
     (1/omega)*hx
 }
 
-
-dsn<-function(x, xi = 0, omega = 1, alpha = 0, tau = 0, dp = NULL,  log = FALSE){
+#' @rdname my.dsn 
+dsn<-function(x, xi = 0, omega = 1, alpha = 0, tau = 0){
     if (length(x)==0){
         return( x)
     }
-    else{
-        res <- sn::dsn(x=x, xi = xi, omega =omega, alpha=alpha ,tau = tau,dp=dp,log=log)
+    aa<- (
+        (names(match.call())[3]=="xi") &
+        (names(match.call())[4]=="omega") &
+        (names(match.call())[5]=="alpha") &
+        (names(match.call())[6]=="tau")
+    )
+    if (!(aa)){
+        stop("error! names are incorrect")
     }
+    res <- sn::dsn(x=x, xi = xi, omega =omega, alpha=alpha ,tau = tau,dp=NULL,log=FALSE)
     res
 }
 
-psn <- function(q, xi = -Inf, omega =1, alpha=0 ,tau = 0,dp=NULL) {
+#' @rdname my.dsn
+psn <- function(q, xi = -Inf, omega =1, alpha=0 ,tau = 0,...) {
     x <- q
-    sn::psn(x=q, xi = xi, omega =omega, alpha=alpha ,tau = tau,dp=dp)
 
+    aa<- (
+        (names(match.call())[3]=="xi") &
+        (names(match.call())[4]=="omega") &
+        (names(match.call())[5]=="alpha") &
+        (names(match.call())[6]=="tau")
+    )
+    
+    if (!(aa)){
+        stop("error! names are incorrect")
+    }
+    
+    sn::psn(x, xi = xi, omega =omega, alpha=alpha ,tau = tau,dp=NULL)
 }
 
-qsn <- function(p, xi = Inf, omega =1, alpha=0 ,tau = 0,dp=NULL) {
+#' @rdname my.dsn
+qsn <- function(p, xi = Inf, omega =1, alpha=0 ,tau = 0,...) {
     inconsistent <- FALSE
     if (xi >0){
         inconsistent <- TRUE
@@ -73,12 +109,80 @@ qsn <- function(p, xi = Inf, omega =1, alpha=0 ,tau = 0,dp=NULL) {
         return( p)
     }
 
-    if (any(x <0) |  any(is.nan(x))| any(x>1)){
+    if (any(p <0) |  any(is.nan(p))| any(p>1)){
         return(rep(NaN,length(p)))
     }
     
-    sn::qsn(x=p, xi = xi, omega =omega, alpha=alpha ,tau = tau,dp=dp)
+    sn::qsn(x=p, xi = xi, omega =omega, alpha=alpha ,tau = tau,dp=NULL)
 
 }
 
 
+my.test1fun<- function (fn, start.arg, fix.arg, dpqr) 
+{
+    res <- data.frame(ok = FALSE, txt = "")
+    stopifnot(is.list(start.arg))
+    if (!is.null(fix.arg)) 
+        stopifnot(is.list(fix.arg))
+    if (!exists(fn, mode = "function")) {
+        res$txt <- paste("The", fn, "function must be defined")
+        return(res)
+    }
+    if (missing(dpqr)) 
+        dpqr <- substr(fn, 1, 1)
+    firstarg_theo <- switch(dpqr, d = "x", p = "q", q = "p",   r = "n")
+    firstarg_found <- names(formals(fn))[1]
+    if (firstarg_found != firstarg_theo) {
+        t0 <- paste("The", fn, "function should have its first argument named:", 
+            firstarg_theo)
+        res$txt <- paste(t0, "as in base R")
+        return(res)
+    }
+    res0 <- try(do.call(fn, c(list(numeric(0)), start.arg, fix.arg)),    silent = TRUE)
+    t0 <- paste("The", fn, "function should return a zero-length vector when input has length zero and not raise an error")
+    t1 <- paste("The", fn, "function should return a zero-length vector when input has length zero")
+    if (inherits(res0, "try-error")) {
+        res$txt <- t0
+        return(res)
+    }
+    if (length(res0) != 0) {
+        res$txt <- t1
+        return(res)
+    }
+    x <- c(0, 1, Inf, NaN, -1)
+    res1 <- try(do.call(fn, c(list(x), start.arg, fix.arg)), silent = TRUE)
+    t2 <- paste("The", fn, "function should return a vector of with NaN values when input has inconsistent values and not raise an error")
+    if (inherits(res1, "try-error")) {
+        res$txt <- t2
+        return(res)
+    }
+    x <- c(0, 1, NA)
+    res2 <- try(do.call(fn, c(list(x), start.arg, fix.arg)),   silent = TRUE)
+    t4 <- paste("The", fn, "function should return a vector of with NA values when input has missing values and not raise an error")
+    t5 <- paste("The", fn, "function should return a vector of with NA values when input has missing values and not remove missing values")
+    if (inherits(res2, "try-error")) {
+        res$txt <- t4
+        return(res)
+    }
+    if (length(res2) != length(x)) {
+        res$txt <- t5
+        return(res)
+    }
+    x <- 0:1
+    start.arg <- lapply(start.arg, function(x) -x)
+    res3 <- try(do.call(fn, c(list(x), start.arg, fix.arg)),   silent = TRUE)
+    t6 <- paste("The", fn, "function should return a vector of with NaN values when input has inconsistent parameters and not raise an error")
+    if (inherits(res3, "try-error")) {
+        res$txt <- t6
+        return(res)
+    }
+    x <- 0:1
+    names(start.arg) <- paste0(names(start.arg), "_")
+    res4 <- try(do.call(fn, c(list(x), start.arg, fix.arg)),      silent = TRUE)
+    t8 <- paste("The", fn, "function should raise an error when names are incorrectly named")
+    if (!inherits(res4, "try-error")) {
+        res$txt <- t8
+        return(res)
+    }
+    return(data.frame(ok = TRUE, txt = ""))
+}

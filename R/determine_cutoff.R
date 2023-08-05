@@ -21,7 +21,6 @@
 #' @examples
 #' rm(list=ls())
 #' library(ranger)
-#' library(RFlocafdr)
 #' data(smoking)
 #' y<-smoking$y
 #' smoking_data<-smoking$rma

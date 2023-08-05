@@ -46,7 +46,6 @@ evaluate a measure that can be used to determining a significance level for the 
 \examples{
 rm(list=ls())
 library(ranger)
-library(RFlocafdr)
 data(smoking)
 y<-smoking$y
 smoking_data<-smoking$rma

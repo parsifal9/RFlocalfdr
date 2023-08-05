@@ -43,7 +43,7 @@ fit.to.data.set<-function(df,imp,debug.flag=0,plot.string="",temp.dir=NULL,try.c
     y<-df$y
 
     #df must have names "x" and "y"
-
+    names(df)<-c("x","y")
 
     
     if (class(mm1.df)=="try-error" & try.counter == 0 ){

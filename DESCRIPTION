@@ -1,6 +1,6 @@
 Package: RFlocalfdr
 Title: Sets a Significance Level for Random Forest Mean Decrease in Impurity Variable Importance Scores
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: 
     person(given = "Robert",
            family = "Dunne",
@@ -8,6 +8,9 @@ Authors@R:
            email = "rob.dunne@csiro.au",
            comment = c(ORCID = "https://orcid.org/0000-0003-1946-7279"))
 Description: Sets a significance level for Mean Decrease in Impurity variable importance scores, using an empirical Bayes approach.
+             See "Thresholding Gini Variable Importance with a single trained Random Forest: An Empirical Bayes Approach"
+	     Robert Dunne, Roc Reguant, Priya Ramarao-Milne, Piotr Szul, Letitia Sng, Mischa Lundberg, Natalie A. Twine, Denis C. Bauer
+	     https://www.biorxiv.org/content/10.1101/2022.04.06.487300v2
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
@@ -20,7 +23,9 @@ Imports:
     fitdistrplus,
     grDevices,
     graphics,
-    stats
+    stats,
+    ranger,
+    randomForest
 Depends: 
     R (>= 3.5.0)
 Suggests: 

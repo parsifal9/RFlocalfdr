@@ -2,26 +2,54 @@
 % Please edit documentation in R/my.dsn.R
 \name{my.dsn}
 \alias{my.dsn}
-\title{density of skew-normal using the appromimation of Ashour, Samir K. and Abdel-hameed, Mahmood A.}
+\alias{dsn}
+\alias{psn}
+\alias{qsn}
+\title{my.dsn}
 \usage{
 my.dsn(x, xi = 0, omega = 1, lambda = 1)
+
+dsn(x, xi = 0, omega = 1, alpha = 0, tau = 0)
+
+psn(q, xi = -Inf, omega = 1, alpha = 0, tau = 0, ...)
+
+qsn(p, xi = Inf, omega = 1, alpha = 0, tau = 0, ...)
 }
 \arguments{
-\item{x}{data}
+\item{x}{vector of quantiles. Missing values (‘NA’'s) and ‘Inf’'s are   allowed.}
 
-\item{xi}{param}
+\item{xi}{vector of location parameters.}
 
-\item{omega}{param}
+\item{omega}{vector of scale parameters; must be positive}
 
 \item{lambda}{param}
+
+\item{alpha}{vector of slant parameter(s)}
+
+\item{tau}{= 0}
+
+\item{q}{vector of quantiles}
+
+\item{...}{arguments passed to sn}
+
+\item{p}{vector of probabilities. Missing values (‘NA’'s) are allowed}
 }
 \description{
+density of skew-normal using the appromimation of Ashour, Samir K. and Abdel-hameed, Mahmood A.
+}
+\details{
 See \url{https://en.wikipedia.org/wiki/Skew_normal_distribution} for discussion of the skew-normal.
 Using the appromimation of Ashour, Samir K. and Abdel-hameed, Mahmood A.
 "Approximate Skew Normal Distribution", Journal of Advanced Research, 2010, 1:4.
 It accepts the parameters xi, omega, lambda (Ashour et. al. 2010). Other foumulations may use
 different parameterizations. The sn (skew-normal) package incluse the extended skew-normal (ESN) distribution. For the SN the
 tau parameter is 0.
+
+fitdistrplus::fitdist(imp, "sn", start = list(xi = mean(imp)...
+returns warnings such as
+The dsn function should return a zero-length vector when input has length zero and not raise an error
+The psn function should have its first argument named: q as in base R
+These wrappers ensure conformity with the expectations of fitdistrplus::fitdist
 }
 \examples{
 library(sn)

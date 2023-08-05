@@ -32,5 +32,27 @@ try.counter=3 start xi, omega, lambda from the parameters retuned by fitdistrplu
 This function allows you to express your love of cats.
 }
 \examples{
-cat_function()
+\dontrun{
+data(ch22)
+t2 <-ch22$C
+imp<-log(ch22$imp)
+temp<-imp[t2 > 30]
+temp <- temp[temp != -Inf]
+temp <- temp - min(temp) + .Machine$double.eps
+f_fit <- f.fit(temp )
+y <- f_fit$zh$density
+x <- f_fit$midpoints
+C <- quantile(temp,probs=0.75)
+df2 <- data.frame(x[x < C], y[x < C])
+initial.estimates <- fit.to.data.set.wrapper(df2, temp)
+#Nonlinear regression model                                            
+#  model: y ~ my.dsn(x, xi = xi, omega = omega, lambda = lambda)       
+#   data: df                                                           
+#       xi.xi  omega.omega lambda.alpha                                
+#       1.163        1.193        1.574                                
+# residual sum-of-squares: 0.06269                                     
+#                                                                      
+#Number of iterations to convergence: 23                               
+#Achieved convergence tolerance: 1.49e-08
+}
 }

@@ -28,6 +28,7 @@
 #' @export
 #' @return an object of class PIMP
 #' @examples
+#' \dontrun{ 
 #' library(RFlocalfdr)
 #' library(ranger)
 #' library(vita) #vita: Variable Importance Testing Approaches
@@ -44,6 +45,7 @@
 #' aa <- summary(pimp.t.cl,pless = 0.05)
 #' length(which(aa$cmat2[,"p-value"]< 0.05))
 #' hist(aa$cmat2[,"p-value"],breaks=20)
+#' }
 
 my_ranger_PIMP <- function (X, y, rForest, S = 100, parallel = FALSE, ncores = 0, 
     seed = 123, ...) 

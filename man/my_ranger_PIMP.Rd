@@ -54,6 +54,7 @@ my_PIMP applies the same method as PIMP but to the MDI (mean decrease in impurit
 my_ranger_PIMP applies the same method to the ranger RF package
 }
 \examples{
+\dontrun{ 
 library(RFlocalfdr)
 library(ranger)
 library(vita) #vita: Variable Importance Testing Approaches
@@ -70,4 +71,5 @@ pimp.t.cl <- vita::PimpTest(pimp.varImp.cl,para = FALSE)
 aa <- summary(pimp.t.cl,pless = 0.05)
 length(which(aa$cmat2[,"p-value"]< 0.05))
 hist(aa$cmat2[,"p-value"],breaks=20)
+}
 }
