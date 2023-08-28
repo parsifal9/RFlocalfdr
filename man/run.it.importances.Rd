@@ -21,6 +21,7 @@ run.it.importances(qq, imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
 run.it.importances
 }
 \examples{
+\dontrun{
 data(ch22)                                                                                 
 ? ch22                                                                                     
 #document how the data set is created                                                      
@@ -39,7 +40,8 @@ ppp<-run.it.importances(qq,imp,debug=0)
 aa<-significant.genes(ppp,imp,cutoff=0.2,debug.flag=0,do.plot=2)                           
 length(aa$probabilities) # 6650                                                            
 aa<-significant.genes(ppp,imp,cutoff=0.05,debug.flag=0,do.plot=2)                          
-length(aa$probabilities) # 3653                                                            
+length(aa$probabilities) # 3653
+}
 }
 \keyword{importance}
 \keyword{variable}

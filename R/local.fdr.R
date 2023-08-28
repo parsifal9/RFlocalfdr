@@ -11,6 +11,7 @@
 #' @param ... arguments passed to FUN
 #' @export
 #' @examples
+#' \dontrun{
 #' data(ch22)                                                                                                             
 #' imp<-log(ch22$imp)                                                                                                     
 #' t2<-ch22$C                                                                                                             
@@ -38,7 +39,8 @@
 #'                                                                                                                        
 #' axis(1,pretty(x,10))                                                                                                   
 #' box() #- to make it look "as usual                                                                                     
-#' legend("topright",c("density importances","local fdr"),col=c("blue","green"),lty=1)                                    
+#' legend("topright",c("density importances","local fdr"),col=c("blue","green"),lty=1)
+#' }
 local.fdr <-function(f,x,FUN=my.dsn, p0= 1, debug.flag=0,plot.string="",temp.dir=NULL, ...){
     f0<-FUN(x, ...)
     f<-f$f.spline

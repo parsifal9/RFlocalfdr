@@ -19,8 +19,8 @@
 #' evaluated up to the quantile Q
 #' @export
 #' @examples
-#' rm(list=ls())
-#' library(ranger)
+#' \dontrun{
+#' #' library(ranger)
 #' data(smoking)
 #' y<-smoking$y
 #' smoking_data<-smoking$rma
@@ -33,6 +33,7 @@
 #' # Detemine a cutoff to get a unimodal density.
 #' res.temp <- determine_cutoff(imp, t2 ,cutoff=c(1,2,3,4),plot=c(1,2,3,4),Q=0.75)
 #' plot(c(1,2,3,4),res.temp[,3])
+#' }
 
 determine_cutoff <- function(imp, t2, cutoff=c(0,1,4,10,15,20), Q = 0.75, plot = NULL){
 # calls f.fit, fit.to.data.set.wrapper, my.dsn

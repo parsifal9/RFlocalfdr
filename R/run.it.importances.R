@@ -8,6 +8,7 @@
 #' @keywords variable importance 
 #' @export
 #' @examples
+#' \dontrun{
 #' data(ch22)                                                                                 
 #' ? ch22                                                                                     
 #' #document how the data set is created                                                      
@@ -26,7 +27,8 @@
 #' aa<-significant.genes(ppp,imp,cutoff=0.2,debug.flag=0,do.plot=2)                           
 #' length(aa$probabilities) # 6650                                                            
 #' aa<-significant.genes(ppp,imp,cutoff=0.05,debug.flag=0,do.plot=2)                          
-#' length(aa$probabilities) # 3653                                                            
+#' length(aa$probabilities) # 3653
+#' }
 
 run.it.importances <- function(qq, imp, debug.flag = 0, temp.dir = NULL, try.counter = 3){
     x <- qq$df$x

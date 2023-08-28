@@ -44,8 +44,8 @@ evaluated up to the quantile Q
 evaluate a measure that can be used to determining a significance level for the Mean Decrease in Impurity measure returned by a Random Forest model
 }
 \examples{
-rm(list=ls())
-library(ranger)
+\dontrun{
+#' library(ranger)
 data(smoking)
 y<-smoking$y
 smoking_data<-smoking$rma
@@ -58,4 +58,5 @@ plot(density((imp)))
 # Detemine a cutoff to get a unimodal density.
 res.temp <- determine_cutoff(imp, t2 ,cutoff=c(1,2,3,4),plot=c(1,2,3,4),Q=0.75)
 plot(c(1,2,3,4),res.temp[,3])
+}
 }

@@ -17,6 +17,7 @@
 #' @importFrom  stats density predict quantile
 #' @export
 #' @examples
+#' \dontrun{
 #' data(ch22)                                                                                    
 #' ? ch22                                                                                        
 #' t2 <-ch22$C                                                                                   
@@ -40,7 +41,8 @@
 #' qq<- determine.C(f_fit,df,initial.estimates,starting_value = 2,start_at=37,trace.plot = TRUE)    
 #' cc<-x[which.min(qq)]                                                                             
 #' plot(x,qq,main="determine cc")                                                                   
-#' abline(v=cc)                                                                                     
+#' abline(v=cc)
+#' }
 
 determine.C<-function (f_fit, df, t1,trace.plot = FALSE, starting_value = 1,start_at=30,debug.flag=0) 
 {

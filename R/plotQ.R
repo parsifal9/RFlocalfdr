@@ -42,6 +42,7 @@
 #' imp<-imp[t2 > 30]
 #' qq <- plotQ(imp,debug.flag = 0)
 #' }
+#' \dontrun{
 #' data(smoking)
 #' ?smoking 
 #' y<-smoking$y
@@ -66,6 +67,7 @@
 #' ppp<-run.it.importances(qq,temp,debug.flag = 0)
 #' aa<-significant.genes(ppp,temp,cutoff=0.05,debug.flag=0,do.plot=TRUE,use_95_q=TRUE)
 #' length(aa$probabilities) # 17
+#' }
 
 
 

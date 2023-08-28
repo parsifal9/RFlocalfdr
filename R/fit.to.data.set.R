@@ -17,6 +17,7 @@
 #' @importFrom  stats glm poisson
 #' @importFrom grDevices dev.off png
 #' @examples
+#' \dontrun{
 #' data(ch22)                                       
 #' imp<-log(ch22$imp)                               
 #' t2<-ch22$C                                       
@@ -33,6 +34,7 @@
 #' ## xi.xi        1.102303 0.03669284 30.04136 1.485263e-56
 #' ## omega.omega  1.246756 0.04716184 26.43569 6.276349e-51
 #' ## lambda.alpha 1.799169 0.17343872 10.37351 3.103195e-18
+#' }
 
 fit.to.data.set<-function(df,imp,debug.flag=0,plot.string="",temp.dir=NULL,try.counter=3,return.all=FALSE){
 

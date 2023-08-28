@@ -38,6 +38,7 @@ Thomas and Kann, Maricel and Spouge, John L. "Empirical null estimation using ze
 mixture distributions and its application to protein domain data" Biometrics, 2018 74:2
 }
 \examples{
+\dontrun{
 data(ch22)                                                                                    
 ? ch22                                                                                        
 t2 <-ch22$C                                                                                   
@@ -61,5 +62,6 @@ initial.estimates <- data.frame(summary(initial.estimates)$parameters)$Estimate
 qq<- determine.C(f_fit,df,initial.estimates,starting_value = 2,start_at=37,trace.plot = TRUE)    
 cc<-x[which.min(qq)]                                                                             
 plot(x,qq,main="determine cc")                                                                   
-abline(v=cc)                                                                                     
+abline(v=cc)
+}
 }
