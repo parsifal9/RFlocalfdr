@@ -7,6 +7,7 @@
 #'   \item{imp1}{importaces }
 #' }
 #' @examples
+#' \dontrun{
 #' library(ranger)
 #' inv.logit <-function (x) {
 #'     plogis(x)}
@@ -53,6 +54,7 @@
 #'imp<-log(imp)
 #'plot(density((imp)))
 #'hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
+#' }
 "imp1"
 
 

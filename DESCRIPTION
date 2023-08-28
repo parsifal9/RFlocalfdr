@@ -1,6 +1,6 @@
 Package: RFlocalfdr
 Title: Sets a Significance Level for Random Forest Mean Decrease in Impurity Variable Importance Scores
-Version: 0.2.0
+Version: 0.4.0
 Authors@R: 
     person(given = "Robert",
            family = "Dunne",

@@ -17,6 +17,7 @@ imp1
 A dataset containing  2000 importance values
 }
 \examples{
+\dontrun{
 library(ranger)
 inv.logit <-function (x) {
     plogis(x)}
@@ -63,5 +64,6 @@ imp<-rf1$variable.importance
 imp<-log(imp)
 plot(density((imp)))
 hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
+}
 }
 \keyword{datasets}

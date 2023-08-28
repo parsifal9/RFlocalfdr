@@ -46,9 +46,9 @@ fit.to.data.set.wrapper <- function (df, imp, debug.flag = 0, plot.string = "", 
                               temp.dir = temp.dir, try.counter = 2, return.all = TRUE)
     mm.df3 <- fit.to.data.set(df, imp, debug.flag = 0, plot.string = "",
                               temp.dir = temp.dir, try.counter = 3, return.all = TRUE)
-    if ( class(mm.df3) == "try-error"){
-        if ( class(mm.df1) == "try-error"){
-            if ( class(mm.df2) == "try-error"){
+    if ( inherits(mm.df3,"try-error")){
+        if ( inherits(mm.df1,"try-error")){
+            if ( inherits(mm.df2,"try-error")){
                 return("try-error")
             } else {
                 return(  mm.df2)

@@ -27,6 +27,9 @@ A small example using the smoking  data set, containing normalized transcript me
 and 22283 transcripts of lung tissue. See @Spira.et.al.2004
 
 
+I have removed that data set temporarily until I solve a problem with upload the package to CRAN
+
+
 # load the data
 ```{r, echo=TRUE, eval=FALSE}
 library(RFlocalfdr)
@@ -35,6 +38,29 @@ data(smoking)
 y<-smoking$y
 smoking_data<-smoking$rma
 y.numeric <-ifelse((y=="never-smoked"),0,1)
+
+```
+
+```{r, echo=FALSE, eval=FALSE}
+install.packages("geneExpressionFromGEO")
+library(geneExpressionFromGEO)
+DF1 <- getGeneExpressionFromGEO("GSE994", FALSE, FALSE)  #retrieveGeneSymbols, verbose = FALSE)
+
+aa<-match(gsub("([A-Z0-9]*).*","\\1", rownames(smoking_data)), colnames(DF1))
+all.equal(aa,1:57)
+$[1] TRUE
+
+temp <- t(DF1[1:57])
+#but class temp is a data.frame not a ‘AffyBatch’ object. So how do we normalize it?
+
+## library(affy)
+## rma.data <- rma(data)
+## or
+## rma.data <- expresso(data,
+## bgcorrect.method = "rma",
+## normalize.method = "quantiles",
+## pmcorrect.method = "pmonly",
+## summary.method = "medianpolish")
 
 ```
 

@@ -130,7 +130,7 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
         writeLines(paste(class(qq), "class(determine.C)"), fileConn)
     }
     cc <- final.estimates_cc <- aa_cc <- NA
-    if (class(qq) == "numeric") {
+    if (inherits(qq,"numeric")) {
         cc <- x[which.min(qq)]
         if (debug.flag > 0) {
             writeLines(paste("cc= ", cc), fileConn)
@@ -151,7 +151,7 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
         final.estimates_cc <- fit.to.data.set.wrapper(df3, imp, debug.flag = debug.flag, plot.string = "cc",
                                                       temp.dir = temp.dir)
         #this is where the error is
-        if (class(final.estimates_cc) != "character"){
+        if ( !inherits(final.estimates_cc,"character")){
             final.estimates_cc <- data.frame(summary(final.estimates_cc)$parameters)
             }
     }
@@ -173,7 +173,7 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
         if (!is.na(cc)) {
             lines(df3$x, df3$y, col = "purple", lwd = 2)
         }
-        if (class(qq) == "numeric") {
+        if (inherits(qq,"numeric")) {
             par(new = TRUE)
             plot(x, qq, type="l",lwd=2,axes = FALSE,xlab = "", ylab = "",col="purple")
             axis(4, pretty(c(min(qq,na.rm=TRUE) , max(qq,na.rm=TRUE) + 0.5 * max(qq,na.rm=TRUE)),10))

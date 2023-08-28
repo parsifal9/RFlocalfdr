@@ -46,7 +46,7 @@ fit.to.data.set<-function(df,imp,debug.flag=0,plot.string="",temp.dir=NULL,try.c
     names(df)<-c("x","y")
 
     
-    if (class(mm1.df)=="try-error" & try.counter == 0 ){
+    if (inherits(mm1.df,"try-error") & try.counter == 0 ){
         mm1.df <-try(
             minpack.lm::nlsLM(y ~ my.dsn(x,xi=xi, omega=omega, lambda=lambda), 
                               start = list(xi=  1   , omega=2, lambda= 1   ),
@@ -60,7 +60,7 @@ fit.to.data.set<-function(df,imp,debug.flag=0,plot.string="",temp.dir=NULL,try.c
         }
     }
 
-    if (class(mm1.df)=="try-error" & (try.counter < 2)){
+    if (inherits(mm1.df,"try-error") & (try.counter < 2)){
         mm1.df <-try(
             minpack.lm::nlsLM(y ~ my.dsn(x,xi=xi, omega=omega, lambda=lambda), 
                               start = list(xi=  mean(x)   , omega=2, lambda= 1   ),
@@ -74,7 +74,7 @@ fit.to.data.set<-function(df,imp,debug.flag=0,plot.string="",temp.dir=NULL,try.c
         }
     }
 
-    if (class(mm1.df) == "try-error" & try.counter == 3){
+    if (inherits(mm1.df,"try-error") & try.counter == 3){
         vip.sn.mle <- fitdistrplus::fitdist(imp, "sn",start=list( xi = mean(imp),omega = 1, alpha= 0),
                               lower=c(-Inf,0,-Inf),fix.arg=list( tau=0),method = c("mle"))
         mm1.df <-try( minpack.lm::nlsLM(y ~ my.dsn(x,xi=xi, omega=omega, lambda=lambda), 

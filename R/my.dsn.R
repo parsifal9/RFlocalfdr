@@ -40,6 +40,27 @@
 #' curve(my.dsn(x,lambda=0.1),xlim=c(-10,10),col="red",add=TRUE)
 #' curve(my.dsn(x,xi=1, omega=2, lambda=2),xlim=c(-10,20),col="red",add=TRUE)
 #' curve(my.dsn(x,xi=3, omega=4, lambda=4),xlim=c(-10,20),col="red",add=TRUE)
+#'
+#' #dsn, qsn and psn are wrappers around the provided functions provided by sn. This is done to
+#' # overcome some checking done by fitdistrplus
+#' library(sn)
+#' 
+#' fitdistrplus:::test1fun("dsn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))
+#' #  ok                                                                txt
+#' # FALSE The dsn function should return a zero-length vector when input has length zero and
+#' #                                                                 not raise an error
+#'
+#' fitdistrplus:::test1fun("psn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))
+#' #  ok                                                                   txt
+#' # FALSE The psn function should have its first argument named: q as in base R
+#'
+#' fitdistrplus:::test1fun("qsn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))
+#' #   ok                                                                 txt
+#' # FALSE The qsn function should return a vector of with NaN values when input has inconsistent
+#' #                                    parameters and not raise an error
+
+
+
 
 my.dsn<-function(x,xi=0, omega = 1,lambda=1){
     z <- (x - xi)/omega
