@@ -9,17 +9,25 @@ count_variables(object)
 \arguments{
 \item{object}{a ranger forest object}
 }
+\value{
+a table (0-indexed) giving the number of times each variable was used in the random forest
+}
 \description{
-count the number of times each variable is used in a ranger random forest.
-help(treeInfo) warns
-"splitvarID -- ID of the splitting variable, 0-indexed. Caution, the variable order changes if the formula interface is used"
-this should be investigated
+\itemize{
+\item count the number of times each variable is used in a ranger random forest.
+\item help(treeInfo) warns "splitvarID -- ID of the splitting variable, 0-indexed.
+Caution, the variable order changes if the formula interface is used"
+However this should be investigated
+}
 }
 \examples{
-\dontrun{
 library(ranger)
-rf1<-ranger(Species ~ ., data = iris,importance="impurity",seed=123)
+rf1 <- ranger(Species ~ ., data = iris,importance="impurity", seed=123)
 count_variables(rf1)
-}
+rf2 <- ranger(dependent.variable.name = "Species", data = iris,seed=123)
+count_variables(rf2)
+rf3<- ranger(y = iris[, 5], x = iris[, -5],seed=123)
+count_variables(rf3)
+
 }
 \keyword{counts}

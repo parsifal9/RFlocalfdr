@@ -1,5 +1,5 @@
 Package: RFlocalfdr
-Title: Sets a Significance Level for Random Forest Mean Decrease in Impurity Variable Importance Scores
+Title: Significance Level for Random Forest impurity Importance Scores
 Version: 0.4.0
 Authors@R: 
     person(given = "Robert",
@@ -7,7 +7,8 @@ Authors@R:
            role = c("aut", "cre"),
            email = "rob.dunne@csiro.au",
            comment = c(ORCID = "https://orcid.org/0000-0003-1946-7279"))
-Description: Sets a significance level for Mean Decrease in Impurity variable importance scores, using an empirical Bayes approach.
+Description: Sets a significance level for  Random Forest MDI (Mean Decrease in Impurity, Gini or
+             sum of squares) variable importance scores, using an empirical Bayes approach.
              See Dunne et al. (2022)  <doi:10.1101/2022.04.06.487300>.
 License: GPL (>= 3)
 Encoding: UTF-8

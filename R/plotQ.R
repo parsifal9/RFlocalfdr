@@ -5,7 +5,7 @@
 #' * q using the penalized selection method of Gauran et.al 2018
 #' 
 #' We estiamte a value "q" such that:
-#' to the left of "q", the density is somposed solely of NULL importance values
+#' to the left of "q", the density is composed solely of NULL importance values
 #' to the right of "q" we have  a density that is a mixture of null and non-null  importance values.
 #' The method of Gauran et.al 2018 may not work in cases where the data distribution is not well modelled by a skew-normal.
 #' The q_95 value can be uses as a workaround in these case.
