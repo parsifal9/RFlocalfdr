@@ -5,7 +5,7 @@
 #' * q using the penalized selection method of Gauran et.al 2018
 #' 
 #' We estiamte a value "q" such that:
-#' to the left of "q", the density is somposed solely of NULL importance values
+#' to the left of "q", the density is composed solely of NULL importance values
 #' to the right of "q" we have  a density that is a mixture of null and non-null  importance values.
 #' The method of Gauran et.al 2018 may not work in cases where the data distribution is not well modelled by a skew-normal.
 #' The q_95 value can be uses as a workaround in these case.
@@ -42,7 +42,6 @@
 #' imp<-imp[t2 > 30]
 #' qq <- plotQ(imp,debug.flag = 0)
 #' }
-#' \dontrun{
 #' data(smoking)
 #' ?smoking 
 #' y<-smoking$y
@@ -67,7 +66,6 @@
 #' ppp<-run.it.importances(qq,temp,debug.flag = 0)
 #' aa<-significant.genes(ppp,temp,cutoff=0.05,debug.flag=0,do.plot=TRUE,use_95_q=TRUE)
 #' length(aa$probabilities) # 17
-#' }
 
 
 
