@@ -7,15 +7,19 @@
 #' Thomas and Kann, Maricel and Spouge, John L. "Empirical null estimation using zero-inflated discrete
 #' mixture distributions and its application to protein domain data" Biometrics, 2018 74:2
 #' @param f_fit object returned by f.fit
-#' @param df data frame containg x and y
-#' @param t1 initial estimates  xi.xi  omega.omega lambda. Probablgt returned by fit.to.data.set.wrapper
+#' @param df data frame containing x and y
+#' @param t1 initial estimates {xi, omega, lambda}. Probably returned by fit.to.data.set.wrapper
 #' @param trace.plot -- produce a plot of each fit with a 1 second sleep. Can be watched as a movie.
-#' @param starting_value -- needs discussion
-#' @param start_at       -- needs discussion
-#' @param debug.flag     -- debugging level
+#' @param start_at       --  x <- f_fit$midpoints  is of length 119 (quite arbitrary). We use the first starting_value
+#'                          values of x to fit the skew-normal distribution. 
+#' @param debug.flag     -- debugging level. If ebug.flag >0 then some output is printed to the screen. 
 #' @importFrom graphics abline axis box curve legend lines mtext par
 #' @importFrom  stats density predict quantile
 #' @export
+#' @return -- a vector of numbers of length dim(df)[[1]] (119 in this case). Say that this is qq.
+#'           We determine the minimum value,  x[which.min(qq)]. This is the value "C" such that
+#'           -- to the right of C, our data is generated from the NULL distribution
+#'           -- to the left of C, we have a mixture of the NULL and non-NULL distribution
 #' @examples
 #' \dontrun{
 #' data(ch22)                                                                                    
@@ -37,8 +41,8 @@
 #' initial.estimates <- fit.to.data.set.wrapper(df,imp,debug.flag=debug.flag,plot.string="initial",
 #'                                               temp.dir=temp.dir,try.counter=try.counter)    
 #' initial.estimates <- data.frame(summary(initial.estimates)$parameters)$Estimate                                                               
-#'
-#' qq<- determine.C(f_fit,df,initial.estimates,starting_value = 2,start_at=37,trace.plot = TRUE)    
+#' # 1.102303 1.246756 1.799169
+#' qq<- determine.C(f_fit,df,initial.estimates,start_at=37,trace.plot = TRUE)    
 #' cc<-x[which.min(qq)]                                                                             
 #' plot(x,qq,main="determine cc")                                                                   
 #' abline(v=cc)
@@ -79,7 +83,7 @@ determine.C<-function (f_fit, df, t1,trace.plot = FALSE, starting_value = 1,star
         f0.1 <- f0.1 + .Machine$double.eps
         ppp <- cumsum(f0.1) * diff(x)[1]
         if (trace.plot == TRUE) {
-            plot(x, y, type = "l", col = "grey90", lwd = 2, xlim = c(0,  range(x)[[2]]+0.05))
+             plot(x, y, type = "l", col = "grey90", lwd = 2 , xlim = c(range(x)[[1]]+0.05,  range(x)[[2]]+0.05))
             lines(df2$x, df2$y, col = "green", lwd = 2)
             lines(x, predict(mm1.df2, newdata = df), col = "blue",       lwd = 3)
             system("sleep 1")

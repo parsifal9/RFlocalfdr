@@ -18,16 +18,16 @@
 #' count_variables(rf3)
 #' 
 
-count_variables<-function(object){
-    if (!inherits(object, "ranger")) {
-        stop("Error: Invalid class of input object.")
-    }
-    aa1<- unlist(object$forest$split.varIDs)
-    aa2<-unlist(lapply(object$forest$child.nodeIDs,f<-function(x){x[[1]]}))
-    t1<- table(aa1[aa2 != 0]) 
-    temp<-object$num.independent.variables
-    t2<- table(factor(aa1[aa2 != 0],levels=0:(temp-1)))
-    t2
+count_variables<-function(object) {
+  if (!inherits(object, "ranger")) {
+    stop("Error: Invalid class of input object.")
+  }
+  aa1<- unlist(object$forest$split.varIDs)
+  aa2<-unlist(lapply(object$forest$child.nodeIDs,f <- function(x) { x[[1]] }))
+  t1<- table(aa1[aa2 != 0]) 
+  temp<-object$num.independent.variables
+  t2<- table(factor(aa1[aa2 != 0],levels=0:(temp-1)))
+  t2
 }
 
 
