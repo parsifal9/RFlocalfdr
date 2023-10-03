@@ -32,6 +32,10 @@ try.counter=3 start xi, omega, lambda from the parameters retuned by fitdistrplu
 \item{return.all}{TRUE, return the full ouput of minpack.lm::nlsLM,
 FALSE , return summary of parameters}
 }
+\value{
+If the skew-normal fitting routine is succesful, then the matrix of parmaters and standard errors is returned.
+-- othewise a "try-error" message is returned
+}
 \description{
 This function fit a skew normal to a set of data
 }

@@ -26,6 +26,13 @@ significant.genes(
 
 \item{debug.flag}{debug.flag  either 0 (no debugging information), 1 or 2}
 }
+\value{
+A list containg
+\itemize{
+\item probabilities (from the fitted SN distribution) and names of the significant variables
+\item the estimated FDR
+}
+}
 \description{
 This function sepects the significant "genes" and makes some plots
 }

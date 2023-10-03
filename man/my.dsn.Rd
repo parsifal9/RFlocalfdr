@@ -34,6 +34,9 @@ qsn(p, xi = Inf, omega = 1, alpha = 0, tau = 0, ...)
 
 \item{p}{vector of probabilities. Missing values (‘NA’'s) are allowed}
 }
+\value{
+fits the Density function for the skew-normal (SN) distribution.
+}
 \description{
 density of skew-normal using the appromimation of Ashour, Samir K. and Abdel-hameed, Mahmood A.
 }
@@ -80,6 +83,11 @@ fitdistrplus:::test1fun("qsn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = li
 #   ok                                                                 txt
 # FALSE The qsn function should return a vector of with NaN values when input has inconsistent
 #                                    parameters and not raise an error
+unload("sn")
+environment(fun=dsn)
+fitdistrplus:::test1fun("dsn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))#TRUE
+fitdistrplus:::test1fun("psn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))#TRUE
+fitdistrplus:::test1fun("qsn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))#FALSE  need to fix this
 }
 \keyword{normal}
 \keyword{skew}

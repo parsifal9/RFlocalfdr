@@ -9,6 +9,9 @@ propTrueNullByLocalFDR(p)
 \arguments{
 \item{p}{probabilities}
 }
+\value{
+An estimate of the proportion of null p-values by the local fdr
+}
 \description{
 Estimate proportion of NULL p-values. Based on  .propTrueNullByLocalFDR in  limma: Linear Models for Microarray Data
 written by Belinda Phipson and Gordon Smyth

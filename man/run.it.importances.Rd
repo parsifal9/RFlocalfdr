@@ -17,6 +17,21 @@ run.it.importances(qq, imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
 
 \item{try.counter}{where to explain this?}
 }
+\value{
+return a list contining
+\itemize{
+\item "C_0.95" estimate of the cutoff "C" such that there are only null values to the left of C.
+Based on the 95th quantile of the density
+\item "cc"    estimate of the cutoff "C" based on the procedure of *****
+\item "estimates_C_0.95" estimate of the parameters of the SN using the data up to the C estimate
+\item "estimates_cc"     estimate of the parameters of the SN using the data up to the C estimate
+\item "fdr_0.95"       estimate of the fdr curve using the SN from "estimates_C_0.95"
+\item "fdr_cc"         estimate of the fdr curve using the SN from "estimates_cc"
+\item "x"        the x values from plotQ
+\item "temp.dir" the temp directory for dubuggin
+\item "p0"     the estmate of the proportion of null values (can be 1)
+}
+}
 \description{
 run.it.importances
 }

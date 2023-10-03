@@ -17,17 +17,22 @@ determine.C(
 \arguments{
 \item{f_fit}{object returned by f.fit}
 
-\item{df}{data frame containg x and y}
+\item{df}{data frame containing x and y}
 
-\item{t1}{initial estimates  xi.xi  omega.omega lambda. Probablgt returned by fit.to.data.set.wrapper}
+\item{t1}{initial estimates {xi, omega, lambda}. Probably returned by fit.to.data.set.wrapper}
 
 \item{trace.plot}{-- produce a plot of each fit with a 1 second sleep. Can be watched as a movie.}
 
-\item{starting_value}{-- needs discussion}
+\item{start_at}{--  x <- f_fit$midpoints  is of length 119 (quite arbitrary). We use the first starting_value
+values of x to fit the skew-normal distribution.}
 
-\item{start_at}{-- needs discussion}
-
-\item{debug.flag}{-- debugging level}
+\item{debug.flag}{-- debugging level. If ebug.flag >0 then some output is printed to the screen.}
+}
+\value{
+-- a vector of numbers of length dim(df)[\link{1}] (119 in this case). Say that this is qq.
+We determine the minimum value,  x\link{which.min(qq)}. This is the value "C" such that
+-- to the right of C, our data is generated from the NULL distribution
+-- to the left of C, we have a mixture of the NULL and non-NULL distribution
 }
 \description{
 by assumption, there is a point q such that to the left of q, f_B sim  f_0 (z). That is, there is a q
@@ -58,8 +63,8 @@ df<-data.frame(x,y)
 initial.estimates <- fit.to.data.set.wrapper(df,imp,debug.flag=debug.flag,plot.string="initial",
                                               temp.dir=temp.dir,try.counter=try.counter)    
 initial.estimates <- data.frame(summary(initial.estimates)$parameters)$Estimate                                                               
-
-qq<- determine.C(f_fit,df,initial.estimates,starting_value = 2,start_at=37,trace.plot = TRUE)    
+# 1.102303 1.246756 1.799169
+qq<- determine.C(f_fit,df,initial.estimates,start_at=37,trace.plot = TRUE)    
 cc<-x[which.min(qq)]                                                                             
 plot(x,qq,main="determine cc")                                                                   
 abline(v=cc)
