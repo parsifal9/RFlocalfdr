@@ -29,6 +29,7 @@
 #' @export dsn
 #' @export psn
 #' @export qsn
+#' @return fits the Density function for the skew-normal (SN) distribution.
 #' @examples
 #' library(sn)
 #' curve(sn::dsn(x,xi=0, omega=1, alpha=1, tau=0),xlim=c(-10,10),col="blue")
@@ -58,6 +59,12 @@
 #' #   ok                                                                 txt
 #' # FALSE The qsn function should return a vector of with NaN values when input has inconsistent
 #' #                                    parameters and not raise an error
+#' unload("sn")
+#'environment(fun=dsn)
+#'fitdistrplus:::test1fun("dsn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))#TRUE
+#'fitdistrplus:::test1fun("psn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))#TRUE
+#'fitdistrplus:::test1fun("qsn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))#FALSE  need to fix this
+
 
 
 

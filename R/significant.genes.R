@@ -9,6 +9,9 @@
 #' @param use_95_q use the 0.95 q value
 #' @keywords significant genes
 #' @export
+#' @return A list containg
+#' - probabilities (from the fitted SN distribution) and names of the significant variables
+#' - the estimated FDR 
 #' @examples
 #' \dontrun{
 #' data(ch22)                                                                                 

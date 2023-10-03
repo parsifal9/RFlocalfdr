@@ -10,10 +10,11 @@
 #' @param temp.dir, directory for debugging output
 #' @param ... arguments passed to FUN
 #' @export
+#' @return returns an estimate of the local false discovery rate.
 #' @examples
 #' \dontrun{
 #' data(ch22)                                                                                                             
-#' imp<-log(ch22$imp)                                                                                                     
+#' imp<-log(ch22$imp)
 #' t2<-ch22$C                                                                                                             
 #' imp<-imp[t2 > 30]                                                                                                      
 #' imp <- imp - min(imp) + .Machine$double.eps                                                                            
@@ -23,11 +24,12 @@
 #' x <- f_fit$midpoints                                                                                                   
 #' df <- data.frame(x, y)                                                                                                 
 #' initial.estimates <- fit.to.data.set.wrapper(df, imp, debug.flag = debug.flag,
-#' plot.string = "initial")                
-#' initial.estimates <- data.frame(summary(initial.estimates)$parameters)$Estimate                                        
+#' return.all = FALSE)
+#' 
 #' aa <- local.fdr(f_fit, df$x, FUN = my.dsn, xi = initial.estimates[1],
 #'     omega = initial.estimates[2], lambda = initial.estimates[3],  debug.flag = 0,
 #'                     plot.string = "initial")
+#' 
 #' plot(x,y,axes=FALSE,type="l",col="blue",main = "local fdr",                                                            
 #'      xlab="importances",ylab="")                                                                                       
 #' axis(2, pretty( c(0,max(y)+0.5*max(y)),10))                                                                            
@@ -41,6 +43,7 @@
 #' box() #- to make it look "as usual                                                                                     
 #' legend("topright",c("density importances","local fdr"),col=c("blue","green"),lty=1)
 #' }
+
 local.fdr <-function(f,x,FUN=my.dsn, p0= 1, debug.flag=0,plot.string="",temp.dir=NULL, ...){
     f0<-FUN(x, ...)
     f<-f$f.spline

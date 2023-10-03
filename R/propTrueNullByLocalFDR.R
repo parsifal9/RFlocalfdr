@@ -4,6 +4,7 @@
 #' written by Belinda Phipson and Gordon Smyth
 #' @param p  probabilities
 #' @keywords cats
+#' @return An estimate of the proportion of null p-values by the local fdr
 #' @export
 propTrueNullByLocalFDR <- function(p) 
 {
