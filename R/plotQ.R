@@ -15,6 +15,7 @@
 #' @param debug.flag  either 0 (no debugging information), 1 or 2
 #' @param temp.dir if debug flag is >0 then information is written to temp.dir
 #' @param try.counter where to explain this?
+#' @param ww internal use
 #' @keywords variable importance
 #' @return
 #' - df, contains x and y, midpoints and counts from a histogram of imp
@@ -26,8 +27,6 @@
 #' - cc,  determined by the procedure of Gauran et.al 2018
 #' - fileConn, a file connectin for writing debugging information
 #' - f_fit, a spline fit to the histogram
-#' - ww, debugging inpormation
-#' - aa_cc, debugging inpormation
 #' @export
 #' @examples
 #' \dontrun{
@@ -68,7 +67,6 @@
 #' length(aa$probabilities) # 17
 
 
-
 plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3) 
 {
     fileConn <- NULL
@@ -98,7 +96,10 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
     }
     df <- data.frame(x, y)
     initial.estimates <- fit.to.data.set.wrapper(df, imp, debug.flag = debug.flag, 
-        plot.string = "initial", temp.dir = temp.dir, try.counter = try.counter)
+                    plot.string = "initial", temp.dir = temp.dir, try.counter = try.counter)
+    if (inherits(initial.estimates,"try-error")) {
+        stop("fit.to.data.set.wrapper has returned a try-error")
+    }
     initial.estimates <- data.frame(summary(initial.estimates)$parameters)$Estimate
     if (debug.flag > 0) {
         writeLines(paste("initial estimates", initial.estimates[1], 
@@ -109,7 +110,7 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
             omega = initial.estimates[2], lambda = initial.estimates[3], 
             debug.flag = 0, plot.string = "initial", temp.dir = temp.dir)
         png(paste(temp.dir, "/fdr_using_initial_estiamtes.png",   sep = ""))
-        plot(x, aa, main = "fdr using initial estiamtes")
+        plot(x, aa, main = "fdr using initial estimates")
         abline(h = 0.2)
         ww <- which.min(abs(aa[50:119] - 0.2))
         sum(imp > x[as.numeric(names(ww))])
@@ -123,7 +124,7 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
         writeLines(paste("calculating C_0.95", C_0.95), fileConn)
     }
     if (debug.flag > 0) {
-        cat("calculating cc", "\n")
+        message("calculating cc", "\n")
     }
     qq <- try(determine.C(f_fit, df, initial.estimates, starting_value = 2, start_at = 37), silent = TRUE)
     if (debug.flag > 0) {
@@ -146,6 +147,7 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
     final.estimates_C_0.95 <- fit.to.data.set.wrapper(df2, imp, debug.flag = debug.flag, plot.string = "final", temp.dir = temp.dir)
     final.estimates_C_0.95 <- data.frame(summary(final.estimates_C_0.95)$parameters)
     if (!is.na(cc)) {
+        #cc was set to NA. Only if qq is numeric will it not be NA
         df3 <- data.frame(x[x < cc], y[x < cc])
         names(df3) <- c("x", "y")
         final.estimates_cc <- fit.to.data.set.wrapper(df3, imp, debug.flag = debug.flag, plot.string = "cc",
@@ -181,9 +183,10 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
         box()
         
         temp <- list(df, final.estimates_C_0.95, 
-                     final.estimates_cc, temp.dir, C_0.95, cc,fileConn ,f_fit, ww,aa_cc)
+                     final.estimates_cc, temp.dir, C_0.95, cc,fileConn ,f_fit, ww)
         names(temp) <- c("df", "final.estimates_C_0.95,", 
-                         "final.estimates_cc", "temp.dir", "C_0.95", "cc", "fileConn", "f_fit", "ww","aa_cc")
+                         "final.estimates_cc", "temp.dir", "C_0.95", "cc", "fileConn", "f_fit", "ww")
     }
     temp
 }
+

@@ -38,7 +38,15 @@ f.fit <-function(imp,df=10,debug.flag=0,temp.dir=NULL){
     y <- zh$counts  
     f.spline <- glm(y ~ splines::ns(x, df = df), poisson)$fit
 
-    if (debug.flag > 0){
+    if (debug.flag == 1){
+        hist.of.data<-hist(zzz, breaks = breaks,freq=TRUE, xlab="importance",axes=FALSE,
+                           main="histogram of variable importances" )
+        lines(x,f.spline,col="red",lwd="4")
+        lines(x,hist.of.data$counts,col="green",lwd="4")
+        legend("topright",c("spline","counts"),col=c("red","green"),lty=1,lwd=4)
+        box()
+    }
+    if (debug.flag > 1){
         png(paste(temp.dir,"/histogram_of_variable_importances.png",sep=""))
         hist.of.data<-hist(zzz, breaks = breaks,freq=TRUE, xlab="importance",axes=FALSE,
                            main="histogram of variable importances" )

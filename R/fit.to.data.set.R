@@ -38,9 +38,6 @@
 #' ## lambda.alpha 1.799169 0.17343872 10.37351 3.103195e-18
 #' }
 
-
-
-
 fit.to.data.set<-function (df, imp, debug.flag = 0, plot.string = "", temp.dir = NULL, 
     try.counter = 3, return.all = FALSE) 
 {
@@ -56,7 +53,7 @@ fit.to.data.set<-function (df, imp, debug.flag = 0, plot.string = "", temp.dir =
             omega = 2, lambda = 1), data = df, control = minpack.lm::nls.lm.control(maxiter = 400)), 
             silent = TRUE)
         if (debug.flag > 0) {
-            cat(class(mm1.df), "class(mm1.df) -- try 1", "\n")
+            message(class(mm1.df), "class(mm1.df) -- try 1", "\n")
         }
     }
     if (inherits(mm1.df, "try-error") & (try.counter ==2)) {
@@ -65,7 +62,7 @@ fit.to.data.set<-function (df, imp, debug.flag = 0, plot.string = "", temp.dir =
             omega = 2, lambda = 1), data = df, control = minpack.lm::nls.lm.control(maxiter = 400)), 
             silent = TRUE)
         if (debug.flag > 0) {
-            cat(class(mm1.df), "class(mm1.df) -- try 2", "\n")
+            message(class(mm1.df), "class(mm1.df) -- try 2", "\n")
         }
     }
     if (inherits(mm1.df, "try-error") & try.counter == 3) {
@@ -79,11 +76,11 @@ fit.to.data.set<-function (df, imp, debug.flag = 0, plot.string = "", temp.dir =
                    silent = TRUE)
         
         if (debug.flag > 0) {
-            cat(class(mm1.df), "class(mm1.df)-- try 3", "\n")
+            message(class(mm1.df), "class(mm1.df)-- try 3", "\n")
         }
     }
 
-    if (debug.flag > 1 & !(inherits(mm1.df,"try-error"))) {
+    if (debug.flag > 0 & !(inherits(mm1.df,"try-error"))) {
         png(paste(temp.dir, "/fit_to_data_set_", plot.string, 
             ".png", sep = ""))
         hist(imp, breaks = 200, freq = FALSE)
@@ -113,7 +110,7 @@ fit.to.data.set<-function (df, imp, debug.flag = 0, plot.string = "", temp.dir =
         abline(v = sn::qsn(0.95, xi = summary(mm1.df)$parameters[1, 
             1], omega = summary(mm1.df)$parameters[2, 1], alpha = summary(mm1.df)$parameters[3, 
             1]), col = "gray30")
-        cat(sum(abs(df$y - predict(mm1.df))), "sum(abs(df$y-predict(mm1.df)))", 
+        message(sum(abs(df$y - predict(mm1.df))), " sum(abs(df$y-predict(mm1.df)))", 
             "\n")
         if (try.counter == 3) {
             legend("topright", c("spline fit", "fitted f0", "initial fitdist fit", 
@@ -122,9 +119,10 @@ fit.to.data.set<-function (df, imp, debug.flag = 0, plot.string = "", temp.dir =
                 lty = 1, lwd = 4)
         }
         else {
-            legend("topright", c("spline fit", "fitted f0", "Skew-normal at fitted values", 
-                "quantiles of skew normal"), col = c("green", 
-                "red", "blue", "grey30"), lty = 1, lwd = 4)
+            legend("topright", c("spline fit", "fitted f0", "Skew-normal at fitted values (my.dsn)",
+                                 "Skew-normal at fitted values (dsn)",
+                "quantiles of skew normal (dsn)"), col = c("green", 
+                "red", "blue", "blue", "grey30"), lty = 1, lwd = c(4,4,4,4,1))
         }
         dev.off()
     }
@@ -141,4 +139,6 @@ fit.to.data.set<-function (df, imp, debug.flag = 0, plot.string = "", temp.dir =
     }
     aa
 }
+
+
 

@@ -4,13 +4,12 @@
 #' @param imp "reduction in impurity" importances from a random forest model
 #' @param debug.flag  either 0 (no debugging information), 1 or 2
 #' @param temp.dir if debug flag is >0 then information is written to temp.dir
-#' @param try.counter where to explain this?
 #' @keywords variable importance 
 #' @export
 #' @return return a list contining
 #' - "C_0.95" estimate of the cutoff "C" such that there are only null values to the left of C.
 #'            Based on the 95th quantile of the density
-#' - "cc"    estimate of the cutoff "C" based on the procedure of *****
+#' - "cc"    estimate of the cutoff "C" based on the procedure of Gauran, et al., 2918, Biometrics,
 #' - "estimates_C_0.95" estimate of the parameters of the SN using the data up to the C estimate
 #' - "estimates_cc"     estimate of the parameters of the SN using the data up to the C estimate
 #' - "fdr_0.95"       estimate of the fdr curve using the SN from "estimates_C_0.95"
@@ -41,7 +40,8 @@
 #' length(aa$probabilities) # 3653
 #' }
 
-run.it.importances <- function(qq, imp, debug.flag = 0, temp.dir = NULL, try.counter = 3){
+
+run.it.importances <- function(qq, imp, debug.flag = 0, temp.dir = NULL){
     x <- qq$df$x
     y <- qq$df$y
     df <- qq$df
@@ -62,49 +62,53 @@ run.it.importances <- function(qq, imp, debug.flag = 0, temp.dir = NULL, try.cou
     df2 <- data.frame(x[x < C_0.95], y[x < C_0.95])
     f_fit <-qq$f_fit
     ww<-qq$ww
-    aa_cc<-qq$aa_cc
     
-    ## if (debug.flag > 1) {
-    ##     png(paste(temp.dir, "/compare_C_and_cc_and_the_resulting_fits.png",           sep = ""))
-    ##     hist(imp, col = 6, lwd = 2, breaks = 100, main = "compare C and cc and the resulting fits")
-    ##     abline(v = C_0.95, col = "red", lwd = 2)
-    ##     if (!is.na(cc)) {
-    ##         abline(v = cc, col = "purple", lwd = 2)
-    ##     }
-    ##     legend("topright", c("C", "cc"), col = c("red", "purple"), 
-    ##         lty = 1)
-    ##     dev.off()
-    ##     png(paste(temp.dir, "/compare_C_and_cc_and_the_resulting_fits_2.png", 
-    ##         sep = ""))
-    ##     hist(imp, breaks = 200, freq = FALSE)
-    ##     lines(x, y, type = "l", col = "grey90", lwd = 2, xlim = c(0, 
-    ##         12))
-    ##     lines(df2$x, df2$y, col = "green", lwd = 2)
-    ##     abline(v = C_0.95, col = "green")
-    ##     curve(sn::dsn(x, xi = final.estimates_C_0.95$Estimate[1], 
-    ##         omega = final.estimates_C_0.95$Estimate[2], alpha = final.estimates_C_0.95$Estimate[3]), 
-    ##         add = TRUE, col = "green", lwd = 3)
-    ##     if (!is.na(cc)) {
-    ##         lines(df3$x, df3$y, col = "blue", lwd = 2)
-    ##         abline(v = cc, col = "blue")
-    ##         if (class(final.estimates_cc) != "character"){
-    ##         curve(sn::dsn(x, xi = final.estimates_cc$Estimate[1], 
-    ##             omega = final.estimates_cc$Estimate[2], alpha = final.estimates_cc$Estimate[3]), 
-    ##             add = TRUE, col = "blue", lwd = 3)
-    ##         }
-    ##     }
-    ##     legend("topright", c("C", "cc"), col = c("green", "blue"), 
-    ##         lty = 1)
-    ## dev.off()
-    ## }
-    ## if (debug.flag > 0) {
-    ##     png(paste(temp.dir, "/fit.to.data.set_df2.png", sep = ""))
-    ##     plot(x, y, type = "l", col = "grey90", lwd = 2)
-    ##     lines(df2$x, df2$y, col = "green", lwd = 2)
-    ##     lines(x, my.dsn(x, xi = final.estimates_C_0.95$Estimate[1], 
-    ##         omega = final.estimates_C_0.95$Estimate[2], lambda = final.estimates_C_0.95$Estimate[3]))
-    ##     dev.off()
-    ## }
+    if (debug.flag > 0) {
+#        png(paste(temp.dir, "/compare_C_and_cc_and_the_resulting_fits.png",           sep = ""))
+#        hist(imp, col = 6, lwd = 2, breaks = 100, main = "compare C and cc and the resulting fits")
+#        abline(v = C_0.95, col = "red", lwd = 2)
+#        if (!is.na(cc)) {
+#            abline(v = cc, col = "purple", lwd = 2)
+#        }
+#        legend("topright", c("C", "cc"), col = c("red", "purple"), 
+#            lty = 1)
+#        dev.off()
+        png(paste(temp.dir, "/compare_C_and_cc_and_the_resulting_fits_2.png", 
+            sep = ""))
+        hist(imp, breaks = 200, freq = FALSE)
+        #lines(x, y, type = "l", col = "grey90", lwd = 2, xlim = c(0, 12))
+        #lines(df2$x, df2$y, col = "green", lwd = 2)
+        abline(v = C_0.95, col = "green")
+        curve(sn::dsn(x, xi = final.estimates_C_0.95$Estimate[1], 
+            omega = final.estimates_C_0.95$Estimate[2], alpha = final.estimates_C_0.95$Estimate[3]), 
+            add = TRUE, col = "green", lwd = 3)
+#        lines(x, my.dsn(x, xi = final.estimates_C_0.95$Estimate[1], 
+#                        omega = final.estimates_C_0.95$Estimate[2], lambda = final.estimates_C_0.95$Estimate[3]),
+#            col = "green", lwd = 3)
+   
+        if (!is.na(cc)) {
+            #lines(df3$x, df3$y, col = "blue", lwd = 2)
+            abline(v = cc, col = "blue")
+            if (class(final.estimates_cc) != "character"){
+            curve(sn::dsn(x, xi = final.estimates_cc$Estimate[1], 
+                omega = final.estimates_cc$Estimate[2], alpha = final.estimates_cc$Estimate[3]), 
+                add = TRUE, col = "blue", lwd = 3)
+            }
+        }
+        legend("topright", c("C", "cc"), col = c("green", "blue"), 
+            lty = 1)
+    dev.off()
+    }
+    if (debug.flag > 0) {
+        png(paste(temp.dir, "/fit.to.data.set_df2.png", sep = ""))
+        plot(x, y, type = "l", col = "grey90", lwd = 2)
+        lines(df2$x, df2$y, col = "green", lwd = 2)
+        lines(x, my.dsn(x, xi = final.estimates_C_0.95$Estimate[1], 
+            omega = final.estimates_C_0.95$Estimate[2], lambda = final.estimates_C_0.95$Estimate[3]))
+        dev.off()
+    }
+
+    
     ppp <- sn::psn(imp, xi = final.estimates_C_0.95$Estimate[1], 
                    omega = final.estimates_C_0.95$Estimate[2], alpha = final.estimates_C_0.95$Estimate[3])
     p0 <- propTrueNullByLocalFDR(ppp)
@@ -168,7 +172,7 @@ run.it.importances <- function(qq, imp, debug.flag = 0, temp.dir = NULL, try.cou
     
     
     if (debug.flag > 1) {
-        cat(names(imp)[imp > x[as.numeric(names(ww))]], "\n\n\n\n")
+        message(names(imp)[imp > x[as.numeric(names(ww))]], "\n\n\n\n")
     }
     if (debug.flag > 0) {
         close(fileConn)
@@ -179,7 +183,4 @@ run.it.importances <- function(qq, imp, debug.flag = 0, temp.dir = NULL, try.cou
         "estimates_cc", "temp.dir", "C_0.95", "cc", "p0")
     temp
 }
-
-
-
 

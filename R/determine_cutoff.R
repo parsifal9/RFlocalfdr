@@ -40,10 +40,14 @@ determine_cutoff <- function(imp, t2, cutoff=c(0,1,4,10,15,20), Q = 0.75, plot =
     res1  <- matrix(0, length(cutoff), 3)
     steps <- cutoff
     old.par <- par(no.readonly = TRUE )
+    on.exit(par(oldpar))
     par(mfrow=c(2,2))    # set the plotting area into a 2*2 array
 
     for ( ii in 1:length(steps )  ) {
-        cat("i=", ii, "cutoff =", steps[ii], "\n")
+        
+        #message("i=", ii, "cutoff =", steps[ii], "\n")
+        #prehaps this should only be printed if a debug flag is set?
+        
         temp <- imp[t2 > steps[ii]]
         temp <- temp[temp != -Inf]
         #this changes the length of temp, so we always go back to imp for imp[t2 > steps[ii]]       
@@ -78,6 +82,5 @@ determine_cutoff <- function(imp, t2, cutoff=c(0,1,4,10,15,20), Q = 0.75, plot =
         res1[ii,2] <- sum(abs(df2$y-t1))
         res1[ii,3] <- max(abs(df2$y-t1)) 
     }
-     par(old.par)
     res1
 }

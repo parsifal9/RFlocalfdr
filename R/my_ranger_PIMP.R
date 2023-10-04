@@ -64,7 +64,7 @@ my_ranger_PIMP <- function (X, y, rForest, S = 100, parallel = FALSE, ncores = 0
             ncores = max(c(1, floor(d_ncores/2)))
         }
         if ("L'Ecuyer-CMRG" != RNGkind()[1]) {
-            cat("\n The random number generator was set to L'Ecuyer-CMRG !! \n")
+            message("\n The random number generator was set to L'Ecuyer-CMRG !! \n")
             RNGkind("L'Ecuyer-CMRG")
         }
     }

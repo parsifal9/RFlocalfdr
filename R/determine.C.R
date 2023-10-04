@@ -71,7 +71,7 @@ determine.C<-function (f_fit, df, t1,trace.plot = FALSE, starting_value = 1,star
     for (ii in start_at:119) {
         df2 <- df[1:ii, ]
         if(debug.flag > 0){
-            cat("dim(df2)", dim(df2), "\n")
+            message("dim(df2)", dim(df2), "\n")
             }
         mm1.df2 = minpack.lm::nlsLM(y ~ my.dsn(x, xi = xi, omega = omega, 
             lambda = lambda), start = list(xi = t1[1], omega = t1[2], 
@@ -91,7 +91,7 @@ determine.C<-function (f_fit, df, t1,trace.plot = FALSE, starting_value = 1,star
         p0 <- propTrueNullByLocalFDR(ppp)
         f0 <- (sum(f) * f0.1)/sum(f0.1)
         if(debug.flag > 0){
-            cat("p0 = ", p0, "\n")
+            message("p0 = ", p0, "\n")
         }
         qq[ii] <- cumsum((-f_fit$counts * log(f0/(f))) - log(p0))[ii]
     }

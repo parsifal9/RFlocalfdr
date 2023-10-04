@@ -14,6 +14,8 @@ plotQ(imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
 \item{temp.dir}{if debug flag is >0 then information is written to temp.dir}
 
 \item{try.counter}{where to explain this?}
+
+\item{ww}{internal use}
 }
 \value{
 \itemize{
@@ -26,8 +28,6 @@ at the value C_0.95 (the 0.95 quantile of the skew-Normal distribution fitted to
 \item cc,  determined by the procedure of Gauran et.al 2018
 \item fileConn, a file connectin for writing debugging information
 \item f_fit, a spline fit to the histogram
-\item ww, debugging inpormation
-\item aa_cc, debugging inpormation
 }
 }
 \description{

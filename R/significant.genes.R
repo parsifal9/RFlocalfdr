@@ -89,7 +89,7 @@ if (do.plot == 1) {
     par(old.par)
 }
 if (debug.flag == 1) {
-    cat(sum(imp > object$x[as.numeric(names(ww))]), "sum(imp> x[as.numeric(names(ww))])", 
+    message(sum(imp > object$x[as.numeric(names(ww))]), "sum(imp> x[as.numeric(names(ww))])", 
         "\n")
 }
 if (do.plot == 2) {
@@ -196,7 +196,7 @@ if (do.plot == 4) {
 
 
 if (debug.flag == 2) {
-    cat(names(imp)[imp > object$x[as.numeric(names(ww))]], 
+    message(names(imp)[imp > object$x[as.numeric(names(ww))]], 
         "\n")
 }
     a1 <- match(names(imp)[imp > object$x[as.numeric(names(ww))]],  names(imp))
@@ -206,7 +206,7 @@ if (debug.flag == 2) {
                            omega = object$estimates_C_0.95$Estimat[2], alpha = object$estimates_C_0.95$Estimat[3])
         names(ppp) <- names(imp)[imp > object$x[as.numeric(names(ww))]]
         if (debug.flag == 2) {
-            cat(length(ppp), "\n")
+            message(length(ppp), "\n")
         }
         cut <- 1 - sn::psn(object$x[as.numeric(names(ww))], xi = object$estimates_C_0.95$Estimat[1], 
                            omega = object$estimates_C_0.95$Estimat[2], alpha = object$estimates_C_0.95$Estimat[3])
@@ -218,7 +218,7 @@ if (debug.flag == 2) {
                            omega = object$estimates_cc$Estimat[2], alpha = object$estimates_cc$Estimat[3])
         names(ppp) <- names(imp)[imp > object$x[as.numeric(names(ww))]]
         if (debug.flag == 2) {
-            cat(length(ppp), "\n")
+            message(length(ppp), "\n")
         }
         cut <- 1 - sn::psn(object$x[as.numeric(names(ww))], xi = object$estimates_cc$Estimat[1], 
                            omega = object$estimates_cc$Estimat[2], alpha = object$estimates_cc$Estimat[3])
