@@ -48,7 +48,7 @@ run.it.importances <- function(qq, imp, debug.flag = 0, temp.dir = NULL){
     
     final.estimates_C_0.95 <- qq$final.estimates_C_0.95  
     final.estimates_cc      <- qq$final.estimates_cc    
-    temp.dir <- qq$temp.dir  
+    temp.dir <- temp.dir  
     C_0.95 <- qq$C_0.95 
     cc <- qq$cc
     imp <- imp - min(imp) + .Machine$double.eps
@@ -57,37 +57,42 @@ run.it.importances <- function(qq, imp, debug.flag = 0, temp.dir = NULL){
         names(df3) <- c("x", "y")
     }
     
-    fileConn <- qq$fileConn
-    
+    if (debug.flag > 0) {
+        if (length(temp.dir) == 0) {
+            temp.dir <- tempdir()
+        }
+        fileConn <- file(paste(temp.dir, "/output_from_run_it_importances.txt", sep = ""), open = "wt")
+        writeLines(c("Hello", "World"), fileConn)
+    }
     df2 <- data.frame(x[x < C_0.95], y[x < C_0.95])
     f_fit <-qq$f_fit
     ww<-qq$ww
     
     if (debug.flag > 0) {
-#        png(paste(temp.dir, "/compare_C_and_cc_and_the_resulting_fits.png",           sep = ""))
-#        hist(imp, col = 6, lwd = 2, breaks = 100, main = "compare C and cc and the resulting fits")
-#        abline(v = C_0.95, col = "red", lwd = 2)
-#        if (!is.na(cc)) {
-#            abline(v = cc, col = "purple", lwd = 2)
-#        }
-#        legend("topright", c("C", "cc"), col = c("red", "purple"), 
-#            lty = 1)
-#        dev.off()
+        png(paste(temp.dir, "/compare_C_and_cc_and_the_resulting_fits.png", sep = ""))
+        hist(imp, col = 6, lwd = 2, breaks = 100, main = "compare C and cc and the resulting fits")
+        abline(v = C_0.95, col = "red", lwd = 2)
+        if (!is.na(cc)) {
+            abline(v = cc, col = "purple", lwd = 2)
+        }
+        legend("topright", c("C", "cc"), col = c("red", "purple"), 
+            lty = 1)
+        dev.off()
         png(paste(temp.dir, "/compare_C_and_cc_and_the_resulting_fits_2.png", 
             sep = ""))
         hist(imp, breaks = 200, freq = FALSE)
-        #lines(x, y, type = "l", col = "grey90", lwd = 2, xlim = c(0, 12))
-        #lines(df2$x, df2$y, col = "green", lwd = 2)
+        lines(x, y, type = "l", col = "grey90", lwd = 2, xlim = c(0, 12))
+        lines(df2$x, df2$y, col = "green", lwd = 2)
         abline(v = C_0.95, col = "green")
         curve(sn::dsn(x, xi = final.estimates_C_0.95$Estimate[1], 
             omega = final.estimates_C_0.95$Estimate[2], alpha = final.estimates_C_0.95$Estimate[3]), 
             add = TRUE, col = "green", lwd = 3)
-#        lines(x, my.dsn(x, xi = final.estimates_C_0.95$Estimate[1], 
-#                        omega = final.estimates_C_0.95$Estimate[2], lambda = final.estimates_C_0.95$Estimate[3]),
-#            col = "green", lwd = 3)
+        lines(x, my.dsn(x, xi = final.estimates_C_0.95$Estimate[1], 
+                        omega = final.estimates_C_0.95$Estimate[2], lambda = final.estimates_C_0.95$Estimate[3]),
+            col = "green", lwd = 3)
    
         if (!is.na(cc)) {
-            #lines(df3$x, df3$y, col = "blue", lwd = 2)
+            lines(df3$x, df3$y, col = "blue", lwd = 2)
             abline(v = cc, col = "blue")
             if (class(final.estimates_cc) != "character"){
             curve(sn::dsn(x, xi = final.estimates_cc$Estimate[1], 
@@ -97,14 +102,13 @@ run.it.importances <- function(qq, imp, debug.flag = 0, temp.dir = NULL){
         }
         legend("topright", c("C", "cc"), col = c("green", "blue"), 
             lty = 1)
-    dev.off()
-    }
-    if (debug.flag > 0) {
+        dev.off()
+        
         png(paste(temp.dir, "/fit.to.data.set_df2.png", sep = ""))
         plot(x, y, type = "l", col = "grey90", lwd = 2)
         lines(df2$x, df2$y, col = "green", lwd = 2)
         lines(x, my.dsn(x, xi = final.estimates_C_0.95$Estimate[1], 
-            omega = final.estimates_C_0.95$Estimate[2], lambda = final.estimates_C_0.95$Estimate[3]))
+                        omega = final.estimates_C_0.95$Estimate[2], lambda = final.estimates_C_0.95$Estimate[3]))
         dev.off()
     }
 
@@ -124,57 +128,58 @@ run.it.importances <- function(qq, imp, debug.flag = 0, temp.dir = NULL){
                            p0 = p0, debug.flag = debug.flag, plot.string = "final", 
                            temp.dir = temp.dir), silent = TRUE)
     
-    ## if (debug.flag > 0) {
-    ##     png(paste(temp.dir, "/run.it.importances_final_plot.png",     sep = ""))
+    if (debug.flag > 0) {
+        png(paste(temp.dir, "/run.it.importances_final_plot.png",     sep = ""))
         
-    ##     par(mar = c(4, 4, 4, 6))
-    ##     aa <- hist(imp, col = 6, lwd = 2, breaks = 100, main = "", 
-    ##                freq = FALSE, xlab = "importances", ylab = "density", 
-    ##                axes = FALSE)
-    ##     abline(v=c(1:100))
-    ##     curve(my.dsn(x, xi = final.estimates_C_0.95$Estimate[1], 
-    ##                  omega = final.estimates_C_0.95$Estimate[2], lambda = final.estimates_C_0.95$Estimate[3]), 
-    ##           add = TRUE, col = "red", lwd = 2)
+        par(mar = c(4, 4, 4, 6))
+        aa <- hist(imp, col = 6, lwd = 2, breaks = 100, main = "", 
+                   freq = FALSE, xlab = "importances", ylab = "density", 
+                   axes = FALSE)
+        abline(v=c(1:100))
+        curve(my.dsn(x, xi = final.estimates_C_0.95$Estimate[1], 
+                     omega = final.estimates_C_0.95$Estimate[2], lambda = final.estimates_C_0.95$Estimate[3]), 
+              add = TRUE, col = "red", lwd = 2)
         
-    ##     abline(v = sn::qsn(0.95, xi = final.estimates_C_0.95$Estimate[1], 
-    ##                        omega = final.estimates_C_0.95$Estimate[2], alpha = final.estimates_C_0.95$Estimate[3]), 
-    ##            col = "red", lwd = 2)
+        abline(v = sn::qsn(0.95, xi = final.estimates_C_0.95$Estimate[1], 
+                           omega = final.estimates_C_0.95$Estimate[2], alpha = final.estimates_C_0.95$Estimate[3]), 
+               col = "red", lwd = 2)
         
-    ##     if (class(final.estimates_cc) != "character"){
-    ##         curve(my.dsn(x, xi = final.estimates_cc$Estimate[1], 
-    ##                      omega = final.estimates_cc$Estimate[2], lambda = final.estimates_cc$Estimate[3]), 
-    ##               add = TRUE, col = "lawngreen", lwd = 2)
-    ##         abline(v = sn::qsn(0.95, xi = final.estimates_cc$Estimate[1], 
-    ##                            omega = final.estimates_cc$Estimate[2], alpha = final.estimates_cc$Estimate[3]), 
-    ##                col = "lawngreen", lwd = 2)
-    ##     }
+        if (class(final.estimates_cc) != "character"){
+            curve(my.dsn(x, xi = final.estimates_cc$Estimate[1], 
+                         omega = final.estimates_cc$Estimate[2], lambda = final.estimates_cc$Estimate[3]), 
+                  add = TRUE, col = "lawngreen", lwd = 2)
+            abline(v = sn::qsn(0.95, xi = final.estimates_cc$Estimate[1], 
+                               omega = final.estimates_cc$Estimate[2], alpha = final.estimates_cc$Estimate[3]), 
+                   col = "lawngreen", lwd = 2)
+        }
         
-    ##     abline(v = x[as.numeric(names(ww))], lwd = 2, col = "orange")
-    ##     abline(v = C_0.95, lwd = 2, col = "blue")
-    ##     abline(v = cc, lwd = 2, col = "purple")
-    ##     axis(2, pretty(c(0, max(aa$density) + 0.5 * max(aa$density)), 
-    ##                    10))
+        abline(v = x[as.numeric(names(ww))], lwd = 2, col = "orange")
+        abline(v = C_0.95, lwd = 2, col = "blue")
+        abline(v = cc, lwd = 2, col = "purple")
+        axis(2, pretty(c(0, max(aa$density) + 0.5 * max(aa$density)), 
+                       10))
         
-    ##     par(new = TRUE)
-    ##     plot(c(0, max(x)), c(0, 1), type = "n", axes = FALSE, 
-    ##          xlab = "", ylab = "")
-    ##     lines(x, aa_C_0.95, lwd = 3)
-    ##     abline(h = 0.2, col = "orange")
-    ##     axis(4, pretty(c(0, 1), 10))
-    ##     mtext(side = 4, line = 3, "local fdr")
-    ##     axis(1, pretty(range(1:max(x)), 10))
-    ##     legend("topright", c("fitted curve", "95% quantile", 
-    ##         "cutoff", "C", "cc", "fdr"), col = c("red", "red", 
-    ##                                              "orange", "blue", "purple", "black"), lty = 1, lwd = 2)
-    ##     box()
-    ##     dev.off()
-    ## }
+        par(new = TRUE)
+        plot(c(0, max(x)), c(0, 1), type = "n", axes = FALSE, 
+             xlab = "", ylab = "")
+        lines(x, aa_C_0.95, lwd = 3)
+        abline(h = 0.2, col = "orange")
+        axis(4, pretty(c(0, 1), 10))
+        mtext(side = 4, line = 3, "local fdr")
+        axis(1, pretty(range(1:max(x)), 10))
+        legend("topright", c("fitted curve", "95% quantile", 
+            "cutoff", "C", "cc", "fdr"), col = c("red", "red", 
+                                                 "orange", "blue", "purple", "black"), lty = 1, lwd = 2)
+        box()
+        dev.off()
+    }
     
     
     if (debug.flag > 1) {
         message(names(imp)[imp > x[as.numeric(names(ww))]], "\n\n\n\n")
     }
     if (debug.flag > 0) {
+        writeLines(c("GoodBye World"), fileConn)
         close(fileConn)
     }
     temp <- list(aa_C_0.95, aa_cc, df$x, final.estimates_C_0.95, 

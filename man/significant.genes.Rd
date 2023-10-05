@@ -22,7 +22,7 @@ significant.genes(
 
 \item{use_95_q}{use the 0.95 q value}
 
-\item{do.plot}{do.plot either 0 (no plot), 1 (plot) or 2 (more detailed plot)}
+\item{do.plot}{do.plot either TRUE or FALSE (no plot)}
 
 \item{debug.flag}{debug.flag  either 0 (no debugging information), 1 or 2}
 }

@@ -9,7 +9,8 @@ determine_cutoff(
   t2,
   cutoff = c(0, 1, 4, 10, 15, 20),
   Q = 0.75,
-  plot = NULL
+  plot = NULL,
+  verbose = 0
 )
 }
 \arguments{
@@ -28,6 +29,9 @@ count_variables for a ranger RF}
 \item The skew-normal fit (blue)
 \item The quantile Q (vertical red line)
 }}
+
+\item{verbose}{verbose=0, no output to screen
+verbose=1, track the cutoff value being used}
 }
 \value{
 res a matrix if size length(cutoff) by 3.

@@ -77,7 +77,7 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
         if (length(temp.dir) == 0) {
             temp.dir <- tempdir()
         }
-        fileConn <- file(paste(temp.dir, "/output_from_run_it_importances.txt", sep = ""), open = "wt")
+        fileConn <- file(paste(temp.dir, "/output_from_PlotQ.txt", sep = ""), open = "wt")
         writeLines(c("Hello", "World"), fileConn)
     }
     imp <- imp - min(imp) + .Machine$double.eps
@@ -152,7 +152,7 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
         names(df3) <- c("x", "y")
         final.estimates_cc <- fit.to.data.set.wrapper(df3, imp, debug.flag = debug.flag, plot.string = "cc",
                                                       temp.dir = temp.dir)
-        #this is where the error is
+        #this is where the error was
         if ( !inherits(final.estimates_cc,"character")){
             final.estimates_cc <- data.frame(summary(final.estimates_cc)$parameters)
             }
@@ -183,9 +183,13 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
         box()
         
         temp <- list(df, final.estimates_C_0.95, 
-                     final.estimates_cc, temp.dir, C_0.95, cc,fileConn ,f_fit, ww)
+                     final.estimates_cc, temp.dir, C_0.95, cc ,f_fit, ww)
         names(temp) <- c("df", "final.estimates_C_0.95,", 
-                         "final.estimates_cc", "temp.dir", "C_0.95", "cc", "fileConn", "f_fit", "ww")
+                         "final.estimates_cc", "temp.dir", "C_0.95", "cc", "f_fit", "ww")
+    } 
+    if (debug.flag > 0) {
+        writeLines(c("GoodBye World"), fileConn)
+        close(fileConn)
     }
     temp
 }

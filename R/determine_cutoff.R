@@ -9,6 +9,8 @@
 #' - The data (black) and  the  fitted density  (red)
 #' - The skew-normal fit (blue)
 #' - The quantile Q (vertical red line)
+#' @param verbose verbose=0, no output to screen
+#'                verbose=1, track the cutoff value being used
 #' @md
 #' @return res a matrix if size length(cutoff) by 3.
 #' We model the histogram of imp with a kernel density estimate, y.
@@ -35,19 +37,21 @@
 #' plot(c(1,2,3,4),res.temp[,3])
 #' }
 
-determine_cutoff <- function(imp, t2, cutoff=c(0,1,4,10,15,20), Q = 0.75, plot = NULL){
-# calls f.fit, fit.to.data.set.wrapper, my.dsn
+determine_cutoff <- function(imp, t2, cutoff=c(0,1,4,10,15,20), Q = 0.75, plot = NULL,verbose=0){
+    # calls f.fit, fit.to.data.set.wrapper, my.dsn
     res1  <- matrix(0, length(cutoff), 3)
     steps <- cutoff
-    old.par <- par(no.readonly = TRUE )
+    oldpar <- par(no.readonly = TRUE )
     on.exit(par(oldpar))
+    
     par(mfrow=c(2,2))    # set the plotting area into a 2*2 array
 
     for ( ii in 1:length(steps )  ) {
-        
-        #message("i=", ii, "cutoff =", steps[ii], "\n")
-        #prehaps this should only be printed if a debug flag is set?
-        
+
+        if (verbose >0){
+        message("i = ", ii, ", cutoff = ", steps[ii], "\n")
+        }
+
         temp <- imp[t2 > steps[ii]]
         temp <- temp[temp != -Inf]
         #this changes the length of temp, so we always go back to imp for imp[t2 > steps[ii]]       
