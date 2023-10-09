@@ -34,7 +34,7 @@
 #'      xlab="importances",ylab="")                                                                                       
 #' axis(2, pretty( c(0,max(y)+0.5*max(y)),10))                                                                            
 #'                                                                                                                        
-#' par(new=TRUE)                                                                                                          
+#' oldpar <- par(new = TRUE)
 #' plot(x, aa, type="l",col="green",main = "",xlab="",ylab="",axes=FALSE)                                                 
 #' abline(h = 0.2)                                                                                                        
 #' axis(4, pretty( aa,10))                                                                                                
@@ -43,6 +43,7 @@
 #' box() #- to make it look "as usual                                                                                     
 #' legend("topright",c("density importances","local fdr"),col=c("blue","green"),lty=1)
 #' }
+#' par(oldpar)
 
 local.fdr <-function(f,x,FUN=my.dsn, p0= 1, debug.flag=0,plot.string="",temp.dir=NULL, ...){
     f0<-FUN(x, ...)
