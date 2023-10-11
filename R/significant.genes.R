@@ -75,8 +75,6 @@ significant.genes<-function (object, imp, cutoff = 0.2, use_95_q=TRUE, do.plot =
     par(mar = c(4, 4, 4, 6))
     
     if (do.plot == 1) {
-#        old.par <- par(mar = c(2, 2, 2, 2))
-#        par(mar = c(3, 3, 3, 6))
         aa <- hist(imp, col = 6, lwd = 2, breaks = 100, main = "", 
                    freq = FALSE, xlab = "importances", ylab = "density", 
                    axes = FALSE)
@@ -92,14 +90,11 @@ significant.genes<-function (object, imp, cutoff = 0.2, use_95_q=TRUE, do.plot =
         mtext(side = 4, line = 3, "local fdr")
         axis(1, pretty(range(1:max(object$x)), 10))
         box()
-#        par(old.par)
     }
     if (debug.flag == 1) {
         message(sum(imp > object$x[as.numeric(names(ww))]), " sum(imp> x[as.numeric(names(ww))])","\n")
     }
     if (do.plot == 2) {
-#       old.par <- par(mar = c(2, 2, 2, 2))
-#        par(mar = c(4, 4, 4, 6))
         aa <- hist(imp, col = 6, lwd = 2, breaks = 100, main = "", 
                    freq = FALSE, xlab = "importances", ylab = "density", 
                    axes = FALSE)
@@ -129,12 +124,9 @@ significant.genes<-function (object, imp, cutoff = 0.2, use_95_q=TRUE, do.plot =
                              "cutoff", "C", "cc", "fdr"), col = c("red", "red", 
                                                                   "orange", "blue", "purple", "black"), lty = 1, lwd = 2)
         box()
-        par(old.par)
     }
     
     if (do.plot == 3) {
-#        old.par <- par(mar = c(2, 2, 2, 2))
-#        par(mar = c(4, 4, 4, 6))
         aa <- hist(imp, col = 6, lwd = 2, breaks = 100, main = "", 
                    freq = FALSE, xlab = "importances", ylab = "density", 
                    axes = FALSE)
@@ -162,14 +154,11 @@ significant.genes<-function (object, imp, cutoff = 0.2, use_95_q=TRUE, do.plot =
         legend("topright", c("fitted curve",  
                              "cutoff", "C",  "fdr"), col = c("red",  "orange", "blue", "black"), lty = 1, lwd = 2)
         box()
-#        par(old.par)
     }
     
     
     
     if (do.plot == 4) {
-#        old.par <- par(mar = c(2, 2, 2, 2))
-#        par(mar = c(4, 4, 4, 6))
         aa <- hist(imp, col = 6, lwd = 2, breaks = 100, main = "", 
                    freq = FALSE, xlab = "importances", ylab = "density", 
                    axes = FALSE)
@@ -195,7 +184,6 @@ significant.genes<-function (object, imp, cutoff = 0.2, use_95_q=TRUE, do.plot =
                              "cutoff", "cc", "fdr"), col = c("red", "orange","blue", 
                                                              "black"), lty = 1, lwd = 2)
         box()
-#        par(old.par)
     }
     
     

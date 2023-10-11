@@ -61,7 +61,7 @@ plot(x,y,axes=FALSE,type="l",col="blue",main = "local fdr",
      xlab="importances",ylab="")                                                                                       
 axis(2, pretty( c(0,max(y)+0.5*max(y)),10))                                                                            
                                                                                                                        
-par(new=TRUE)                                                                                                          
+oldpar <- par(new = TRUE)
 plot(x, aa, type="l",col="green",main = "",xlab="",ylab="",axes=FALSE)                                                 
 abline(h = 0.2)                                                                                                        
 axis(4, pretty( aa,10))                                                                                                
@@ -69,5 +69,6 @@ axis(4, pretty( aa,10))
 axis(1,pretty(x,10))                                                                                                   
 box() #- to make it look "as usual                                                                                     
 legend("topright",c("density importances","local fdr"),col=c("blue","green"),lty=1)
+par(oldpar)
 }
 }

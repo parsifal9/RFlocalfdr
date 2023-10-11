@@ -25,6 +25,9 @@ fit.to.data.set.wrapper(
 
 \item{temp.dir, }{directory for debugging output, passed on to fit.to.data.set}
 
+\item{return.all}{passed to fit.to.data.set. If TRUE then the full output of minpack.lm::nlsLM is returned. Otherwise
+just the matrix of coefficients and t-values is returned.}
+
 \item{try.counter, }{passed on to fit.to.data.set
 try.counter=1 my.dsn xi=  1
 try.counter=2  xi=  mean(x)

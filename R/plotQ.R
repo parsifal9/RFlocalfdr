@@ -15,7 +15,6 @@
 #' @param debug.flag  either 0 (no debugging information), 1 or 2
 #' @param temp.dir if debug flag is >0 then information is written to temp.dir
 #' @param try.counter where to explain this?
-#' @param ww internal use
 #' @keywords variable importance
 #' @return
 #' - df, contains x and y, midpoints and counts from a histogram of imp
@@ -27,6 +26,7 @@
 #' - cc,  determined by the procedure of Gauran et.al 2018
 #' - fileConn, a file connectin for writing debugging information
 #' - f_fit, a spline fit to the histogram
+#' - ww the minimum value of the local fdr
 #' @export
 #' @examples
 #' \dontrun{
@@ -40,7 +40,7 @@
 #' # This was calculated previously. See determine_cutoff
 #' imp<-imp[t2 > 30]
 #' qq <- plotQ(imp,debug.flag = 0)
-#' }
+#' 
 #' data(smoking)
 #' ?smoking 
 #' y<-smoking$y
@@ -65,6 +65,7 @@
 #' ppp<-run.it.importances(qq,temp,debug.flag = 0)
 #' aa<-significant.genes(ppp,temp,cutoff=0.05,debug.flag=0,do.plot=TRUE,use_95_q=TRUE)
 #' length(aa$probabilities) # 17
+#' }
 
 
 plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3) 
@@ -72,7 +73,9 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
     fileConn <- NULL
     ww <- NULL
     # these are returned but only created if debug.flag > 0
-    
+    oldpar <- par(no.readonly = TRUE )
+    on.exit(par(oldpar))
+
     if (debug.flag > 0) {
         if (length(temp.dir) == 0) {
             temp.dir <- tempdir()
@@ -126,7 +129,7 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
     if (debug.flag > 0) {
         message("calculating cc", "\n")
     }
-    qq <- try(determine.C(f_fit, df, initial.estimates, starting_value = 2, start_at = 37), silent = TRUE)
+    qq <- try(determine.C(f_fit, df, initial.estimates,  start_at = 37), silent = TRUE)
     if (debug.flag > 0) {
         writeLines(paste(class(qq), "class(determine.C)"), fileConn)
     }

@@ -14,8 +14,6 @@ plotQ(imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
 \item{temp.dir}{if debug flag is >0 then information is written to temp.dir}
 
 \item{try.counter}{where to explain this?}
-
-\item{ww}{internal use}
 }
 \value{
 \itemize{
@@ -28,6 +26,7 @@ at the value C_0.95 (the 0.95 quantile of the skew-Normal distribution fitted to
 \item cc,  determined by the procedure of Gauran et.al 2018
 \item fileConn, a file connectin for writing debugging information
 \item f_fit, a spline fit to the histogram
+\item ww the minimum value of the local fdr
 }
 }
 \description{
@@ -57,7 +56,7 @@ imp<-log(ch22$imp)
 # This was calculated previously. See determine_cutoff
 imp<-imp[t2 > 30]
 qq <- plotQ(imp,debug.flag = 0)
-}
+
 data(smoking)
 ?smoking 
 y<-smoking$y
@@ -82,6 +81,7 @@ qq <- plotQ(temp)
 ppp<-run.it.importances(qq,temp,debug.flag = 0)
 aa<-significant.genes(ppp,temp,cutoff=0.05,debug.flag=0,do.plot=TRUE,use_95_q=TRUE)
 length(aa$probabilities) # 17
+}
 }
 \keyword{importance}
 \keyword{variable}

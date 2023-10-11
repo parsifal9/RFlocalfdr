@@ -4,33 +4,25 @@
 \alias{determine.C}
 \title{determine.C}
 \usage{
-determine.C(
-  f_fit,
-  df,
-  t1,
-  trace.plot = FALSE,
-  starting_value = 1,
-  start_at = 30,
-  debug.flag = 0
-)
+determine.C(f_fit, df, t1, trace.plot = FALSE, start_at = 30, debug.flag = 0)
 }
 \arguments{
 \item{f_fit}{object returned by f.fit}
 
 \item{df}{data frame containing x and y}
 
-\item{t1}{initial estimates {xi, omega, lambda}. Probably returned by fit.to.data.set.wrapper}
+\item{t1}{initial estimates {xi, omega, lambda}. Generally returned by fit.to.data.set.wrapper}
 
 \item{trace.plot}{-- produce a plot of each fit with a 1 second sleep. Can be watched as a movie.}
 
-\item{start_at}{--  x <- f_fit$midpoints  is of length 119 (quite arbitrary). We use the first starting_value
+\item{start_at}{--  x <- f_fit$midpoints  is of length 119 (quite arbitrary). We use the first start_at
 values of x to fit the skew-normal distribution.}
 
-\item{debug.flag}{-- debugging level. If ebug.flag >0 then some output is printed to the screen.}
+\item{debug.flag}{-- debugging level. If debug.flag >0 then some output is printed to the screen.}
 }
 \value{
--- a vector of numbers of length dim(df)[\link{1}] (119 in this case). Say that this is qq.
-We determine the minimum value,  x\link{which.min(qq)}. This is the value "C" such that
+-- a vector of numbers of length equal to the rows in df (119 in this case). Say that this is qq.
+We determine the minimum value of qq. This is the value "C" such that
 -- to the right of C, our data is generated from the NULL distribution
 -- to the left of C, we have a mixture of the NULL and non-NULL distribution
 }

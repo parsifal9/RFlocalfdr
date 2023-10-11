@@ -10,6 +10,8 @@
 #'        try.counter=1 my.dsn xi=  1  
 #'        try.counter=2  xi=  mean(x)
 #'        try.counter=3 start xi, omega, lambda from the parameters retuned by fitdistrplus::fitdist
+#' @param return.all passed to fit.to.data.set. If TRUE then the full output of minpack.lm::nlsLM is returned. Otherwise
+#'         just the matrix of coefficients and t-values is returned.
 #' @export
 #' @return  If the skew-normal fitting routine is succesful, then the matrix of parmaters and standard errors is returned.
 #'         -- othewise a "try-error" message is returned
