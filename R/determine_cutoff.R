@@ -11,6 +11,7 @@
 #' - The quantile Q (vertical red line)
 #' @param verbose verbose=0, no output to screen
 #'                verbose=1, track the cutoff value being used
+#' @param try.counter passed to fit.to.data.set.wrapper
 #' @md
 #' @return res a matrix if size length(cutoff) by 3.
 #' We model the histogram of imp with a kernel density estimate, y.
@@ -21,8 +22,29 @@
 #' evaluated up to the quantile Q
 #' @export
 #' @examples
+#' data(imp20000)
+#' imp <- log(imp20000$importances)
+#' t2<- imp20000$counts
+#' length(imp)
+#' hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
+#' res.temp <- determine_cutoff(imp, t2 ,cutoff=c(0,1,2,3),plot=c(0,1,2,3),Q=0.75,try.counter=1)
+#' 
+#' plot(c(0,1,2,3),res.temp[,3])
+#' # the minimum is at 1 so
+#' imp<-imp[t2 > 1]
+#' 
+#' qq <- plotQ(imp,debug.flag = 0)
+#' ppp<-run.it.importances(qq,imp,debug=0)
+#' aa<-significant.genes(ppp,imp,cutoff=0.2,debug.flag=0,do.plot=2, use_95_q=TRUE)
+#' length(aa$probabilities) #11#
+#' names(aa$probabilities)
+#' #[1] "X101"   "X102"   "X103"   "X104"   "X105"   "X2994"  "X9365"  "X10718"
+#' # [9] "X13371" "X15517" "X16460"
+#' # so the observed FDR is 0.54
+#' 
 #' \dontrun{
-#' #' library(ranger)
+#' library(ranger)
+#' library(RFlocalfdr.data)
 #' data(smoking)
 #' y<-smoking$y
 #' smoking_data<-smoking$rma
@@ -37,16 +59,16 @@
 #' plot(c(1,2,3,4),res.temp[,3])
 #' }
 
-determine_cutoff <- function(imp, t2, cutoff=c(0,1,4,10,15,20), Q = 0.75, plot = NULL,verbose=0){
+determine_cutoff <- function(imp, t2, cutoff=c(0,1,4,10,15,20), Q = 0.75, plot = NULL, verbose=0, try.counter = 3){
     # calls f.fit, fit.to.data.set.wrapper, my.dsn
     res1  <- matrix(0, length(cutoff), 3)
     steps <- cutoff
-    oldpar <- par(no.readonly = TRUE )
+    oldpar <- par(no.readonly = TRUE)
     on.exit(par(oldpar))
-    
-    par(mfrow=c(2,2))    # set the plotting area into a 2*2 array
 
-    for ( ii in 1:length(steps )  ) {
+    par(mfrow=c(2, 2))    # set the plotting area into a 2*2 array
+
+    for (ii in 1:length(steps)){
 
         if (verbose >0){
         message("i = ", ii, ", cutoff = ", steps[ii], "\n")
@@ -63,7 +85,7 @@ determine_cutoff <- function(imp, t2, cutoff=c(0,1,4,10,15,20), Q = 0.75, plot =
         C <- quantile(temp,probs=Q)
         df2 <- data.frame(x[x < C], y[x < C])
 
-        initial.estimates <- fit.to.data.set.wrapper(df2, temp)
+        initial.estimates <- fit.to.data.set.wrapper(df2, temp, try.counter = try.counter)
 #        if (is(initial.estimates,"nls")){#what is this for?
 #            return(res1)
 #        }

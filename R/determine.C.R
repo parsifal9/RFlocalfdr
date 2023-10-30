@@ -8,7 +8,7 @@
 #' mixture distributions and its application to protein domain data" Biometrics, 2018 74:2
 #' @param f_fit object returned by f.fit
 #' @param df data frame containing x and y
-#' @param t1 initial estimates {xi, omega, lambda}. Generally returned by fit.to.data.set.wrapper
+#' @param t1 initial estimates of xi, omega, and  lambda. Generally returned by fit.to.data.set.wrapper
 #' @param trace.plot -- produce a plot of each fit with a 1 second sleep. Can be watched as a movie.
 #' @param start_at       --  x <- f_fit$midpoints  is of length 119 (quite arbitrary). We use the first start_at  
 #'                          values of x to fit the skew-normal distribution. 
@@ -21,9 +21,31 @@
 #'           -- to the right of C, our data is generated from the NULL distribution
 #'           -- to the left of C, we have a mixture of the NULL and non-NULL distribution
 #' @examples
-#' \dontrun{
+#' data(imp20000)                                      
+#' imp<-log(imp20000$importances)                               
+#' t2<-imp20000$counts
+#' temp<-imp[t2 > 1]   #see                          
+#' temp<-temp[temp != -Inf]                         
+#' temp <- temp - min(temp) + .Machine$double.eps   
+#' f_fit <- f.fit(temp)                             
+#' y <- f_fit$zh$density                            
+#' x <- f_fit$midpoints                             
+#' df <- data.frame(x, y)                           
+#' initial.estimates <- fit.to.data.set.wrapper(df, temp, try.counter = 3,return.all=FALSE)           
+#' initial.estimates<-  initial.estimates$Estimate
+#' 
+#' qq<- determine.C(f_fit,df,initial.estimates,start_at=37,trace.plot = FALSE)    
+#' cc<-x[which.min(qq)]                                                                             
+#' plot(x,qq,main="determine cc")                                                                   
+#' abline(v=cc)
+#' # unfortunately the minima does not appear reasonable. In this case it is advisable to use the
+#' # 95th quantile
+#' 
+#' \donttest{
+#' #needs the  chromosome 22 data in  RFlocalfdr.data. Also has a long runtime.
+#' library(RFlocalfdr.data)
 #' data(ch22)                                                                                    
-#' ? ch22                                                                                        
+#' ?ch22                                                                                        
 #' t2 <-ch22$C                                                                                   
 #' imp<-log(ch22$imp)                                                                            
 #' #Detemine a cutoff to get a unimodal density.                                                 
@@ -39,7 +61,7 @@
 #' lines(x,y,col="red")                                                                                                                      
 #' df<-data.frame(x,y)                                                                                                                           
 #' initial.estimates <- fit.to.data.set.wrapper(df,imp,debug.flag=debug.flag,plot.string="initial",
-#'                                               temp.dir=temp.dir,try.counter=try.counter)    
+#'                                               temp.dir=temp.dir,try.counter=3)    
 #' initial.estimates <- data.frame(summary(initial.estimates)$parameters)$Estimate                                                               
 #' # 1.102303 1.246756 1.799169
 #' qq<- determine.C(f_fit,df,initial.estimates,start_at=37,trace.plot = TRUE)    

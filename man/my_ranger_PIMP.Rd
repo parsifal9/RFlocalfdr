@@ -55,7 +55,7 @@ my_ranger_PIMP applies the same method to the ranger RF package
 }
 \examples{
 \dontrun{ 
-library(RFlocalfdr)
+library(RFlocalfdr.data)
 library(ranger)
 library(vita) #vita: Variable Importance Testing Approaches
 data(smoking)

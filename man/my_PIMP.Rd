@@ -45,7 +45,7 @@ my_PIMP applies the same method as PIMP but to the MDI (mean decrease in impurit
 }
 \examples{
 \dontrun{
-library(RFlocalfdr)
+library(RFlocalfdr.data)
 library(ranger)
 library(vita) #vita: Variable Importance Testing Approaches
 data(smoking)

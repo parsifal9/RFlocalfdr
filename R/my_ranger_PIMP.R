@@ -29,7 +29,7 @@
 #' @return an object of class PIMP
 #' @examples
 #' \dontrun{ 
-#' library(RFlocalfdr)
+#' library(RFlocalfdr.data)
 #' library(ranger)
 #' library(vita) #vita: Variable Importance Testing Approaches
 #' data(smoking)

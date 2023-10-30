@@ -37,7 +37,22 @@ A list containg
 This function sepects the significant "genes" and makes some plots
 }
 \examples{
-\dontrun{
+data(imp20000)
+imp <- log(imp20000$importances)
+t2  <- imp20000$counts
+plot(density((imp)))
+hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
+res.temp <- determine_cutoff(imp, t2 ,cutoff=c(0,1,2,3),plot=c(0,1,2,3),Q=0.75,try.counter=1)
+plot(c(0,1,2,3),res.temp[,3])
+imp<-imp[t2 > 1]
+qq <- plotQ(imp,debug.flag = 0)                                                          
+ppp<-run.it.importances(qq,imp,debug=0)                                                       
+aa<-significant.genes(ppp,imp,cutoff=0.2,debug.flag=0,do.plot=2, use_95_q=TRUE)                           
+length(aa$probabilities) #11#                                                          
+names(aa$probabilities)
+
+\donttest{
+library(RFlocalfdr.data)
 data(ch22)                                                                                 
 ? ch22                                                                                     
 plot(density(log(ch22$imp)))                                                               

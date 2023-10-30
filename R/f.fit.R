@@ -18,12 +18,13 @@
 #' 
 #' @md
 #' @examples
-#' data(imp1)                                                       
-#' res <- f.fit(imp1)                                               
+#' data(imp20000)
+#' imp <- log(imp20000$importances)
+#' res <- f.fit(imp)
 #' plot(res$zh, xlab="importances", main="histogram of importances")
-#' points(res$midpoints,res$counts, col="grey90")                           
-#' lines(res$zh$breaks[-1],res$f.spline,col="blue", lwd=3)          
-#' legend(1.5,800,c("spline fit"), col="blue", lwd=3)               
+#' points(res$midpoints,res$counts, col="grey90")
+#' lines(res$zh$breaks[-1],res$f.spline,col="blue", lwd=3)
+#' legend("topleft",c("spline fit"), col="blue", lwd=3)
 
 f.fit <-function(imp,df=10,debug.flag=0,temp.dir=NULL){
     # do we want to set the number of breakpoints as a parameter

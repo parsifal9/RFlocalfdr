@@ -12,7 +12,39 @@
 #' @export
 #' @return returns an estimate of the local false discovery rate.
 #' @examples
+#' data(imp20000)                                      
+#' imp<-log(imp20000$importances)                               
+#' t2<-imp20000$counts
+#' temp<-imp[t2 > 1]   #see                          
+#' temp<-temp[temp != -Inf]                         
+#' temp <- temp - min(temp) + .Machine$double.eps   
+#' f_fit <- f.fit(temp)                             
+#' y <- f_fit$zh$density                            
+#' x <- f_fit$midpoints                             
+#' df <- data.frame(x, y)                           
+#' fitted_parameters <- fit.to.data.set(df, temp, try.counter = 3)           
+#' fitted_parameters
+#' 
+#' aa <- local.fdr(f_fit, df$x, FUN = my.dsn, xi = fitted_parameters$Estimate[1],
+#'                 omega = fitted_parameters$Estimate[2], lambda = fitted_parameters$Estimate[3],
+#'                 debug.flag = 0, plot.string = "initial")
+#' 
+#' plot(x,y,axes=FALSE,type="l",col="blue",main = "local fdr",
+#'       xlab="importances",ylab="")                                                                                       
+#' axis(2, pretty( c(0,max(y)+0.5*max(y)),10))                                                                            
+#'                                                                                                                         
+#' oldpar <- par(new = TRUE)
+#' plot(x, aa, type="l",col="green",main = "",xlab="",ylab="",axes=FALSE)                                                 
+#' abline(h = 0.2)                                                                                                        
+#' axis(4, pretty( aa,10))                                                                                                
+#'                                                                                                                         
+#' axis(1,pretty(x,10))                                                                                                   
+#' box() #- to make it look "as usual                                                                                     
+#' legend("topright",c("density importances","local fdr"),col=c("blue","green"),lty=1)
+#' par(oldpar)
+#' 
 #' \dontrun{
+#' library(RFlocalfdr.data)
 #' data(ch22)                                                                                                             
 #' imp<-log(ch22$imp)
 #' t2<-ch22$C                                                                                                             
