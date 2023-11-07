@@ -58,8 +58,8 @@
 #' initial.estimates <- fit.to.data.set.wrapper(df, imp, debug.flag = debug.flag,
 #' return.all = FALSE)
 #' 
-#' aa <- local.fdr(f_fit, df$x, FUN = my.dsn, xi = initial.estimates[1],
-#'     omega = initial.estimates[2], lambda = initial.estimates[3],  debug.flag = 0,
+#' aa <- local.fdr(f_fit, df$x, FUN = my.dsn, xi = initial.estimates$Estimate[1],
+#'     omega = initial.estimates$Estimate[2], lambda = initial.estimates$Estimate[3],  debug.flag = 0,
 #'                     plot.string = "initial")
 #' 
 #' plot(x,y,axes=FALSE,type="l",col="blue",main = "local fdr",                                                            

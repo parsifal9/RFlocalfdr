@@ -108,7 +108,7 @@ run.it.importances <- function(qq, imp, debug.flag = 0, temp.dir = NULL) {
         if (!is.na(cc)) {
             lines(df3$x, df3$y, col = "blue", lwd = 2)
             abline(v = cc, col = "blue")
-            if (class(final.estimates_cc) != "character") {
+            if (!inherits(final.estimates_cc,"character")) {
                 curve(sn::dsn(x, xi = final.estimates_cc$Estimate[1], 
                   omega = final.estimates_cc$Estimate[2], alpha = final.estimates_cc$Estimate[3]), 
                   add = TRUE, col = "blue", lwd = 3)
@@ -152,7 +152,7 @@ run.it.importances <- function(qq, imp, debug.flag = 0, temp.dir = NULL) {
         abline(v = sn::qsn(0.95, xi = final.estimates_C_0.95$Estimate[1], 
             omega = final.estimates_C_0.95$Estimate[2], alpha = final.estimates_C_0.95$Estimate[3]), 
             col = "red", lwd = 2)
-        if (class(final.estimates_cc) != "character") {
+        if (!inherits(final.estimates_cc,"character")) {
             curve(my.dsn(x, xi = final.estimates_cc$Estimate[1], 
                 omega = final.estimates_cc$Estimate[2], lambda = final.estimates_cc$Estimate[3]), 
                 add = TRUE, col = "lawngreen", lwd = 2)

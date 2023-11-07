@@ -152,8 +152,7 @@ plotQ <- function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
     if (debug.flag > 0) {
         message("calculating cc", "\n")
     }
-    qq <- try(determine.C(f_fit, df, initial.estimates, starting_value = 2, 
-        start_at = 37), silent = TRUE)
+    qq <- try(determine.C(f_fit, df, initial.estimates, start_at = 37), silent = TRUE)
     if (debug.flag > 0) {
         writeLines(paste(class(qq), "class(determine.C)"), fileConn)
     }

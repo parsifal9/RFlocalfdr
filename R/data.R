@@ -7,7 +7,7 @@
 #'   \item{imp1}{importances }
 #' }
 #' @examples
-#' 
+#' \donttest{
 #' require(ranger)
 #' inv.logit <-function (x) {
 #'     plogis(x)}
@@ -70,5 +70,6 @@
 #' counts<-t2
 #' imp20000 <- list(imp,counts)
 #' names(imp20000) <-c("importances","counts")
+#' }
 #' 
 "imp20000"

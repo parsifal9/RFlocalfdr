@@ -70,7 +70,7 @@
 #' abline(v=cc)
 #' }
 
-determine.C<-function (f_fit, df, t1,trace.plot = FALSE,start_at=30,debug.flag=0) 
+determine.C<-function (f_fit, df, t1, trace.plot = FALSE ,start_at=30, debug.flag=0) 
 {
     f <- f_fit$f.spline
     x <- df$x
