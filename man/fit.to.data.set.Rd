@@ -63,7 +63,7 @@ curve(my.dsn(x, xi = fitted_parameters$Estimate[1], omega = fitted_parameters$Es
                 lambda = fitted_parameters$Estimate[3]), add = TRUE, 
                 col = "orange", lwd = 3)
 
-\dontrun{
+\donttest{
 library(RFlocalfdr.data)
 data(ch22)                                       
 imp<-log(ch22$imp)                               

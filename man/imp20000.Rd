@@ -17,7 +17,7 @@ imp20000
 A dataset containing  20000 importance values
 }
 \examples{
-\donttest{
+
 require(ranger)
 inv.logit <-function (x) {
     plogis(x)}
@@ -80,6 +80,6 @@ names(aa$probabilities)
 counts<-t2
 imp20000 <- list(imp,counts)
 names(imp20000) <-c("importances","counts")
-}
+
 }
 \keyword{datasets}

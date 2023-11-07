@@ -1,6 +1,6 @@
 Package: RFlocalfdr
 Title: Significance Level for Random Forest Impurity Importance Scores
-Version: 0.8.0
+Version: 0.8.2
 Authors@R: 
     person(given = "Robert",
            family = "Dunne",
@@ -24,7 +24,8 @@ Imports:
     graphics,
     stats,
     ranger,
-    randomForest
+    randomForest,
+    RFlocalfdr.data
 Depends: 
     R (>= 3.5.0)
 Suggests: 

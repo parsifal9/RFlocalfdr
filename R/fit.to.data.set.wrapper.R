@@ -39,7 +39,7 @@
 #'                 lambda = fitted_parameters$Estimate[3]), add = TRUE, 
 #'                 col = "orange", lwd = 3)
 #' 
-#' \dontrun{
+#' \donttest{
 #' library(RFlocalfdr.data)
 #' data(ch22)
 #' t2 <-ch22$C

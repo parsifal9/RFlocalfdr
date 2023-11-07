@@ -43,7 +43,7 @@
 #' legend("topright",c("density importances","local fdr"),col=c("blue","green"),lty=1)
 #' par(oldpar)
 #' 
-#' \dontrun{
+#' \donttest{
 #' library(RFlocalfdr.data)
 #' data(ch22)                                                                                                             
 #' imp<-log(ch22$imp)

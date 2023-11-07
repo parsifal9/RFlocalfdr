@@ -52,7 +52,7 @@ curve(my.dsn(x,xi=3, omega=4, lambda=4),xlim=c(-10,20),col="red",add=TRUE)
 
 #dsn, qsn and psn are wrappers around the provided functions provided by sn. This is done to
 # overcome some checking done by fitdistrplus
-\dontrun{
+\donttest{
 library(sn)
 getAnywhere("dsn")
 RFlocalfdr::my.test1fun("sn::dsn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))

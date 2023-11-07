@@ -71,7 +71,7 @@ names(aa$probabilities)
 # [9] "X13371" "X15517" "X16460"
 # so the observed FDR is 0.54
 
-\dontrun{
+\donttest{
 library(ranger)
 library(RFlocalfdr.data)
 data(smoking)

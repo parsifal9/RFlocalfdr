@@ -82,15 +82,10 @@
 #' length(aa$probabilities) # 17
 #' }
 
-
-plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3) 
-{
+plotQ <- function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3) 
+ {
     fileConn <- NULL
     ww <- NULL
-    # these are returned but only created if debug.flag > 0
-    oldpar <- par(no.readonly = TRUE )
-    on.exit(par(oldpar))
-
     if (debug.flag > 0) {
         if (length(temp.dir) == 0) {
             temp.dir <- tempdir()
@@ -112,13 +107,22 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
         lines(x, y, col = "red")
         dev.off()
     }
+    #why is lines(x, y, col = "red") or jagged?
     df <- data.frame(x, y)
+# t1 <- fit.to.data.set.wrapper(df, imp, debug.flag = 1, 
+#        plot.string = "initial", temp.dir = NULL, try.counter = 1)
+##Error in plot.new() : could not open file '/fit_to_data_set_initial.png'
+# t1 <- fit.to.data.set.wrapper(df, imp, try.counter = 1)
+# t2 <- fit.to.data.set.wrapper(df, imp, try.counter = 2)
+# t3 <- fit.to.data.set.wrapper(df, imp, try.counter = 3) #error
+    
     initial.estimates <- fit.to.data.set.wrapper(df, imp, debug.flag = debug.flag, 
-                    plot.string = "initial", temp.dir = temp.dir, try.counter = try.counter)
-    if (inherits(initial.estimates,"try-error")) {
-        stop("fit.to.data.set.wrapper has returned a try-error")
+        plot.string = "initial", temp.dir = temp.dir, try.counter = try.counter)
+    if (inherits(initial.estimates, "try-error")) {
+        stop("fit.to.data.set.wrapper has returned a try-error at the initial estimate")
+    } else{
+        initial.estimates <- data.frame(summary(initial.estimates)$parameters)$Estimate
     }
-    initial.estimates <- data.frame(summary(initial.estimates)$parameters)$Estimate
     if (debug.flag > 0) {
         writeLines(paste("initial estimates", initial.estimates[1], 
             initial.estimates[2], initial.estimates[3]), fileConn)
@@ -127,7 +131,8 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
         aa <- local.fdr(f_fit, df$x, FUN = my.dsn, xi = initial.estimates[1], 
             omega = initial.estimates[2], lambda = initial.estimates[3], 
             debug.flag = 0, plot.string = "initial", temp.dir = temp.dir)
-        png(paste(temp.dir, "/fdr_using_initial_estiamtes.png",   sep = ""))
+        png(paste(temp.dir, "/fdr_using_initial_estiamtes.png", 
+            sep = ""))
         plot(x, aa, main = "fdr using initial estimates")
         abline(h = 0.2)
         ww <- which.min(abs(aa[50:119] - 0.2))
@@ -135,21 +140,25 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
         tt <- sum(imp > x[as.numeric(names(ww))])
         abline(v = x[as.numeric(names(ww))])
         dev.off()
-        writeLines(paste("sum(imp> x[as.numeric(names(ww))])",   tt), fileConn)
+        writeLines(paste("sum(imp> x[as.numeric(names(ww))])", 
+            tt), fileConn)
     }
-    C_0.95 <- sn::qsn(0.95, xi = initial.estimates[1], omega = initial.estimates[2], alpha = initial.estimates[3])
+
+    C_0.95 <- sn::qsn(0.95, xi = initial.estimates[1], omega = initial.estimates[2], 
+        alpha = initial.estimates[3])
     if (debug.flag == 1) {
         writeLines(paste("calculating C_0.95", C_0.95), fileConn)
     }
     if (debug.flag > 0) {
         message("calculating cc", "\n")
     }
-    qq <- try(determine.C(f_fit, df, initial.estimates,  start_at = 37), silent = TRUE)
+    qq <- try(determine.C(f_fit, df, initial.estimates, starting_value = 2, 
+        start_at = 37), silent = TRUE)
     if (debug.flag > 0) {
         writeLines(paste(class(qq), "class(determine.C)"), fileConn)
     }
     cc <- final.estimates_cc <- aa_cc <- NA
-    if (inherits(qq,"numeric")) {
+    if (inherits(qq, "numeric")) {
         cc <- x[which.min(qq)]
         if (debug.flag > 0) {
             writeLines(paste("cc= ", cc), fileConn)
@@ -159,56 +168,195 @@ plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
             dev.off()
         }
     }
-
     df2 <- data.frame(x[x < C_0.95], y[x < C_0.95])
     names(df2) <- c("x", "y")
-    final.estimates_C_0.95 <- fit.to.data.set.wrapper(df2, imp, debug.flag = debug.flag, plot.string = "final", temp.dir = temp.dir)
+    final.estimates_C_0.95 <- fit.to.data.set.wrapper(df2, imp, 
+                                                      debug.flag = debug.flag, plot.string = "final", temp.dir = temp.dir,try.counter=try.counter)
+    if (inherits(final.estimates_C_0.95, "try-error")) {
+        if (debug.flag > 0){
+            print("fit.to.data.set.wrapper has returned a try-error at the final 0.95 estimates")
+        }
+    }
+ 
     final.estimates_C_0.95 <- data.frame(summary(final.estimates_C_0.95)$parameters)
     if (!is.na(cc)) {
-        #cc was set to NA. Only if qq is numeric will it not be NA
         df3 <- data.frame(x[x < cc], y[x < cc])
         names(df3) <- c("x", "y")
-        final.estimates_cc <- fit.to.data.set.wrapper(df3, imp, debug.flag = debug.flag, plot.string = "cc",
-                                                      temp.dir = temp.dir)
-        #this is where the error was
-        if ( !inherits(final.estimates_cc,"character")){
+        final.estimates_cc <- fit.to.data.set.wrapper(df3, imp, 
+            debug.flag = debug.flag, plot.string = "cc", temp.dir = temp.dir)
+        if  (inherits(final.estimates_cc, "try-error")) {
+             if (debug.flag > 0){
+                 print("fit.to.data.set.wrapper has returned a try-error at the final cc estimates")
+             }
+        } else {
             final.estimates_cc <- data.frame(summary(final.estimates_cc)$parameters)
-            }
+        }
     }
-
     if (1) {
-#        print(" I got here")
-        aa<-hist(imp, col = "grey", lwd = 2, breaks = 100, main = "", 
-                 freq = FALSE, xlab = "importances", ylab = "density",
-                 axes = FALSE)
+        aa <- hist(imp, col = "grey", lwd = 2, breaks = 100, 
+            main = "", freq = FALSE, xlab = "importances", ylab = "density", 
+            axes = FALSE)
         abline(v = C_0.95, col = "red", lwd = 2)
         if (!is.na(cc)) {
             abline(v = cc, col = "purple", lwd = 2)
         }
         legend("topright", c("q_95", "q"), col = c("red", "purple"), 
-               lty = 1)
-        axis(2, pretty(c(0, max(aa$density) + 0.5 * max(aa$density)),10))
-        lines(x, y, type = "l", col = "grey90", lwd = 2, xlim = c(0,   12))
+            lty = 1)
+        axis(2, pretty(c(0, max(aa$density) + 0.5 * max(aa$density)), 
+            10))
+        lines(x, y, type = "l", col = "grey90", lwd = 2, xlim = c(0, 
+            12))
         lines(df2$x, df2$y, col = "red", lwd = 2)
         if (!is.na(cc)) {
             lines(df3$x, df3$y, col = "purple", lwd = 2)
         }
-        if (inherits(qq,"numeric")) {
+        if (inherits(qq, "numeric")) {
             par(new = TRUE)
-            plot(x, qq, type="l",lwd=2,axes = FALSE,xlab = "", ylab = "",col="purple")
-            axis(4, pretty(c(min(qq,na.rm=TRUE) , max(qq,na.rm=TRUE) + 0.5 * max(qq,na.rm=TRUE)),10))
+            plot(x, qq, type = "l", lwd = 2, axes = FALSE, xlab = "", 
+                ylab = "", col = "purple")
+            axis(4, pretty(c(min(qq, na.rm = TRUE), max(qq, na.rm = TRUE) + 
+                0.5 * max(qq, na.rm = TRUE)), 10))
         }
         box()
-        
-        temp <- list(df, final.estimates_C_0.95, 
-                     final.estimates_cc, temp.dir, C_0.95, cc ,f_fit, ww)
-        names(temp) <- c("df", "final.estimates_C_0.95,", 
-                         "final.estimates_cc", "temp.dir", "C_0.95", "cc", "f_fit", "ww")
-    } 
+        temp <- list(df, final.estimates_C_0.95, final.estimates_cc, 
+            temp.dir, C_0.95, cc, f_fit, ww)
+        names(temp) <- c("df", "final.estimates_C_0.95,", "final.estimates_cc", 
+            "temp.dir", "C_0.95", "cc", "f_fit", "ww")
+    }
     if (debug.flag > 0) {
         writeLines(c("GoodBye World"), fileConn)
         close(fileConn)
     }
     temp
 }
+
+
+## plotQ <-function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3) 
+## {
+##     fileConn <- NULL
+##     ww <- NULL
+##     # these are returned but only created if debug.flag > 0
+##     oldpar <- par(no.readonly = TRUE )
+##     on.exit(par(oldpar))
+
+##     if (debug.flag > 0) {
+##         if (length(temp.dir) == 0) {
+##             temp.dir <- tempdir()
+##         }
+##         fileConn <- file(paste(temp.dir, "/output_from_PlotQ.txt", sep = ""), open = "wt")
+##         writeLines(c("Hello", "World"), fileConn)
+##     }
+##     imp <- imp - min(imp) + .Machine$double.eps
+##     if (debug.flag > 0) {
+##         writeLines(paste(length(imp), "length(imp)"), fileConn)
+##         writeLines(paste(unlist(range(imp)), "range(imp)"), fileConn)
+##     }
+##     f_fit <- f.fit(imp, debug.flag = debug.flag, temp.dir = temp.dir)
+##     y <- f_fit$zh$density
+##     x <- f_fit$midpoints
+##     if (debug.flag > 0) {
+##         png(paste(temp.dir, "/density_importances.png", sep = ""))
+##         plot(density(imp), main = "histogram and fitted spline")
+##         lines(x, y, col = "red")
+##         dev.off()
+##     }
+##     df <- data.frame(x, y)
+##     initial.estimates <- fit.to.data.set.wrapper(df, imp, debug.flag = debug.flag, 
+##                     plot.string = "initial", temp.dir = temp.dir, try.counter = try.counter)
+##     if (inherits(initial.estimates,"try-error")) {
+##         stop("fit.to.data.set.wrapper has returned a try-error")
+##     }
+##     initial.estimates <- data.frame(summary(initial.estimates)$parameters)$Estimate
+##     if (debug.flag > 0) {
+##         writeLines(paste("initial estimates", initial.estimates[1], 
+##             initial.estimates[2], initial.estimates[3]), fileConn)
+##         writeLines("we calcualte the fdr using the initial estimates", 
+##             fileConn)
+##         aa <- local.fdr(f_fit, df$x, FUN = my.dsn, xi = initial.estimates[1], 
+##             omega = initial.estimates[2], lambda = initial.estimates[3], 
+##             debug.flag = 0, plot.string = "initial", temp.dir = temp.dir)
+##         png(paste(temp.dir, "/fdr_using_initial_estiamtes.png",   sep = ""))
+##         plot(x, aa, main = "fdr using initial estimates")
+##         abline(h = 0.2)
+##         ww <- which.min(abs(aa[50:119] - 0.2))
+##         sum(imp > x[as.numeric(names(ww))])
+##         tt <- sum(imp > x[as.numeric(names(ww))])
+##         abline(v = x[as.numeric(names(ww))])
+##         dev.off()
+##         writeLines(paste("sum(imp> x[as.numeric(names(ww))])",   tt), fileConn)
+##     }
+##     C_0.95 <- sn::qsn(0.95, xi = initial.estimates[1], omega = initial.estimates[2], alpha = initial.estimates[3])
+##     if (debug.flag == 1) {
+##         writeLines(paste("calculating C_0.95", C_0.95), fileConn)
+##     }
+##     if (debug.flag > 0) {
+##         message("calculating cc", "\n")
+##     }
+##     qq <- try(determine.C(f_fit, df, initial.estimates,  start_at = 37), silent = TRUE)
+##     if (debug.flag > 0) {
+##         writeLines(paste(class(qq), "class(determine.C)"), fileConn)
+##     }
+##     cc <- final.estimates_cc <- aa_cc <- NA
+##     if (inherits(qq,"numeric")) {
+##         cc <- x[which.min(qq)]
+##         if (debug.flag > 0) {
+##             writeLines(paste("cc= ", cc), fileConn)
+##             png(paste(temp.dir, "/determine_cc.png", sep = ""))
+##             plot(x, qq, main = "determine cc")
+##             abline(v = cc)
+##             dev.off()
+##         }
+##     }
+
+##     df2 <- data.frame(x[x < C_0.95], y[x < C_0.95])
+##     names(df2) <- c("x", "y")
+##     final.estimates_C_0.95 <- fit.to.data.set.wrapper(df2, imp, debug.flag = debug.flag, plot.string = "final", temp.dir = temp.dir)
+##     final.estimates_C_0.95 <- data.frame(summary(final.estimates_C_0.95)$parameters)
+##     if (!is.na(cc)) {
+##         #cc was set to NA. Only if qq is numeric will it not be NA
+##         df3 <- data.frame(x[x < cc], y[x < cc])
+##         names(df3) <- c("x", "y")
+##         final.estimates_cc <- fit.to.data.set.wrapper(df3, imp, debug.flag = debug.flag, plot.string = "cc",
+##                                                       temp.dir = temp.dir)
+##         #this is where the error was
+##         if ( !inherits(final.estimates_cc,"character")){
+##             final.estimates_cc <- data.frame(summary(final.estimates_cc)$parameters)
+##             }
+##     }
+
+##     if (1) {
+## #        print(" I got here")
+##         aa<-hist(imp, col = "grey", lwd = 2, breaks = 100, main = "", 
+##                  freq = FALSE, xlab = "importances", ylab = "density",
+##                  axes = FALSE)
+##         abline(v = C_0.95, col = "red", lwd = 2)
+##         if (!is.na(cc)) {
+##             abline(v = cc, col = "purple", lwd = 2)
+##         }
+##         legend("topright", c("q_95", "q"), col = c("red", "purple"), 
+##                lty = 1)
+##         axis(2, pretty(c(0, max(aa$density) + 0.5 * max(aa$density)),10))
+##         lines(x, y, type = "l", col = "grey90", lwd = 2, xlim = c(0,   12))
+##         lines(df2$x, df2$y, col = "red", lwd = 2)
+##         if (!is.na(cc)) {
+##             lines(df3$x, df3$y, col = "purple", lwd = 2)
+##         }
+##         if (inherits(qq,"numeric")) {
+##             par(new = TRUE)
+##             plot(x, qq, type="l",lwd=2,axes = FALSE,xlab = "", ylab = "",col="purple")
+##             axis(4, pretty(c(min(qq,na.rm=TRUE) , max(qq,na.rm=TRUE) + 0.5 * max(qq,na.rm=TRUE)),10))
+##         }
+##         box()
+        
+##         temp <- list(df, final.estimates_C_0.95, 
+##                      final.estimates_cc, temp.dir, C_0.95, cc ,f_fit, ww)
+##         names(temp) <- c("df", "final.estimates_C_0.95,", 
+##                          "final.estimates_cc", "temp.dir", "C_0.95", "cc", "f_fit", "ww")
+##     } 
+##     if (debug.flag > 0) {
+##         writeLines(c("GoodBye World"), fileConn)
+##         close(fileConn)
+##     }
+##     temp
+## }
 

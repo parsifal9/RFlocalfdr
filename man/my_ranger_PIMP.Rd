@@ -54,7 +54,7 @@ my_PIMP applies the same method as PIMP but to the MDI (mean decrease in impurit
 my_ranger_PIMP applies the same method to the ranger RF package
 }
 \examples{
-\dontrun{ 
+\donttest{ 
 library(RFlocalfdr.data)
 library(ranger)
 library(vita) #vita: Variable Importance Testing Approaches
