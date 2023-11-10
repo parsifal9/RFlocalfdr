@@ -5,7 +5,6 @@ Based on an empirical Bayes model. See https://www.biorxiv.org/content/10.1101/2
 Thresholding Gini Variable Importance with a single trained Random Forest: An Empirical Bayes Approach
 (Robert Dunne, Roc Reguant, Priya Ramarao-Milne, Piotr Szul, Letitia Sng, Mischa Lundberg, Natalie A. Twine, Denis C. Bauer) for full details.
 
-
 Until I figure out how to manage the cran repository:
 
 - the data sets are not available in the cran version

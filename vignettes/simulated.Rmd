@@ -391,7 +391,7 @@ X<-data.frame(X)
 set.seed(117)
 cl.ranger <- ranger(y~. , X,mtry = 3,num.trees = 1000, importance = 'impurity')
 system.time(pimp.varImp.cl<-my_ranger_PIMP(X,y,cl.ranger,S=10, parallel=TRUE, ncores=3)) 
-pimp.t.cl <- PimpTest(pimp.varImp.cl,para = FALSE)
+pimp.t.cl <- vita::PimpTest(pimp.varImp.cl,para = FALSE)
 aa <- summary(pimp.t.cl,pless = 0.1)
 
 tt<-as.numeric(gsub("X([0-9]*)","\\1",  names(which(aa$cmat2[,"p-value"]< 0.05))))

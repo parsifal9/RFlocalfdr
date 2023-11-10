@@ -26,8 +26,7 @@ at the value C_0.95 (the 0.95 quantile of the skew-Normal distribution fitted to
 \item cc,  determined by the procedure of Gauran et.al 2018
 \item fileConn, a file connectin for writing debugging information
 \item f_fit, a spline fit to the histogram
-\item ww, debugging inpormation
-\item aa_cc, debugging inpormation
+\item ww the minimum value of the local fdr
 }
 }
 \description{
@@ -39,14 +38,29 @@ produces a plot showing the q values
 }
 \details{
 We estiamte a value "q" such that:
-to the left of "q", the density is somposed solely of NULL importance values
+to the left of "q", the density is composed solely of NULL importance values
 to the right of "q" we have  a density that is a mixture of null and non-null  importance values.
 The method of Gauran et.al 2018 may not work in cases where the data distribution is not well modelled by a skew-normal.
 The q_95 value can be uses as a workaround in these case.
 In many cases they will be very similar
 }
 \examples{
-\dontrun{
+data(imp20000)
+imp <- log(imp20000$importances)
+t2 <- imp20000$counts
+plot(density((imp)))
+hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
+res.temp <- determine_cutoff(imp, t2 ,cutoff=c(0,1,2,3),plot=c(0,1,2,3),Q=0.75,try.counter=1)
+plot(c(0,1,2,3),res.temp[,3])
+imp<-imp[t2 > 1]
+qq <- plotQ(imp,debug.flag = 0)                                                          
+ppp<-run.it.importances(qq,imp,debug=0)                                                       
+aa<-significant.genes(ppp,imp,cutoff=0.2,debug.flag=0,do.plot=2, use_95_q=TRUE)                           
+length(aa$probabilities) #11#                                                          
+names(aa$probabilities)
+
+\donttest{
+library(RFlocalfdr.data)
 data(ch22)                                                                                 
 ?ch22                                                                                     
 #document how the data set is created                                                      
@@ -57,7 +71,7 @@ imp<-log(ch22$imp)
 # This was calculated previously. See determine_cutoff
 imp<-imp[t2 > 30]
 qq <- plotQ(imp,debug.flag = 0)
-}
+
 data(smoking)
 ?smoking 
 y<-smoking$y
@@ -82,6 +96,7 @@ qq <- plotQ(temp)
 ppp<-run.it.importances(qq,temp,debug.flag = 0)
 aa<-significant.genes(ppp,temp,cutoff=0.05,debug.flag=0,do.plot=TRUE,use_95_q=TRUE)
 length(aa$probabilities) # 17
+}
 }
 \keyword{importance}
 \keyword{variable}

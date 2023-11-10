@@ -9,7 +9,9 @@ determine_cutoff(
   t2,
   cutoff = c(0, 1, 4, 10, 15, 20),
   Q = 0.75,
-  plot = NULL
+  plot = NULL,
+  verbose = 0,
+  try.counter = 3
 )
 }
 \arguments{
@@ -28,6 +30,11 @@ count_variables for a ranger RF}
 \item The skew-normal fit (blue)
 \item The quantile Q (vertical red line)
 }}
+
+\item{verbose}{verbose=0, no output to screen
+verbose=1, track the cutoff value being used}
+
+\item{try.counter}{passed to fit.to.data.set.wrapper}
 }
 \value{
 res a matrix if size length(cutoff) by 3.
@@ -44,8 +51,29 @@ evaluated up to the quantile Q
 evaluate a measure that can be used to determining a significance level for the Mean Decrease in Impurity measure returned by a Random Forest model
 }
 \examples{
-rm(list=ls())
+data(imp20000)
+imp <- log(imp20000$importances)
+t2<- imp20000$counts
+length(imp)
+hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
+res.temp <- determine_cutoff(imp, t2 ,cutoff=c(0,1,2,3),plot=c(0,1,2,3),Q=0.75,try.counter=1)
+
+plot(c(0,1,2,3),res.temp[,3])
+# the minimum is at 1 so
+imp<-imp[t2 > 1]
+
+qq <- plotQ(imp,debug.flag = 0)
+ppp<-run.it.importances(qq,imp,debug=0)
+aa<-significant.genes(ppp,imp,cutoff=0.2,debug.flag=0,do.plot=2, use_95_q=TRUE)
+length(aa$probabilities) #11#
+names(aa$probabilities)
+#[1] "X101"   "X102"   "X103"   "X104"   "X105"   "X2994"  "X9365"  "X10718"
+# [9] "X13371" "X15517" "X16460"
+# so the observed FDR is 0.54
+
+\donttest{
 library(ranger)
+library(RFlocalfdr.data)
 data(smoking)
 y<-smoking$y
 smoking_data<-smoking$rma
@@ -58,4 +86,5 @@ plot(density((imp)))
 # Detemine a cutoff to get a unimodal density.
 res.temp <- determine_cutoff(imp, t2 ,cutoff=c(1,2,3,4),plot=c(1,2,3,4),Q=0.75)
 plot(c(1,2,3,4),res.temp[,3])
+}
 }

@@ -10,6 +10,7 @@ fit.to.data.set.wrapper(
   debug.flag = 0,
   plot.string = "",
   temp.dir = temp.dir,
+  return.all = TRUE,
   try.counter = 3
 )
 }
@@ -20,31 +21,63 @@ fit.to.data.set.wrapper(
 
 \item{debug.flag}{debug flag}
 
-\item{plot.string, }{file name for a debugging plot}
+\item{plot.string, }{file name for a debugging plot, passed on to fit.to.data.set}
 
-\item{temp.dir, }{directory for debugging output}
+\item{temp.dir, }{directory for debugging output, passed on to fit.to.data.set}
 
-\item{try.counter}{try.counter=1 my.dsn xi=  1
+\item{return.all}{passed to fit.to.data.set. If TRUE then the full output of minpack.lm::nlsLM is returned. Otherwise
+just the matrix of coefficients and t-values is returned.}
+
+\item{try.counter, }{passed on to fit.to.data.set
+try.counter=1 my.dsn xi=  1
 try.counter=2  xi=  mean(x)
 try.counter=3 start xi, omega, lambda from the parameters retuned by fitdistrplus::fitdist}
+}
+\value{
+If the skew-normal fitting routine is succesful, then the matrix of parmaters and standard errors is returned.
+-- othewise a "try-error" message is returned
 }
 \description{
 This function allows you to express your love of cats.
 }
 \examples{
-\dontrun{
+data(imp20000)                                      
+imp<-log(imp20000$importances)                               
+t2<-imp20000$counts
+temp<-imp[t2 > 1]   #see                          
+temp<-temp[temp != -Inf]                         
+temp <- temp - min(temp) + .Machine$double.eps   
+f_fit <- f.fit(temp)                             
+y <- f_fit$zh$density                            
+x <- f_fit$midpoints                             
+df <- data.frame(x, y)                           
+fitted_parameters <- fit.to.data.set.wrapper(df, temp, try.counter = 3,return.all=FALSE)           
+fitted_parameters
+
+hist(temp, breaks = 200, freq = FALSE)
+lines(df$x, df$y, type = "l", col = "green", lwd = 2, 
+      xlim = c(0, max(df$x) + 0.5))
+curve(sn::dsn(x, xi = fitted_parameters$Estimate[1], omega = fitted_parameters$Estimate[2], 
+              alpha = fitted_parameters$Estimate[3]), add = TRUE, 
+                col = "purple", lwd = 3, xlim = c(0, 16))
+curve(my.dsn(x, xi = fitted_parameters$Estimate[1], omega = fitted_parameters$Estimate[2],  
+                lambda = fitted_parameters$Estimate[3]), add = TRUE, 
+                col = "orange", lwd = 3)
+
+\donttest{
+library(RFlocalfdr.data)
 data(ch22)
 t2 <-ch22$C
 imp<-log(ch22$imp)
-temp<-imp[t2 > 30]
-temp <- temp[temp != -Inf]
-temp <- temp - min(temp) + .Machine$double.eps
-f_fit <- f.fit(temp )
+imp<-imp[t2 > 30]
+imp <- imp[imp != -Inf]
+imp <- imp - min(imp) + .Machine$double.eps
+f_fit <- f.fit(imp )
 y <- f_fit$zh$density
 x <- f_fit$midpoints
-C <- quantile(temp,probs=0.75)
+C <- quantile(imp,probs=0.75)
 df2 <- data.frame(x[x < C], y[x < C])
-initial.estimates <- fit.to.data.set.wrapper(df2, temp)
+initial.estimates <- fit.to.data.set.wrapper(df2, imp)
 #Nonlinear regression model                                            
 #  model: y ~ my.dsn(x, xi = xi, omega = omega, lambda = lambda)       
 #   data: df                                                           

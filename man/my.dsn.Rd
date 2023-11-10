@@ -34,6 +34,9 @@ qsn(p, xi = Inf, omega = 1, alpha = 0, tau = 0, ...)
 
 \item{p}{vector of probabilities. Missing values (‘NA’'s) are allowed}
 }
+\value{
+fits the Density function for the skew-normal (SN) distribution.
+}
 \description{
 density of skew-normal using the appromimation of Ashour, Samir K. and Abdel-hameed, Mahmood A.
 }
@@ -45,6 +48,9 @@ It accepts the parameters xi, omega, lambda (Ashour et. al. 2010). Other foumula
 different parameterizations. The sn (skew-normal) package incluse the extended skew-normal (ESN) distribution. For the SN the
 tau parameter is 0.
 
+RFlocalfdr also uses wrappers around the functions dsn, qsn and psn from the package "sn"
+https://cran.r-project.org/web/packages/sn/.
+This is due to the fact that
 fitdistrplus::fitdist(imp, "sn", start = list(xi = mean(imp)...
 returns warnings such as
 The dsn function should return a zero-length vector when input has length zero and not raise an error
@@ -65,21 +71,20 @@ curve(my.dsn(x,xi=3, omega=4, lambda=4),xlim=c(-10,20),col="red",add=TRUE)
 
 #dsn, qsn and psn are wrappers around the provided functions provided by sn. This is done to
 # overcome some checking done by fitdistrplus
+\donttest{
 library(sn)
+getAnywhere("dsn")
+RFlocalfdr::my.test1fun("sn::dsn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))
+RFlocalfdr::my.test1fun("sn::psn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))
+RFlocalfdr::my.test1fun("sn::qsn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))
+#all return FALSE
 
-fitdistrplus:::test1fun("dsn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))
-#  ok                                                                txt
-# FALSE The dsn function should return a zero-length vector when input has length zero and
-#                                                                 not raise an error
-
-fitdistrplus:::test1fun("psn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))
-#  ok                                                                   txt
-# FALSE The psn function should have its first argument named: q as in base R
-
-fitdistrplus:::test1fun("qsn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))
-#   ok                                                                 txt
-# FALSE The qsn function should return a vector of with NaN values when input has inconsistent
-#                                    parameters and not raise an error
+detach("package:sn", unload=TRUE)
+getAnywhere("dsn")
+RFlocalfdr::my.test1fun("dsn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))#TRUE
+RFlocalfdr::my.test1fun("psn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))#TRUE
+RFlocalfdr::my.test1fun("qsn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))#TRUE
+}
 }
 \keyword{normal}
 \keyword{skew}

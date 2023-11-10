@@ -32,7 +32,7 @@ I have removed that data set temporarily until I solve a problem with upload the
 
 # load the data
 ```{r, echo=TRUE, eval=FALSE}
-library(RFlocalfdr)
+library(RFlocalfdr.data)
 data(smoking)
 ?smoking 
 y<-smoking$y

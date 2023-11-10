@@ -4,7 +4,7 @@
 \alias{run.it.importances}
 \title{run.it.importances}
 \usage{
-run.it.importances(qq, imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
+run.it.importances(qq, imp, debug.flag = 0, temp.dir = NULL)
 }
 \arguments{
 \item{qq}{object retuned by plotQ}
@@ -14,13 +14,42 @@ run.it.importances(qq, imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
 \item{debug.flag}{either 0 (no debugging information), 1 or 2}
 
 \item{temp.dir}{if debug flag is >0 then information is written to temp.dir}
-
-\item{try.counter}{where to explain this?}
+}
+\value{
+return a list contining
+\itemize{
+\item "C_0.95" estimate of the cutoff "C" such that there are only null values to the left of C.
+Based on the 95th quantile of the density
+\item "cc"    estimate of the cutoff "C" based on the procedure of Gauran, et al., 2918, Biometrics,
+\item "estimates_C_0.95" estimate of the parameters of the SN using the data up to the C estimate
+\item "estimates_cc"     estimate of the parameters of the SN using the data up to the C estimate
+\item "fdr_0.95"       estimate of the fdr curve using the SN from "estimates_C_0.95"
+\item "fdr_cc"         estimate of the fdr curve using the SN from "estimates_cc"
+\item "x"        the x values from plotQ
+\item "temp.dir" the temp directory for dubuggin
+\item "p0"     the estmate of the proportion of null values (can be 1)
+}
 }
 \description{
 run.it.importances
 }
 \examples{
+data(imp20000)
+imp <- log(imp20000$importances)
+t2 <- imp20000$counts
+plot(density((imp)))
+hist(imp,col=6,lwd=2,breaks=100,main="histogram of importances")
+res.temp <- determine_cutoff(imp, t2 ,cutoff=c(0,1,2,3),plot=c(0,1,2,3),Q=0.75,try.counter=1)
+plot(c(0,1,2,3),res.temp[,3])
+imp<-imp[t2 > 1]
+qq <- plotQ(imp,debug.flag = 0)                                                          
+ppp<-run.it.importances(qq,imp,debug=0)                                                       
+aa<-significant.genes(ppp,imp,cutoff=0.2,debug.flag=0,do.plot=2, use_95_q=TRUE)                           
+length(aa$probabilities) #11#                                                          
+names(aa$probabilities)
+
+\donttest{
+library(RFlocalfdr.data)
 data(ch22)                                                                                 
 ? ch22                                                                                     
 #document how the data set is created                                                      
@@ -39,7 +68,8 @@ ppp<-run.it.importances(qq,imp,debug=0)
 aa<-significant.genes(ppp,imp,cutoff=0.2,debug.flag=0,do.plot=2)                           
 length(aa$probabilities) # 6650                                                            
 aa<-significant.genes(ppp,imp,cutoff=0.05,debug.flag=0,do.plot=2)                          
-length(aa$probabilities) # 3653                                                            
+length(aa$probabilities) # 3653
+}
 }
 \keyword{importance}
 \keyword{variable}

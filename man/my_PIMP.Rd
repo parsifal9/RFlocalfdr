@@ -44,8 +44,8 @@ my_PIMP applies the same method as PIMP but to the MDI (mean decrease in impurit
 (mean decrease in Gini index for classification and  mean decrease in MSE for regression).
 }
 \examples{
-\dontrun{
-library(RFlocalfdr)
+\donttest{
+library(RFlocalfdr.data)
 library(ranger)
 library(vita) #vita: Variable Importance Testing Approaches
 data(smoking)
