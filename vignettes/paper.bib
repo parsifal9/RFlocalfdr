@@ -1428,3 +1428,104 @@
     url = {https://CRAN.R-project.org/package=locfdr},
   }
 
+@article{Naf.2023,
+ author =  {Jeffrey N\"af},
+ year = {14.11.2023},
+ title = {Variable Importance in Random Forests: Traditional Methods and New Developments},
+ url = {\url{https://towardsdatascience.com/variable-importance-in-random-forests-20c6690e44e0}},
+ urldate = {14.11.2023},
+ journal = {Towards Data Science}
+}
+
+@Article{Hothorn.and.Zeileis.2015,
+  title =        {{partykit}: A Modular Toolkit for Recursive Partytioning in {R}},
+  author =       {Torsten Hothorn and Achim Zeileis},
+  journal =      {Journal of Machine Learning Research},
+  year =         2015,
+  volume =       16,
+  pages =        {3905-3909},
+  url =          {http://jmlr.org/papers/v16/hothorn15a.html},
+}
+
+@article{gromping_variable_2009,
+  title =        {Variable {Importance} {Assessment} in {Regression}: {Linear} {Regression} versus {Random} {Forest}},
+  volume =       63,
+  issn =         {0003-1305},
+  shorttitle =   {Variable {Importance} {Assessment} in {Regression}},
+  url =          {https://doi.org/10.1198/tast.2009.08199},
+  doi =          {10.1198/tast.2009.08199},
+  abstract =     {Relative importance of regressor variables is an old topic that still awaits a satisfactory
+                  solution. When interest is in attributing importance in linear regression, averaging over orderings
+                  methods for decomposing R2 are among the state-of-the-art methods, although the mechanism behind their
+                  behavior is not (yet) completely understood. Random forests—a machine-learning tool for classification
+                  and regression proposed a few years ago—have an inherent procedure of producing variable
+                  importances. This article compares the two approaches (linear model on the one hand and two versions
+                  of random forests on the other hand) and finds both striking similarities and differences, some of
+                  which can be explained whereas others remain a challenge. The investigation improves understanding of
+                  the nature of variable importance in random forests. This article has supplementary material online.},
+  number =       4,
+  urldate =      {2018-09-19},
+  journal =      {The American Statistician},
+  author =       {Gr\"omping, Ulrike},
+  month =        nov,
+  year =         2009,
+  keywords =     {Variable importance, Linear model, Random forest},
+  pages =        {308--319},
+  file =         {Full Text PDF:/home/dun280/local/zotero/storage/UJU72G8Q/Grömping - 2009 - Variable Importance
+                  Assessment in Regression
+                  Line.pdf:application/pdf;Snapshot:/home/dun280/local/zotero/storage/FYQ6XTBU/tast.2009.html:text/html}
+}
+
+
+
+
+
+@online{benardMDARandomForests2022,
+  title = {{{MDA}} for Random Forests: Inconsistency, and a Practical Solution via the {{Sobol-MDA}}},
+  shorttitle = {{{MDA}} for Random Forests},
+  author = {Bénard, Clément and family=Veiga, given=Sébastien, prefix=da, useprefix=true and Scornet, Erwan},
+  date = {2022-03-01},
+  eprint = {2102.13347},
+  eprinttype = {arxiv},
+  eprintclass = {cs, stat},
+  doi = {10.48550/arXiv.2102.13347},
+  url = {http://arxiv.org/abs/2102.13347},
+  urldate = {2023-11-07},
+  abstract = {Variable importance measures are the main tools to analyze the black-box mechanisms of random forests. Although the mean decrease accuracy (MDA) is widely accepted as the most efficient variable importance measure for random forests, little is known about its statistical properties. In fact, the definition of MDA varies across the main random forest software. In this article, our objective is to rigorously analyze the behavior of the main MDA implementations. Consequently, we mathematically formalize the various implemented MDA algorithms, and then establish their limits when the sample size increases. This asymptotic analysis reveals that these MDA versions differ as importance measures, since they converge towards different quantities. More importantly, we break down these limits into three components: the first two terms are related to Sobol indices, which are well-defined measures of a covariate contribution to the response variance, widely used in the sensitivity analysis field, as opposed to the third term, whose value increases with dependence within covariates. Thus, we theoretically demonstrate that the MDA does not target the right quantity to detect influential covariates in a dependent setting, a fact that has already been noticed experimentally. To address this issue, we define a new importance measure for random forests, the Sobol-MDA, which fixes the flaws of the original MDA, and consistently estimates the accuracy decrease of the forest retrained without a given covariate, but with an efficient computational cost. The Sobol-MDA empirically outperforms its competitors on both simulated and real data for variable selection. An open source implementation in R and C++ is available online.},
+  pubstate = {preprint},
+  keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
+  file = {/home/dun280/Dropbox/zotero/arXiv/2022/Bénard et al_2022_MDA for random forests.pdf}
+}
+
+
+@online{benardSHAFFFastConsistent2022,
+  title = {{{SHAFF}}: {{Fast}} and Consistent {{SHApley eFfect}} Estimates via Random {{Forests}}},
+  shorttitle = {{{SHAFF}}},
+  author = {Bénard, Clément and Biau, Gérard and family=Veiga, given=Sébastien, prefix=da, useprefix=true and Scornet, Erwan},
+  date = {2022-02-02},
+  eprint = {2105.11724},
+  eprinttype = {arxiv},
+  eprintclass = {cs, stat},
+  doi = {10.48550/arXiv.2105.11724},
+  url = {http://arxiv.org/abs/2105.11724},
+  urldate = {2023-11-13},
+  abstract = {Interpretability of learning algorithms is crucial for applications involving critical decisions, and variable importance is one of the main interpretation tools. Shapley effects are now widely used to interpret both tree ensembles and neural networks, as they can efficiently handle dependence and interactions in the data, as opposed to most other variable importance measures. However, estimating Shapley effects is a challenging task, because of the computational complexity and the conditional expectation estimates. Accordingly, existing Shapley algorithms have flaws: a costly running time, or a bias when input variables are dependent. Therefore, we introduce SHAFF, SHApley eFfects via random Forests, a fast and accurate Shapley effect estimate, even when input variables are dependent. We show SHAFF efficiency through both a theoretical analysis of its consistency, and the practical performance improvements over competitors with extensive experiments. An implementation of SHAFF in C++ and R is available online.},
+  pubstate = {preprint},
+  keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
+  file = {/home/dun280/Dropbox/zotero/arXiv/2022/Bénard et al_2022_SHAFF.pdf}
+}
+
+
+
+
+@Book{Molnar.2021,
+  author =       {Christoph Molnar},
+  title =        {Interpretable Machine Learning: A Guide for Making Black Box Models Explainable},
+  publisher =    {Leanpub},
+  year =         2021,
+  note =         {Lean Publishingis the act of publishing an in-progress ebook using lightweight tools and many
+                  iterations to get reader feedback.},
+  url =          {\url{http://leanpub.com/interpretable-machine-learning}}
+}
+
+
