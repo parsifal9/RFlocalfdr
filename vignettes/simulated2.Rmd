@@ -23,19 +23,112 @@ knitr::opts_chunk$set(fig.width=6, fig.height=6, dpi=300,echo = FALSE)
 knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
 
 ```
-
+\clearpage
 
 # Introduction
 
 
-The objective of variable importance is essentially to perform variable selection. More precisely, it is possible to identify two final aims (Genuer et al., 2010): 
+Variable importance is often used to perform variable selection. More precisely, it is possible to identify two final aims (Genuer et al., 2010): 
 
 1. find a small number of variables with a maximized accuracy, or 
 2. detect and rank all influential variables to focus on for interpretation and further exploration with domain experts. 
 
+It is the second objective that is more often our aim in biomolecular work. In this area the problem is characterized by:
+
+1. a relatively small $n$ and a $p$ that is typically two to three orders of magnitude larger than $n$;
+2. a lot of correlation between the variables;
+3. the selected variables are used as input for further analysis.
+
+# Discussion and Conclusion
+
+We simulate a classification problem with 6350 variables of which 127 are related to the classification and a high degree of correlation structure. 
+We consider a number of variable ranking and selection methods. We give the results for variable selection, not for the performance of the classifier.
+
+We consider two problems:
+
+- ranking the variables by variable importance. We have taken the point on the ROC curve that
+gives the minimum cost (with equal cost for positives and negatives). So these are the best results that could be
+obtained for these methods.  I could not get many of the SHAP implementations to converge in a 2 1/2 hour run time
+limit. Shaff converged and returned one variable.
+- where there is a method of thresholding the variable importance to do variable selection, we consider the accuracy of the selected set of variables.
+
+The results are 
+In the rest
+
+Recursive Feature Elimination has  performed well but only selected a small number of variables.
+I could not get many of the SHAP implementations to converge in a 2 1/2 hour run time
+limit. Shaff converged and returned one variable.
+
+```{r table3, echo=FALSE, message=FALSE, warnings=FALSE, eval=TRUE}
+tabl <- "
+Method       |  true positives | false positives | Sensitivity | Specificity | FDR | AUC  |
+                 rank variables
+RF impurity  | 55             | 6               | 0.99         | 0.43       | 0.1  | 0.99 |
+RF perm.     | 61             | 3               | 0.99         | 0.48       | 0.05 | 0.74 |
+RF corrected | 87             | 37              | 0.99         | 0.68       | 0.3  | 0.99 | 
+cforest      | 61             | 3               | 0.99         | 0.84       | 0.12 | 0.99 |
+SobolMDA     | 61             | 3               | 0.99         | 0.48       | 0.05 | 0.99 |
+Shaff        | 1              | 0               |              |            |      |      |
+iml Shapley  |  -             |   -             | -            |  -         | -    |  -   |
+
+                    select variables based on RF impurity measure
+RFlocalfdr   | 59             | 36              | 0.99         | 0.46       | 0.34 | 0.73 |
+Boruta       | 2              | 2               | 0.99         | 0.016      | 0.5  | 0.51 |
+AIR          | 127            | 273             | 0.96         | 1          | 0.68 | 0.98 |
+AIR+locfdr   | 123            | 186             | 0.97         | 0.97       | 0.61 | 0.97 |
+PIMP         | 39             | 556             | 0.91         | 0.31       | 0.58 | 0.98 |
+RFE          | 22             | 2               | 0.99         | 0.17       | 0.08 | 0.58 |
+"
+
+```
+```{R , echo=FALSE, eval=TRUE, result='asis',fig.cap='...'}
+
+cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
+
+```
+\clearpage
+```{R , echo=FALSE, eval=TRUE}
+kable(tabl, format = "markdown")
+
+```
 
 
-tuning
+
+
+
+\clearpage
+\begin{verbatim}
+    Method     | true positives | false positives | Sensitivity | Specificity | FDR     | AUC   |
+                  rank variables
+    RF impurity| 55             | 6               | 0.99         | 0.43       | 0.1     | 0.99  |
+    RF perm.   | 61             | 3               | 0.99         | 0.48       | 0.045   | 0.74  |
+  RF corrected | 87             | 37              | 0.99         | 0.68       | 0.3     | 0.99  | 
+    cforest    | 61             | 3               | 0.99         | 0.84       | 0.12    | 0.99  |
+    SobolMDA   | 61             | 3               | 0.99         | 0.48       | 0.05    | 0.99  |
+    Shaff      | 1              | 0               |              |            |         |       |
+   fastshap    |  -             |   -             | -            |  -         | -       |  -    |
+   iml Shapley |  -             |   -             | -            |  -         | -       |  -    |
+
+                      select variables based on RF
+    RFlocalfdr | 59             | 36              | 0.99         | 0.46       | 0.34    | 0.73  |
+    Boruta     | 2              | 2               | 0.99         | 0.016      | 0.5     | 0.51  |
+    AIR        | 127            | 273             | 0.96         | 1          | 0.68    | 0.98  |
+    AIR+locfdr | 123            | 186             | 0.97         | 0.97       | 0.61    | 0.97  |
+    PIMP       | 39             | 556             | 0.91         | 0.31       | 0.58    | 0.98  |
+
+    RFE        | 22             | 2               | 0.99         | 0.17       | 0.08    | 0.58  |
+
+\end{verbatim}
+
+
+
+\clearpage
+
+
+# Notes
+
+
+tuning of RF
 
 - mtry $\sqrt{p}$ for classification and $p/3$ for regression
 - if there are only a few relevant variables out of many, which is the case in many genetic datasets, mtry should be set high, so that the algorithm can find the relevant 
@@ -46,7 +139,7 @@ in the set of mtry candidate variables.
 a larger depth which means that more splits are performed until the terminal nodes. In several standard software packages the
 default value is 1 for classification and 5 for regression.
 
-# Simulation 1
+# The Simulation 
 
 We simulate a small data set with a covariance structure to explore the actions of **RFlocalfdr**.
 This package implements an empirical Bayes method of determining a significance level for the Random Forest 
@@ -66,7 +159,13 @@ We
    - PIMP (@Altmann.et.al.2010).
 
 
-## setup
+## data setup
+
+We have 50 bands and 300 observations so $X$ is $300 \times 6350$ with 127 non-null variables.  We fit a
+standard RF to this dataset and record the resulting MDI importance score.
+
+
+
 We plot a small data set of $300\times  508$ to explore the data generation method.
 This dataset consist of _bands_, with _blocks_ of $\{1, 2, 4, 8, 16, 32, 64\}$ of
 identical variables (see figure \@ref(fig:simulation2)). The variables are $\in \{0,1,2\}$, a common encoding for
@@ -87,7 +186,8 @@ packageDescription("RFlocalfdr")$GithubSHA1
 #source("/home/dun280/Dropbox/R_libraries/RF_localfdr/RFlocalfdr/R/my.pimp.s")
 
 ```
-```{r eval=FALSE,echo=TRUE}
+```{r eval=FALSE,echo=FALSE}
+#just plot a small data set to show the structure
 set.seed(13)
 num_samples <- 300
 num_bands <- 4
@@ -138,14 +238,16 @@ for(band in 1:num_bands) {
     }
 }
 
-y <- as.numeric(X[,1] > 1 |  X[,2] > 1  |  X[,4] > 1 |  X[,8] > 1 |  X[,16] > 1 | X[,32] > 1 | X[,64] > 1 )
+y <- as.numeric(X[,1] > 1 |  X[,2] > 1  |  X[,4] > 1 |  X[,8] > 1 |  X[,16] > 1 |
+                X[,32] > 1 | X[,64] > 1 )
 
 
 
 data <- cbind(y,X)
 colnames(data) <- c("y",make.names(1:num_vars))
     rfModel <- ranger(data=data,dependent.variable.name="y", importance="impurity",
-                      classification=TRUE,  mtry=100,num.trees = 10000, replace=TRUE, seed  = 17 )
+                      classification=TRUE,  mtry=100,num.trees = 10000, replace=TRUE,
+                      seed  = 17 )
 zz2 <-log(importance(rfModel))
 
 plot(zz2,type="b",col=temp[,1]+1)
@@ -161,12 +263,8 @@ knitr::include_graphics("./supp_figures/small_simulated_data_set.png")
 ``` 
 
 
-## data
-We now generate the data for the simulation. 
-We have 50 bands and 300 observations so $X$ is $300 \times 6350$ with 127 non-null variables.  We fit a
-standard RF to this dataset and record the resulting MDI importance score.
-
 ```{r eval=FALSE,echo=TRUE}
+# generate the data
 set.seed(13)
 num_samples <- 300
 num_bands <- 50
@@ -194,15 +292,18 @@ for(band in 1:num_bands) {
 y <- as.numeric(X[,1] > 1 |  X[,2] > 1  |  X[,4] > 1 |  X[,8] > 1 |  X[,16] > 1 |
                 X[,32] > 1 | X[,64] > 1 )
 
+
 ```
 
 ## Random forest
+We fit a Random Forest (@Breiman.2001) model and recover the Mean Decrease in Impurity variable importance. 
+
 ```{r eval=FALSE,echo=TRUE}
 data <- cbind(y,X)
 colnames(data) <- c("y",make.names(1:num_vars))
 
 rfModel <- ranger(data=data,dependent.variable.name="y", importance="impurity",
-             classification=TRUE,num.trees = 10000, mtry=100, seed  = 17 )
+             classification=TRUE,num.trees = 10000, replace=FALSE, mtry=100, seed  = 17 )
 
 imp <-log(ranger::importance(rfModel))
 t2 <-count_variables(rfModel)
@@ -210,12 +311,35 @@ plot(density(imp))
 
 roccurve <- roc(c(rep(1,127),rep(0,6350-127)),imp)
 plot(roccurve)
-auc(roccurve) # 0.9912
+auc(roccurve) # 0.993
 
 palette("default")
 col<-c(1, rep(2,2), rep(3,4), rep(4, 8), rep(5,16 ), rep(6,32 ), rep(7,64) )
 plot(1:1016,imp[1:1016],type="p",col=rep(col,8),pch=16,cex=0.8,
      xlab="variable number",ylab="log importances")
+plot(imp,type="p",col=rep(col,8),pch=16,cex=0.8,xlab="variable number",
+     ylab="log importances")
+
+
+predictions <- imp
+labels <- c(rep(1,127),rep(0,6350-127))
+pred <- prediction(predictions, labels)
+perf <- performance(pred, "tpr", "fpr")
+plot(perf)
+cost_perf = performance(pred, "cost")
+pred@cutoffs[[1]][which.min(cost_perf@y.values[[1]])]
+#     X22 
+#-3.485894 
+
+predicted_values <-rep(0,6350);predicted_values[ which(imp> -3.485894) ]<-1
+conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
+conf_matrix
+#predicted_values    0    1
+#               0 6217   72
+#               1    6   55
+conf_matrix[2,1]/sum(conf_matrix[2,]) #[1]] 0.09836066 FDR
+sensitivity(conf_matrix) #] 0.9990358 TP/(TP+FN)
+specificity(conf_matrix) # 0.4330709          TN/(FP+TN)
 
 
 ```
@@ -236,7 +360,8 @@ knitr::include_graphics("./supp_figures/simulation2_zz2.png")
 
 ```
 
-### Determine cutoff
+## RFlocalfdr 
+### determine cutoff
 ```{r eval=FALSE,echo=TRUE}
 cutoffs <- c(0,1,4,10)
 #png("./supp_figures/simulated_data_determine_cutoff.png")
@@ -260,7 +385,7 @@ By plotting $\max(|y - t_1|)$ versus the cutoff values, we determine the appropr
 just $t2>0$
 
 
-### Rflocalfdr
+### recover variables
 ```{r eval=FALSE,echo=TRUE}
 temp<-imp[t2 > 0]
 palette("R3")
@@ -342,7 +467,8 @@ We try the Boruta algorithm (@Kursa.and.Rudnicki.2010).
 ```{r eval=FALSE,echo=TRUE}
 library(Boruta)
 set.seed(120)  
-boruta1 <- Boruta(X,as.factor(y),  num.threads = 7,getImp=getImpRfGini)
+system.time(boruta1 <- Boruta(X,as.factor(y), num.threads = 7,getImp=getImpRfGini,
+                              classification=TRUE,num.trees = 10000, replace=FALSE, mtry=100, seed  = 17))
 print(boruta1)
 #Boruta performed 99 iterations in 19.54727 secs.
 #4 attributes confirmed important: X4859, X58, X6132, X7;
@@ -379,8 +505,13 @@ accuracy #0.98
 
 
 ## Recursive Feature Elimination
-This is provided by the package Pomona (@Pomona.2022)
+
+- This is provided by the package Pomona (@Pomona.2022)
+- recalculates importance scores in each step.
+- does not recognize the **ranger** option  **replace=FALSE**
+
 ```{r eval=FALSE,echo=TRUE}
+
 library(Pomona)
 colnames(X) <- make.names(1:dim(X)[2])
 set.seed(111)
@@ -397,12 +528,19 @@ table(ifelse((tt < 127),1,2))
 # 1  2 
 #21  3 0.0833
 
-res<-c(1,106, 11, 12, 127, 13, 15, 16,  2, 23, 24,  3,  4, 44, 46,  4885,  5, 54, 5474,  6,  7, 72,  9, 91)
+res<-c(1,106, 11, 12, 127, 13, 15, 16,  2, 23, 24,  3,  4, 44, 46,  4885,  5, 54, 5474,  6,
+       7, 72,  9, 91)
 predicted_values <-rep(0,6350);predicted_values[c(res)]<-1
 conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
 conf_matrix
+#predicted_values    0    1
+#               0 6221  105
+#               1    2   22
+
+conf_matrix[2,1]/sum(conf_matrix[2,]) # 0.083 FDR 
 sensitivity(conf_matrix) # 0.9996786 TP/(TP+FN)
 specificity(conf_matrix) #0 0.1732283 TN/(FP+TN)
+
 roccurve <- roc(c(rep(1,127),rep(0,6350-127)),predicted_values)
 plot(roccurve)
 auc(roccurve) #0.5865
@@ -413,8 +551,13 @@ accuracy #  0.9831496
 
 ## AIR
 
-See @Nembrini.et.al.2018. AIR is provided in the package _ranger_, using the option _impurity_corrected_.
+See @Nembrini.et.al.2018. 
+
+- AIR is provided in the package _ranger_, using the option _impurity_corrected_.
+- the suggested approach is to apply the **janitza* method and select the variables with $p < 0.05$
+
 ```{r eval=FALSE,echo=TRUE}
+
 rfModel2 <- ranger(data=data,dependent.variable.name="y", importance="impurity_corrected",
        classification=TRUE,  mtry=100,num.trees = 10000, replace=TRUE, seed  = 17 )
 ww<- importance_pvalues( rfModel2, method = "janitza")
@@ -436,6 +579,9 @@ plot(roccurve)
 auc(roccurve) # 0.9781
 accuracy<-(conf_matrix[1,1]+conf_matrix[2,2])/(sum(conf_matrix))
 accuracy #  0.9570079
+
+
+
 
 ```
 As the null values, as modelled bt the AIR procedure, are symmetric around 0, the
@@ -460,6 +606,7 @@ length(intersect(cc,cc2)) #[1] 309
 predicted_values <-rep(0,6350);predicted_values[cc2]<-1
 conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
 conf_matrix
+conf_matrix[2,1]/sum(conf_matrix[2,]) #  0.6019417 FDR 
 sensitivity(conf_matrix) # 0.9701109 TP/(TP+FN)
 specificity(conf_matrix) #0.9685039         TN/(FP+TN)
 roccurve <- roc(c(rep(1,127),rep(0,6350-127)),predicted_values)
@@ -495,33 +642,37 @@ library(vita)
 y<-factor(y)
 X<-data.frame(X)
 set.seed(117)
-cl.ranger <- ranger(y~. , X,mtry = 3,num.trees = 1000, importance = 'impurity') #was this a classification model? check
-system.time(pimp.varImp.cl<-my_ranger_PIMP(X,y,cl.ranger,S=10, parallel=TRUE, ncores=3)) #was this a classification 
+cl.ranger <- ranger(y~. , X,mtry = 100,num.trees = 10000, classification=TRUE, replace=FALSE,
+                    importance = 'impurity') 
+system.time(pimp.varImp.cl<-my_ranger_PIMP(X,y,cl.ranger,S=10, parallel=TRUE, ncores=10)) 
 pimp.t.cl <- vita::PimpTest(pimp.varImp.cl,para = FALSE)
 aa <- summary(pimp.t.cl,pless = 0.1)
 
 tt<-as.numeric(gsub("X([0-9]*)","\\1",  names(which(aa$cmat2[,"p-value"]< 0.05))))
 table(ifelse((tt < 127),1,2))
-# 1  2 
-# 38 527      527 /(527+38) = 00.9327434
+# 1    2 
+# 126 176      176 /( 126+ 176  ) = 0.582
 
 predicted_values <-rep(0,6350);predicted_values[which(aa$cmat2[,"p-value"]< 0.05)]<-1
 conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
 conf_matrix
-sensitivity(conf_matrix) #0.9154749 TP/(TP+FN)
-specificity(conf_matrix) #0.3070866          TN/(FP+TN)
+conf_matrix[2,1]/sum(conf_matrix[2,]) #[1] 0.5794 FDR
+sensitivity(conf_matrix) #0.971 TP/(TP+FN)
+specificity(conf_matrix) #1          TN/(FP+TN)
+
 roccurve <- roc(c(rep(1,127),rep(0,6350-127)),predicted_values)
 plot(roccurve)
-auc(roccurve) #  0.6113
+auc(roccurve) #  0.9859
 accuracy<-(conf_matrix[1,1]+conf_matrix[2,2])/(sum(conf_matrix))
-accuracy # 0.9033071
+accuracy #  0.9724409
+
 ```
 
 ```{r eval=FALSE,echo=FALSE}
 # twilight uses a stochastic downhill search algorithm for estimating the local false discovery rate
 library(twilight)
 p.values <- aa$cmat2[,"p-value"]
-ans <- twilight(p.values)
+ans <- twilight(p.values) #Twilight cannot run properly.
 fdr <- ans$result$fdr
 sum(fdr < 0.05) #[1] 0
 
@@ -545,81 +696,14 @@ table_options(CSS =
 } 
 </style>", doCSS = TRUE)
 tab
+
 table_options(doCSS = FALSE)
+
 ```
 \clearpage
 
-## Conclusion
-
-```{r table3, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
-tabl <- "
-    Method     | true positives | false positives | Sensitivity | Speficity | FDR | AUC |
-                      select variables based on RF
-    RFlocalfdr | 59             | 36              | 0.99         | 0.46 | 0.378   |0.73  |
-    Boruta     | 2              | 2               | 0.99         |0.016 | 0.5     |0.51  |
-    RFE        | 22             | 2               | 0.99         |      | 0.58           |
-    AIR        | 176            | 273             | 0.96         |      | 0.98           |
-    AIR+locfdr | 123            | 186             | 0.97         |      | 0.97           |
-    PIMP       | 39             | 556             | 0.91         |      | 0.61           |
-
-                  rank variables
-    RF impurity|                |                 |              |      | 0.993          |
-    cforest    |                |                 |              |      | 0.9486         |
-    SobolMDA   |                |                 |              |      | 0.9954         |
-    Shaff      | 1              | 0               |              |      |                |
-   fastshap    |                |                 |              |      | *              |
-   iml Shapley |                |                 |              |      | *              |
-
---------------------------------------------------------------------------- 
-"
-cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
-
-```
 
 
-Performance of variable selection for the simulated example by several methods. The best outcomes for each category are in bold face.
-RFE has performed better than Boruta but apart from that, ordering the methods will depend on the cost of false positives versus the cost of false negatives.
-
-
-<!-- How do I get boldface in a table? neither  **0.99**  or  $\textbf{0.99}$ work -->
-
-<!-- tabular( -->
-<!-- \begin{table}[tbhp] -->
-<!--   \centering -->
-<!--   \begin{tabular}{||p{2cm}|l|l|l|l|l|l|l||} -->
-<!--     \hline -->
-<!--     Method     & true positives & false positives & Sensitivity & AUC  \\ -->
-<!--     \hline -->
-<!--     RFlocalfdr & 59             & 36              & \textbf{0.99}       & 0.73 \\ -->
-<!--     Boruta     & 2              & 2               & \textbf{0.99}        & 0.50 \\ -->
-<!--     RFE        & 22             & 2               & \textbf{0.99}        & 0.58 \\ -->
-<!--     AIR        & 176            & 273             & 0.96        & \textbf{0.98} \\ -->
-<!--     PIMP       & 39             & 556             & 0.91        & 0.61 \\ -->
-<!--     \hline -->
-<!--   \end{tabular} -->
-<!--   \caption{Performance of variable selection for the simulated example by several methods. The best outcomes for each -->
-<!--     category are in bold face. -->
-<!--   %RFE has performed better than Boruta but apart from that, ordering the methods will depend on the cost of false positives versus the cost of false negatives. -->
-<!--   } -->
-<!--   \label{table:simulation_results} -->
-<!-- \end{table} -->
-<!-- ) -->
-
-
-<!-- ```{r table4, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'} -->
-<!-- tabl <- " -->
-<!--     Method     | true positives | false positives | FDR  | Sensitivity|specificity | AUC   | -->
-<!--     RFlocalfdr | 59             | 36              | 0.38  | 0.99       |  *         | 0.73  | -->
-<!--     Boruta     | 2              | 2               | *    | 0.99       |  *         | 0.50  | -->
-<!--     RFE        | 22             | 2               | 0.08  | 0.99       |  *         | 0.58  | -->
-<!--     AIR        | 176            | 273             | 0.68  | 0.96       |  *         | 0.98  | -->
-<!--     AIR+locfdr | 123             | 186             | 0.61  | 0.97       | 0.97        | 0.97  | -->
-<!--     PIMP       | 39             | 556             | 0.93  | 0.91       |  *         | 0.61  | -->
-<!-- ---------------------------------------------------------------------------  -->
-<!-- " -->
-<!-- cat(tabl) # output the table in a format good for HTML/PDF/docx conversion -->
-
-<!-- ``` -->
 
 
 # Other Methods
@@ -628,7 +712,7 @@ RFE has performed better than Boruta but apart from that, ordering the methods w
 
 ```{R, echo=TRUE, eval=FALSE}
 rfModel2 <- ranger(data=data,dependent.variable.name="y", importance="permutation",
-             classification=TRUE,  mtry=100,num.trees = 10000, replace=TRUE, seed  = 17 )
+             classification=TRUE,  mtry=100,num.trees = 10000, replace=FALSE, seed  = 17 )
 imp <-ranger::importance(rfModel2)
 plot(density(imp))
 
@@ -636,29 +720,86 @@ palette(topo.colors(n = 7))
 plot(1:1016,imp[1:1016],type="p",col=rep(col,2),pch=16,cex=0.8,
      xlab="variable number",ylab="log importances")
 lines(1:1016,imp[1:1016],col = "gray62",lwd=0.5)
-
 abline(v=127,col="green")
-#legend("topright",legend=c("RFlocalfdr cutoff","non-null variables"),lty=1,col=c("red","green" ))
 
 # could apply Briemans and Cutlers argument that the permutation importance is Gaussian --
 # or could use empirical Bayes
+
+roccurve <- roc(c(rep(1,127),rep(0,6350-127)),imp)
+plot(roccurve)
+auc(roccurve) #  0.9924
+
+
+library(ROCR)
+predictions <- imp
+labels <- c(rep(1,127),rep(0,6350-127))
+pred <- prediction(predictions, labels)
+cost_perf = performance(pred, "cost") 
+pred@cutoffs[[1]][which.min(cost_perf@y.values[[1]])]
+
+table(imp> 0.0001063063  ,c(rep(1,127),rep(0,6350-127)))
+#          0    1
+#  FALSE 6220   66
+#  TRUE     3   61
+
+predicted_values <-rep(0,6350);predicted_values[which(imp> 0.0001063063 )]<-1
+conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
+conf_matrix
+#predicted_values    0    1
+#               0 6220   66
+#               1    3   61
+conf_matrix[2,1]/sum(conf_matrix[2,]) #[1]  0.046875 FDR
+sensitivity(conf_matrix) # 0.9995179 TP/(TP+FN)
+specificity(conf_matrix) # 0.480315         TN/(FP+TN)
+
+roccurve <- roc(c(rep(1,127),rep(0,6350-127)),predicted_values)
+plot(roccurve)
+auc(roccurve) #   0.7399
+accuracy<-(conf_matrix[1,1]+conf_matrix[2,2])/(sum(conf_matrix))
+accuracy #  0.9724409
+
+
+
 
 ```
 ## impurity corrected
 
 ```{R, echo=TRUE, eval=FALSE}
 rfModel3 <- ranger(data=data,dependent.variable.name="y", importance="impurity_corrected",
-             classification=TRUE,  mtry=100,num.trees = 10000, replace=TRUE, seed  = 17 )
+             classification=TRUE,  mtry=100,num.trees = 10000, replace=FALSE, seed  = 17 )
 imp <-ranger::importance(rfModel3)
 plot(density(imp))
 
 palette(topo.colors(n = 7))
-plot(1:1016,imp[1:1016],type="p",col=rep(col,2),pch=16,cex=0.8,
+plot(1:1016,imp[1:1016],type="p",col=col,pch=16,cex=0.8,
      xlab="variable number",ylab="log importances")
 lines(1:1016,imp[1:1016],col = "gray62",lwd=0.5)
-
 abline(v=127,col="green")
-legend("topright",legend=c("RFlocalfdr cutoff","non-null variables"),lty=1,col=c("red","green" ))
+
+roccurve <- roc(c(rep(1,127),rep(0,6350-127)),imp)
+plot(roccurve)
+auc(roccurve) # 0.9951
+
+library(ROCR)
+predictions <- imp
+labels <- c(rep(1,127),rep(0,6350-127))
+pred <- prediction(predictions, labels)
+cost_perf = performance(pred, "cost") 
+pred@cutoffs[[1]][which.min(cost_perf@y.values[[1]])]
+
+table(imp> 0.0106588   ,c(rep(1,127),rep(0,6350-127)))
+#          0    1
+#  FALSE 6186   40
+#  TRUE    37   87
+#best FDR is
+37/(37 +  87) #[1] ]  0.2983871
+#
+predicted_values <-rep(0,6350);predicted_values[ which(imp> 0.0106588)]<-1
+conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
+conf_matrix
+conf_matrix[2,1]/sum(conf_matrix[2,]) #[1]] 0.2983871 FDR
+sensitivity(conf_matrix) #0.9940543 TP/(TP+FN)
+specificity(conf_matrix) #0.6850394          TN/(FP+TN)
 
 ```
 
@@ -680,21 +821,16 @@ random forests grown by the randomForest-package. Finally, the package includes 
 library(party)
 library(permimp) #
 
-#The permimp-package is developed to replace the Conditional Permutation Importance (CPI) computation by the
-#varimp-function(s) of the party-package. permimp applies a different implementation for the CPI, in order to mitigate
-#some issues related to the implementation of the CPI in the party-package. In addition, the CPI is also available for
-#random forests grown by the randomForest-package. Finally, the package includes some plotting options.
-
 data <- data.frame(y,X)
 system.time(mod1.cf <- party::cforest(y ~ ., data = data, 
-                                   control = party::cforest_unbiased(ntree = 10,  mtry = 100)))
+                           control = party::cforest_unbiased(ntree = 10,  mtry = 100)))
 # 27.386   0.000  27.412 
 system.time(aa<-party::varimp(mod1.cf, conditional = TRUE))
 #    user   system  elapsed 
 #3089.301    9.484 3100.554
 
 system.time(mod1.cf <- party::cforest(y ~ ., data = data, 
-                                   control = party::cforest_unbiased(ntree = 100,  mtry = 100)))
+                            control = party::cforest_unbiased(ntree = 100,  mtry = 100)))
 #  27.233   0.464  27.703 
 system.time(aa<-party::varimp(mod1.cf, conditional = TRUE))
 #    user   system  elapsed 
@@ -706,11 +842,11 @@ system.time(aa3<-permimp(mod1.cf, conditional = FALSE))
 #10.015   0.180  10.254
 
 system.time(mod1.cf <- party::cforest(y ~ ., data = data, 
-                                   control = party::cforest_unbiased(ntree = 1000,  mtry = 100)))
+                       ontrol = party::cforest_unbiased(ntree = 1000,  mtry = 100)))
 
 
 system.time(mod1.cf <- party::cforest(y ~ ., data = data, 
-                                   control = party::cforest_unbiased(ntree = 1000,  mtry = 100)))
+                        control = party::cforest_unbiased(ntree = 1000,  mtry = 100)))
 #35.438   0.636  36.095 
 
 system.time(aa4<-permimp(mod1.cf, conditional = FALSE))
@@ -725,7 +861,7 @@ plot(1:1016,aa4$values[1:1016],type="p",col=col,pch=16,cex=0.8,
       xlab="variable number",ylab="log importances")
 
 system.time(mod1.cf <- party::cforest(y ~ ., data = data, 
-                                   control = party::cforest_unbiased(ntree = 10000,  mtry = 100)))
+                           control = party::cforest_unbiased(ntree = 10000, replace=FALSE, mtry = 100)))
 #35.438   0.636  36.095 
 
 system.time(aa4<-permimp(mod1.cf, conditional = FALSE))
@@ -739,31 +875,126 @@ auc(roccurve) #0.9486
 
 system.time(mod1.cf <- party::cforest(y ~ ., data = data, 
                                     control = party::cforest_unbiased(ntree = 10000,  mtry = 100)))
-#Process R killed at Mon Feb 26 07:18:23 2024
+#Process R killed at Mon Feb 26 07:18:23 2024 on robubuntu
+#   user  system elapsed 
+# 98.673   2.832 101.977  on petra, seems to have used 26GB of RAM
+
+system.time(aa4<-permimp(mod1.cf, conditional = TRUE))
+#  user  system elapsed 
+#352.681   2.262 356.232 
+head(aa4$values)
+#          X1           X2           X3           X4           X5           X6 
+#2.600188e-05 9.454988e-05 1.217855e-04 1.682538e-04 1.572708e-04 1.706311e-04 
+
+roccurve <- roc(c(rep(1,127),rep(0,6350-127)),aa4$values)
+plot(roccurve)
+auc(roccurve) # 0.9978
 
 
+library(ROCR)
+predictions <- aa4$values
+labels <- c(rep(1,127),rep(0,6350-127))
+pred <- prediction(predictions, labels)
+perf <- performance(pred, "tpr", "fpr")
+plot(perf)
+
+cost_perf <- performance(pred, "cost") 
+pred@cutoffs[[1]][which.min(cost_perf@y.values[[1]])]
+
+table(predictions> 3.264138e-05  ,c(rep(1,127),rep(0,6350-127)))
+#           0    1
+#  FALSE 6220   66
+#  TRUE     3   61
+predicted_values <-rep(0,6350);predicted_values[ which(predictions>  3.264138e-05   )]<-1
+conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
+conf_matrix
+
+conf_matrix[2,1]/sum(conf_matrix[2,]) #[1]]  0.1229508 FDR
+sensitivity(conf_matrix) # 0.9975896 TP/(TP+FN)
+specificity(conf_matrix) #  0.8425197         TN/(FP+TN)
+
+#https://stats.stackexchange.com/questions/61521/cut-off-point-in-a-roc-curve-is-there-a-simple-function
+library(pROC)
+rocobj <- roc(labels,predictions)
+plot(rocobj)
+coords(rocobj, "best")
+coords(rocobj, x="best", input="threshold", best.method="youden") # Sa
+auc(rocobj) # 0.9978
+
+predicted_values <-rep(0,6350);predicted_values[ which(predictions>  8.976665e-06   )]<-1
+conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
+conf_matrix
+
+#see also
+#https://stats.stackexchange.com/questions/132547/roc-curves-for-unbalanced-datasets
+#https://cran.r-project.org/web/packages/qeML/vignettes/Unbalanced_Classes.html
+#https://juandelacalle.medium.com/how-and-why-i-switched-from-the-roc-curve-to-the-precision-recall-curve-to-analyze-my-imbalanced-6171da91c6b8
+#https://machinelearningmastery.com/roc-curves-and-precision-recall-curves-for-imbalanced-classification/
+            
 ```
 ## sobolMDA
 @benardMDARandomForests2022
 
 ```{R, echo=FALSE, eval=FALSE}
+#library(remotes)
+#install_gitlab("drti/sobolmda")
 library(sobolMDA)
 data <- data.frame(y,X)
-system.time(rng.sobolmda <- sobolMDA::ranger(dependent.variable.name = "y", classification = TRUE, data = data, mtry = 100, num.trees = 10000, importance = "sobolMDA",
-                                             seed = 125, replace = FALSE))
-
+system.time(rng.sobolmda <- sobolMDA::ranger(dependent.variable.name = "y", classification = TRUE, data = data, replace=FALSE, mtry = 100,
+                                             num.trees = 10000, importance = "sobolMDA",   seed = 125))
 
 palette("default")
 col<-c(1, rep(2,2), rep(3,4), rep(4, 8), rep(5,16 ), rep(6,32 ), rep(7,64) )
 plot(1:1016,rng.sobolmda$variable.importance[1:1016],type="p",col=col,pch=16,cex=0.8,
       xlab="variable number",ylab="log importances")
+plot(rng.sobolmda$variable.importance,type="p",col=col,pch=16,cex=0.8,
+      xlab="variable number",ylab="log importances")
 
+imp<- rng.sobolmda$variable.importance
 
-
-roccurve <- roc(c(rep(1,127),rep(0,6350-127)),rng.sobolmda$variable.importance)
+roccurve <- roc(c(rep(1,127),rep(0,6350-127)),imp)
 plot(roccurve)
 auc(roccurve) #0.9954
 
+library(ROCR)
+predictions <- rng.sobolmda$variable.importance
+labels <- c(rep(1,127),rep(0,6350-127))
+pred <- prediction(predictions, labels)
+perf <- performance(pred, "tpr", "fpr")
+plot(perf)
+
+#perf <- performance(pred, "acc")
+#plot(perf, avg= "vertical", spread.estimate="boxplot", lwd=3,col='blue',
+#     show.spread.at= seq(0.1, 0.9, by=0.1),
+#      main= "Accuracy across the range of possible cutoffs")
+
+#plot(0,0,type="n", xlim= c(0,0.001), ylim=c(0,10000),
+#      xlab="Cutoff", ylab="Density",
+#      main="How well do the predictions separate the classes?")
+#
+#lines(density(pred@predictions[[1]][pred@labels[[1]]=="1"]), col= "red")
+#lines(density(pred@predictions[[1]][pred@labels[[1]]=="0"]), col="green")
+
+cost_perf = performance(pred, "cost") 
+pred@cutoffs[[1]][which.min(cost_perf@y.values[[1]])]
+
+table(rng.sobolmda$variable.importance> 0.001048671 ,c(rep(1,127),rep(0,6350-127)))
+#           0    1
+#  FALSE 6220   66
+#  TRUE     3   61
+predicted_values <-rep(0,6350);predicted_values[ which(imp> 0.001048671 )]<-1
+conf_matrix<-table(predicted_values,c(rep(1,127),rep(0,6350-127)))
+conf_matrix
+#predicted_values    0    1
+#               0 6220   66
+#               1    3   61
+
+conf_matrix[2,1]/sum(conf_matrix[2,]) #[1]] 0.046875 FDR
+sensitivity(conf_matrix) # 0.9995179 TP/(TP+FN)
+specificity(conf_matrix) # 0.480315          TN/(FP+TN)
+
+#best FDR is
+3/(61+3) #[1]  0.046875
 
 ```
 
@@ -927,13 +1158,43 @@ library(ranger)
 set.seed(314)
 data <- data.frame(y,X)
 rfModel2 <- ranger(data=data,dependent.variable.name="y", importance="permutation",
-             classification=TRUE,  mtry=100,num.trees = 10, replace=TRUE, seed  = 17 )
+             classification=TRUE,mtry=50,num.trees = 1000, replace=TRUE, seed  = 17 )
 X <- data.frame(data[,-which(names(data) == "y")])
 mod <- Predictor$new(rfModel2, data = X, type = "response")
-shapley <- Shapley$new(mod, x.interest = X[1, ]) #killed -- using a lot of RAM 
+shapley <- Shapley$new(mod, x.interest = X[1, ]) 
 plot(shapley)
 
+#full data set killed -- using a lot of RAM 
+#  dim(X) [1] 300 508 OK
 
+
+shapley$plot(sort = TRUE) 
+shapley$y.hat.interest
+
+phis <- shapley$results$phi
+names(phis) <- shapley$results$feature
+par(mar=c(5, 10, 4, 2)+0.1) # for wide enough left margin
+barplot(sort(phis), horiz=TRUE, las=1)
+# ## pick features e.g. by a limit for the absolute value of phis
+# values <- shapley$results
+
+N <- 10 # number of features to show
+# Capture the ggplot2 object
+p <- plot(shapley, sort = TRUE)
+# Modify it so it shows only top N features
+print(p + scale_x_discrete(limits=rev(p$data$feature.value[order(-p$data$phi)][1:N])))
+
+#  dim(X) [1] 300 508 OK
+library(iml)
+library(ranger)
+set.seed(314)
+data <- data.frame(y,X)
+rfModel2 <- ranger(data=data,dependent.variable.name="y", importance="permutation",
+             classification=TRUE,mtry=50,num.trees = 1000, replace=TRUE, seed  = 17 )
+X <- data.frame(data[,-which(names(data) == "y")])
+mod <- Predictor$new(rfModel2, data = X, type = "response")
+shapley <- Shapley$new(mod, x.interest = X[1, ]) 
+plot(shapley)
 
 ```
 
@@ -967,6 +1228,45 @@ system.time({  # estimate run time
 })
 
 
+######## try the small data set
+
+library(fastshap)
+# Load the sample data; see ?datasets::mtcars for details
+data(mtcars)
+
+# Fit a projection pursuit regression model
+fit <- ppr(mpg ~ ., data = mtcars, nterms = 5)
+# Prediction wrapper
+pfun <- function(object, newdata) {  # needs to return a numeric vector
+    predict(object, newdata = newdata)  
+}
+
+
+fit <- ranger(mpg ~ ., data = mtcars)
+pfun <- function(object, newdata) {  # needs to return a numeric vector
+    predict(object, data = newdata)$predictions  
+}
+
+
+# Compute approximate Shapley values using 10 Monte Carlo simulations
+set.seed(101)  # for reproducibility
+shap <- explain(fit, X = subset(mtcars, select = -mpg), nsim = 10,  pred_wrapper = pfun)
+head(shap)
+
+apply(shap,2,f<-function(x){mean(abs(x))})
+
+
+
+shap <- explain(rfModel2, X = subset(data, select = -y), nsim = 10,  pred_wrapper = pfun)
+head(shap)
+
+SHAP.global  <- apply(shap,2,f<-function(x){mean(abs(x))})
+
+palette(topo.colors(n = 7))
+plot(1:508,SHAP.global,type="p",col=col,pch=16,cex=0.8,
+     xlab="variable number",ylab="log importances")
+lines(1:508,SHAP.global,col = "gray62",lwd=0.5)
+abline(v=127,col="green")
 
 ```
 
@@ -987,622 +1287,3 @@ packageDescription("ShapleyVIC")
 
 \FloatBarrier
 
-# simulation 2
-
-For uncorrelated regressors, Strobl et al. (2007) demonstrated that variable importance metrics in RF-CART are biased
-under relevant circumstances and introduced a different type of forest which does not exhibit this bias in the
-uncorrelated regressor situations they simulated. For correlated regressors, Strobl et al. (2008) found that the
-proposed solution of Strobl et al. (2007) does not solve all issues. They proposed “conditional variable
-importance” as a modification to the algorithm for determining variable importance in random forests
-
-
-
-@Strobl.et.al.2008 shows a simulation with the data generated according to a linear model with twelve predictor
-variables $y = \beta_1 x_1+ \ldots + \beta_{12}x_{12} +\epsilon$ , with $\epsilon \sim N(0,0.5)$. The predictor
-variables were sampled from a multivariate normal distribution $X_1,\ldots, X_{12} \sim N(0,\Sigma)$ where the
-covariance structure $\Sigma$ was chosen such that all variables have unit variance $\sigma_j, j= 1,\ldots, 12$ and the
-first four predictor variables are block-correlated with
-$\sigma_{j,j^\prime} = 0.9 \textrm{ for } j \neq j^{\prime} \leq 4$, while the rest were independent with
-$\sigma_{j,j^\prime} =0$. The coefficients of the linear generating model were $\{5, 5, 2, 0, -5, -5, -2, 0 ,0,0,0,0\}$.
-Figure  \@ref(fig:Strobl2008Fig1) shows the results reproduced from @Strobl.et.al.2008. 
-
-The issue that @Strobl.et.al.2008 identifies is that variables $X_3$ and $X_4$ have the same relationship with $y$ (up to sign) as $X_7$ and $X_8$, but
-are are selected more frequently due to being correlated with $\{X_1,X_2\}$.
-
-@Strobl.et.al.2008 uses a forest made with conditional inference trees, (see @hothorn_unbiased_2006, @Hothorn.and.Zeileis.2015). 
-In addition @Strobl.et.al.2008's argument is based on
-the frequency with which a variable is selected for splitting, not the variable importance.
-Figure \ref{figure:cforest_stobel_reproduce_simulation }
-shows our reproduction of these results (using \texttt{cforest}).
-
-
-
-We first show that the simulation
-leads to the same results with a standard forest algorithm and with variable importance. \marginpar{Gini, permutation?}
-the problem is there for 
-
-- importance="impurity",replace =TRUE (bootstrap) and
-- importance="impurity",replace =FALSE (subsample) and
-- importance="premutation",replace =TRUE (bootstrap) and
-- importance="premutation",replace =FALSE (subsample) and
-- importance="impurity_corrected",replace =TRUE (bootstrap) and
-- importance="impurity_corrected",replace =FALSE (subsample) and
-
-
-
-See figures:
-
-- Figure \@ref(fig:lmStroblsimulationpng) -- A linear model recovers the variable importances very well. @gromping_variable_2009
-- figure \ref{figure:cforest_Strobl_simulation_importances.png} shows the variable importances from our implementation of the simulation,
-  using \texttt{cforest}. This is only a single run, not an average over multiple runs. 
-
-   -  As expected, variable importance  (permutation) shows the same pattern as variable selection frequency. 
-   - @Strobl.et.al.2008 introduces an unfortunately named ``conditional variable importance'' that is really quite
-  separate to the conditional inference tree. This measure of variable importance shows the same pattern.
-
--  figure \ref{figure:ranger_mtry8_Strobl_simulation.png} shows the \@Strobl.et.al.2008 simulation using a
-  standard tree algorithm (ranger). We note:
-
-   - $X_3$ and  $X_4$ have much higher importances than $X_7$ and  $X_8$. The effect seems even more pronounced with
-    a Gini split (and Gini importance) tree
-  -  $\{X_1,X_2,X_3,X_4\}$ are much higher than  $\{X_5,X_6,X_7,X_8\}$ -- \textbf{why is this? should we average over
-      multiple data sets?} This looks neither like the effect from Strobl or the Piotr effect
-  -   all of the variables are selected as split variables.  -- \marginpar{include example to explain this}
-
-
-
-```{r Strobl2008Fig1, echo=FALSE, fig.cap="Reproduced from @Strobl.et.al.2008. Relative selection rates for twelve variables in the first splits (left) and in all splits (right) of all trees in random forests built with different values for mtry. The issue that @Strobl.et.al.2008 identifies is that variables $X_3$ and $X_4$ have the same relationship with $y$ (up to sign) as $X_7$ and $X_8$, but are are selected more frequently due to being correlated with $\\{X_1,X_2\\}$.", fig.align="center", out.width = '50%'}
-knitr::include_graphics("./script14/12859_2008_Article_2292_Fig1_HTML.jpg")
-```
-
-\begin{figure}[htbp]
-  \begin{subfigure}[t]{0.5\linewidth}
-    \centering
-    \includegraphics[totalheight=5cm,width=0.8\linewidth]{./script14/mtry1_first_split.png}
-    \caption{mtry=1, first split}
-      \label{figure:colonoscopies_vs_SE_score.png} 
-    \vspace{4ex}
-  \end{subfigure}%%
-  \hspace{4ex}
-  \begin{subfigure}[t]{0.5\linewidth}
-    \centering
-    \includegraphics[totalheight=5cm,width=0.8\linewidth]{./script14/mtry1_all_splits.png}
-    \caption{mtry=1, all splits}
-     \label{figure:mortality_vs_services.png}
-    \vspace{4ex}
-  \end{subfigure}
-  \vskip0.5cm
-  \begin{subfigure}[t]{0.5\linewidth}
-    \centering 
-    \includegraphics[totalheight=5cm,width=0.8\linewidth]{./script14/mtry4_first_split.png}
-    \caption{mtry=4, first split}
-     \label{figure:barplot_male_tests.png} 
-    \vspace{4ex}
-  \end{subfigure}%%
-  \hspace{4ex}
-  \begin{subfigure}[t]{0.5\linewidth}
-    \centering
-    \includegraphics[totalheight=5cm,width=0.8\linewidth]{./script14/mtry4_all_splits.png}
-    \caption{mtry=4, all splits.}
-     \label{figure:self_screening_rates.pngs} 
-    \vspace{4ex}
-  \end{subfigure}
-  \vskip0.5cm
-  \begin{subfigure}[t]{0.5\linewidth}
-    \centering 
-    \includegraphics[totalheight=5cm,width=0.8\linewidth]{./script14/mtry8_first_split.png}
-     \caption{mtry=8, first split}
-     \label{figure:barplot_male_tests} 
-    \vspace{4ex}
-  \end{subfigure}%%
-  \hspace{4ex}
-  \begin{subfigure}[t]{0.5\linewidth}
-    \centering
-    \includegraphics[totalheight=5cm,width=0.8\linewidth]{./script14/mtry8_all_splits.png}
-    \caption{mtry=8, all splits. }
-   \label{figure:self_screening_rates} 
-    \vspace{4ex}
-  \end{subfigure}
-  \caption{We implemented the simulation of \cite{Strobl.et.al.2008} with \texttt{cforest} and recorded the variable selection
-    frequencies. This should match the figure \ref{figure:Strobl2008Fig1}.}
-  \label{figure:cforest_stobel_reproduce_simulation }
-\end{figure}
-
-
-```{r lmStroblsimulationpng, echo=FALSE, fig.cap="The absolute value of the coefficients from a linear model fitted to the @Strobl.et.al.2008 simulation data. The linear model is successful in recovering the generative model coefficients {5, 5, 2, 0, -5, -5, -2, 0,0,0,0,0}. The fact that variables 1-4 are correlated and 5-8 are uncorrelated has not greatly affected the fitted coefficients.", fig.align="center", out.width = '50%'}
-knitr::include_graphics("./script14/lm_Strobl_simulation.png")
-
-```
-
-
-
-
-\begin{figure}[tbhp]
-	\begin{subfigure}{0.5\textwidth}
-	\includegraphics[totalheight=7.45cm]{./script14/varimp_cf1.png}
-	\caption{varimp cf1.png}
-	\label{subfigure:a}
-	\end{subfigure}
-	\begin{subfigure}{0.5\textwidth}
-\includegraphics[totalheight=7.45cm]{./script14/conditional_varimp_cf1.png}
-	\caption{conditional varimp cf1.png}\label{subfigure:c}
-	\end{subfigure}
-	\begin{subfigure}{0.5\textwidth}
-	\includegraphics[totalheight=7.45cm]{./script14/varimp_cf4.png}
-	\caption{varimp cf4.png}\label{subfigure:b}
-	\end{subfigure}
-	\begin{subfigure}{0.5\textwidth}
-\includegraphics[totalheight=7.45cm]{./script14/conditional_varimp_cf4.png}
-	\caption{conditional varimp cf4.png}\label{subfigure:c2}
-	\end{subfigure}
-	\begin{subfigure}{0.5\textwidth}
-\includegraphics[totalheight=7.45cm]{./script14/varimp_cf8.png}
-	\caption{varimp cf8.png}\label{subfigure:c3}
-	\end{subfigure}
-	\begin{subfigure}{0.5\textwidth}
-\includegraphics[totalheight=7.45cm]{./script14/conditional_varimp_cf8.png}
-	\caption{conditional varimp cf8.png}\label{subfigure:c4}
-	\end{subfigure}
-	\caption{The variable importances for the \protect{\cite{Strobl.et.al.2008}} using a conditional independence forest (cforest)
-and both the permutation importance and the conditional importance. The rows show reults for \texttt{mtry} = $\{$1,4, and $\}$.}    
-	\label{figure:cforest_Strobl_simulation_importances.png}
-	\end{figure}
-
-
-
-\begin{figure}[tbhp]
-\begin{subfigure}{\textwidth}
-\includegraphics[totalheight=7.4cm]{./script14/ranger_mtry8_Strobl_simulation_importance_impurity.png}
-\caption{}
-\label{subfigure:ranger_mtry8_Strobl_simulation_a}
-\end{subfigure}
-\begin{subfigure}{\textwidth}
-\includegraphics[totalheight=7.4cm]{./script14/ranger_mtry8_Strobl_simulation_importance_permutation.png}
-\caption{}\label{subfigure:ranger_mtry8_Strobl_simulation_b}
-\end{subfigure}
-\begin{subfigure}{\textwidth}
- \includegraphics[totalheight=7.4cm]{./script14/mtry8_Strobl_simulation.png}
-\caption{}\label{subfigure:ranger_mtry8_Strobl_simulation_c}
-\end{subfigure}
-\caption{The \protect{\cite{Strobl.et.al.2008}} simulation using a standard tree algorithm (ranger).
-  \ref{subfigure:ranger_mtry8_Strobl_simulation_a} shows the Gini impurity importance,
-  \ref{subfigure:ranger_mtry8_Strobl_simulation_b} shows the permutation importance and \ref{subfigure:ranger_mtry8_Strobl_simulation_c} shows the
-  variable selection frequency.}
-\label{figure:ranger_mtry8_Strobl_simulation.png}
-\end{figure}
-
-
-## issues
-\begin{itemize}
-\item Figure \ref{figure:piotr_party} shows how the conditional, inference tree performs on this problem. Comparing figures
- \@ref(fig:simulation2zz2) and \ref{subfigure:piotr_party_b} we see that the conditional inference tree does not
- give the same variable importance to sets of correlated (identical variables). \textit{not sure why this is the
- case. As it caluclates the association (correlation?) between $y$ and each $X_i$ to pick a split variable, as the
- variables are identical they should have the same association.}
-\end{itemize}
-
-
-
-```{R, echo=FALSE, eval=FALSE}
-#set up the data for @Strobl.et.al.2008 
-library(mvtnorm)
-library(party)
-library(ranger)
-sigma <- diag(rep(1,12))
-sigma[(row(sigma)<= 4) &(col(sigma) <= 4) &(row(sigma) != col(sigma))] <- 0.9
- 
-set.seed(123)
-X<-mvtnorm:::rmvnorm(n=500, mean=rep(0,12), sigma=sigma, method="chol")
-colMeans(X)
-image(var(X))
-plot(X[,5],X[,6])
-#{x_1 ,x_2, x_3 ,x_4} are correlated
-
-aa<-c(5, 5, 2, 0, -5, -5, -2, 0 ,0,0,0,0)
-y<-X %*% aa
-X<-data.frame(y,X)
-```
-
-```{R, echo=FALSE, eval=FALSE}
-col<- c(rep("grey50",4),rep("grey80",8))
-barplot(abs((lm(y~. ,data=X))$coeff[-1]),col=col)
-
-```
-
-
-
-
-```{R, echo=FALSE, eval=FALSE}
-# reproduce figure ** 
-#library(party)  -- does not seem to have a way of getting information about the splits
-library(partykit)       #Conditional Random Forests
-
-selection.rates<-function(forest){
-    first.split<-c()
-    all.splits<-c()
-    for ( i in 1:500){
-        tt<-gettree(forest,i)
-        tt<-unlist(nodeapply(tt, ids = nodeids(tt), FUN = function(n) n$split$varid))
-        first.split<-c(first.split, tt[1])
-        all.splits<-c(all.splits,  tt)
-    }
-    first.split <- table(factor(first.split,levels=2:13))
-    all.splits <- table(factor( all.splits,levels=2:13))
-    list( first.split,all.splits)
-}
-
-set.seed(222)
-cf1<-cforest(y ~ ., data = X,mtry=1,cores=1)
-#cf1<-cforest(y ~ ., data = X,mtry=1,cores=6)
-#this does not guarantee that the result is reproducible 
-
-temp <- temp.mtry1 <-selection.rates(cf1)
-
-#png("./script14/mtry1_first_split.png")
-barplot(temp[[1]]/sum(temp[[1]]), names.arg =1:12,col=col)
-#dev.off()
-
-#png("./script14/mtry1_all_splits.png")
-barplot(temp[[2]]/sum(temp[[2]]), names.arg =1:12,col=col)
-#dev.off()
-
-#
-cf4<-cforest(y ~ ., data = X,mtry=4)
-temp <- temp.mtry4 <-selection.rates(cf4)
-#png("./script14/mtry4_first_split.png")
-barplot(temp[[1]]/sum(temp[[1]]), names.arg =1:12,col=col)
-#dev.off()
-#png("./script14/mtry4_all_splits.png")
-barplot(temp[[2]]/sum(temp[[2]]), names.arg =1:12,col=col)
-#dev.off()
-
-#
-cf8<-cforest(y ~ ., data = X,mtry=8)
-temp <- temp.mtry8 <-selection.rates(cf8)
-#png("./script14/mtry8_first_split.png")
-barplot(temp[[1]]/sum(temp[[1]]), names.arg =1:12,col=col)
-#dev.off()
-#png("./script14/mtry8_all_splits.png")
-barplot(temp[[2]]/sum(temp[[2]]), names.arg =1:12,col=col)
-#dev.off()
-
-#save(cf1,  cf4,cf8,temp.mtry1,temp.mtry4,temp.mtry8,
-#     varimp.cf1, varimp.cf4,varimp.cf8,conditional.varimp.cf1,
-#conditional.varimp.cf4,conditional.varimp.cf8,     file="./script14/temp.Rdata")
-#load(file="./script14/temp.Rdata")
-```
-
-
-
-```{R, echo=FALSE, eval=FALSE}
-# @Strobl.et.al.2008 givs results for the variable counts. We check that the
-# same bias is apparent when using cforest and both the
-# permutation and conditional importance
-
-aa<-gettree(cf1,500)
-plot(aa)
-nodeids(aa)
-nodeids(aa, terminal = TRUE)
-unlist(nodeapply(aa, ids = nodeids(aa), FUN = function(n) n$split$varid))
-
-##varimp
-varimp.cf1<- varimp(cf1, conditional = FALSE)
-varimp.cf4<- varimp(cf4, conditional = FALSE)
-varimp.cf8<- varimp(cf8, conditional = FALSE)
-conditional.varimp.cf1<- varimp(cf1, conditional = TRUE)
-conditional.varimp.cf4<- varimp(cf4, conditional = TRUE)
-conditional.varimp.cf8<- varimp(cf8, conditional = TRUE)
-
-conditional.varimp.cf8<- varimp(cf8, nperm=20, conditional = TRUE)
-
-#png("./script14/varimp_cf1.png")
-barplot(varimp.cf1,col=col)
-#dev.off()
-
-#png("./script14/varimp_cf4.png")
-barplot(varimp.cf4,col=col)
-#dev.off()
-
-#png("./script14/varimp_cf8.png")
-barplot(varimp.cf8,col=col)
-#dev.off()
-
-#png("./script14/conditional_varimp_cf1.png")
-barplot(conditional.varimp.cf1,col=col)
-#dev.off()
-#png("./script14/conditional_varimp_cf4.png")
-barplot(conditional.varimp.cf4,col=col)
-#dev.off()
-#png("./script14/conditional_varimp_cf8.png")
-barplot(conditional.varimp.cf8,col=col)
-#dev.off()
-
-```
-
-
-
-
-
-
-```{R, echo=FALSE, eval=FALSE}
-rfModel1 <- ranger(data=X,dependent.variable.name="y", importance="impurity",
-                       classification=FALSE,  mtry=8,num.trees = 500, replace=FALSE, seed  = 17 )
-zz1 <- ranger::importance(rfModel1)
-range(zz1)
-#png("./script14/ranger_mtry8_Strobl_simulation_importance_impurity.png")
-barplot(zz1,col=col)
-#dev.off()
-
-
-rfModel1 <- ranger(data=X,dependent.variable.name="y", importance="impurity",
-                       classification=FALSE,  mtry=8,num.trees = 500, replace=TRUE, seed  = 17 )
-zz2 <-importance(rfModel1)
-range(zz2)
-barplot(zz2)
-
-rfModel1 <- ranger(data=X,dependent.variable.name="y", importance="impurity_corrected",
-                       classification=FALSE,  mtry=8,num.trees = 500, replace=FALSE, seed  = 17 )
-zz2 <-importance(rfModel1)
-range(zz2)
-barplot(zz2)
-
-rfModel2 <- ranger(data=X,dependent.variable.name="y", importance="permutation",
-                       classification=FALSE,  mtry=8,num.trees = 500, replace=TRUE, seed  = 17 )
-zz2 <-importance(rfModel2)
-aa<-barplot(zz2)
-rfModel2 <- ranger(data=X,dependent.variable.name="y", importance="permutation",
-                       classification=FALSE,  mtry=8,num.trees = 500, replace=FALSE, seed  = 17 )
-zz2 <-importance(rfModel2)
-aa<-barplot(zz2)
-
-
-aa<-table(treeInfo(rfModel2,1)$splitvarName)
-aa <-aa[c( order(as.numeric(gsub("X([0-9]*)","\\1",names(aa)))) )]
-barplot(aa)
-
-aa<-table(aa$splitvarName,useNA="ifany")
-aa<- selection.rates(rfModel2)
-barplot(aa)
-
-
-
-cf.model1<-cforest(y~., data = X,controls=cforest_classical(mtry=4))
-imp<-varimp(cf.model1)    
-barplot(imp)
-
-
-
-selection.rates<-function(forest){
-    aa<-c()
-    for ( i in 1:500){
-        aa<-c(aa,   treeInfo(forest, i)$splitvarName)
-    }
-    aa<-table(aa)
-    aa
-}
-
-#head(aa)
-barplot(aa)
-names(aa)<-make.names(names(aa))
-
-mtry<-8
-rfModel2 <- ranger(data=X,dependent.variable.name="y", importance="permutation",
-                   classification=FALSE,  mtry=mtry,num.trees = 500, replace=FALSE, seed  = 17 )
-zz2 <-ranger::importance(rfModel2)
-aa<-barplot(zz2,col=col)
-#png("./script14/ranger_mtry8_Strobl_simulation_importance_permutation.png")
-barplot(zz2,col=col)
-#dev.off()
-
-
-temp<-vector(length=12)
-for ( i in 1:100){
-    set.seed(123+i)
-    X<-mvtnorm:::rmvnorm(n=500, mean=rep(0,12), sigma=sigma, method="chol")
-    aa<-c(5, 5, 2, 0, -5, -5, -2, 0 ,0,0,0,0)
-    y<-X %*% aa + rnorm(500,0, sqrt(0.5))
-    
-    X<-data.frame(y,X)
-
-    rfModel2 <- ranger(data=X,dependent.variable.name="y", importance="permutation",
-                   classification=FALSE,  mtry=mtry,num.trees = 500, replace=TRUE)
-    aa.1<-selection.rates(rfModel2)
-    aa.1 <-aa.1[c( order(as.numeric(gsub("X([0-9]*)","\\1",names(aa.1)))) )]
-    temp<-temp+aa.1
-}
-#png("./script14/mtry8_Strobl_simulation.png")
-barplot(temp/sum(temp),col=col)
-#dev.off()
-
-
-aa1<-roc(c(1, 1, 1, 0, 1, 1, 1, 0 ,0,0,0,0), zz1)
-aa1<-roc(c(1, 1, 1, 0, 1, 1, 1, 0 ,0,0,0,0), zz2)
-plot(aa1,col="red")
-plot(aa2,add=TRUE,col="blue")
-
-```
-```{R, echo=FALSE, eval=FALSE}
-#we modify Strobl's \cite{Strobl.et.al.2008}
-#we make the variables identical  (correlation of 1)
-library(mvtnorm)
-library(ranger)
- 
-
-for ( mm in 4:40){
-    set.seed(mm) 
-    X<-matrix(rnorm(500*(mm+8),0,1),500,mm+8)
-    X <-X[,c(rep(1,mm),5,6,7,8,9,10,11,12)]
-    
-    aa<-c(rep(0,mm-4),5, 5, 2, 0, -5, -5, -2, 0 ,0,0,0,0) 
-#  importance="impurity" "permutation" or  "impurity_corrected",
-# we see the Strobl effect  and then the Piotr effect as mm increases
-# however for "impurity_corrected" we need a large mm to get it (200+)
-    
-#    aa<-c(rep(1,mm-4),5, 5, 2, 0, -5, -5, -2, 0 ,0,0,0,0)
-    #we see only the Strobl effect
-    
-    y<-X %*% aa + rnorm(500,0, sqrt(0.5))
-    
-    X<-data.frame(y,X)
-    col<- c(rep("grey50",mm),rep("grey80",8))
-                                                          
-    rfModel1 <- ranger(data=X,dependent.variable.name="y", importance="impurity",
-                       classification=FALSE,  num.trees = 500, replace=FALSE, seed  = 17 )  
-    zz1 <-importance(rfModel1)
-    barplot(zz1,col=col)
-}
-## the correlated variables seem to have a higher importance until there get to be
-## too many of them
-
-mm <-4
-set.seed(mm)
-X<-matrix(rnorm(500*(mm+8),0,1),500,mm+8)
-X <-X[,c(rep(1,mm),5,6,7,8,9,10,11,12)]
-aa<-c(rep(0,mm-4),5, 5, 2, 0, -5, -5, -2, 0 ,0,0,0,0)
-y<-X %*% aa + rnorm(500,0, sqrt(0.5))
-X<-data.frame(y,X)
-col<- c(rep("grey50",mm),rep("grey80",8))
-cf4<-cforest(y ~ ., data = X)
-zz4 <-varimp(cf4, conditional = FALSE)
-xx4<-varimp(cf4, conditional = TRUE)
-
-png("./tempdir1/zz4_not_conditional.png")
-barplot(zz4,col=col)
-dev.off()
-
-png("./tempdir1/xx4_conditional.png")
-barplot(xx4,col=col)
-dev.off()
-##There is a pattern of the correlated (identical) varaibles having a rising importance 
-
-mm <-40
-set.seed(mm)
-X<-matrix(rnorm(500*(mm+8),0,1),500,mm+8)
-X <-X[,c(rep(1,mm),5,6,7,8,9,10,11,12)]
-aa<-c(rep(0,mm-4),5, 5, 2, 0, -5, -5, -2, 0 ,0,0,0,0)
-y<-X %*% aa + rnorm(500,0, sqrt(0.5))
-X<-data.frame(y,X)
-col<- c(rep("grey50",mm),rep("red",8))
-cf5<-cforest(y ~ ., data = X)
-zz40 <-varimp(cf5, conditional = FALSE)
-xx40 <-varimp(cf5, conditional = TRUE)
-aa<-rep(0,48)
-names(aa)<-make.names(1:48)
-
-aa[match(names(xx40),names(aa))]<-xx40
-xx40<-aa
-png("./tempdir1/xx40_conditional.png")
-barplot(xx40,col=col)
-dev.off()
-
-aa[match(names(zz40),names(aa))]<-zz40
-zz40<-aa
-png("./tempdir1/zz40_notconditional.png")
-barplot(zz40,col=col)
-dev.off()
-
-#################################################################################################
-#make all the y-values the smme for the correlated varaibles. 
-# sorry Amnon. I can remember what this was meant to show
-X<-mvtnorm:::rmvnorm(n=500, mean=rep(0,12), sigma=sigma, method="chol")
-aa<-c(5, 5, 5, 5, -5, -5, -2, 0 ,0,0,0,0)
-y<-X %*% aa + rnorm(500,0, sqrt(0.5))
-
-X<-data.frame(y,X)
-
-rfModel1 <- ranger(data=X,dependent.variable.name="y", importance="impurity",
-                   classification=FALSE,  num.trees = 500, replace=FALSE)
-zz1 <-importance(rfModel1)
-col<- c(rep("grey50",4),rep("red",8))
-barplot(zz1,col=col)
-
-######################################################################################################
-# lots of varibles with correlation of 0.9
-
-set.seed(123+i)
-sigma <- diag(rep(1,40))
-sigma[(row(sigma)<= 32) &(col(sigma) <= 32) &(row(sigma) != col(sigma))] <- 0.9
-set.seed(123)
-X<-mvtnorm:::rmvnorm(n=500, mean=rep(0,40), sigma=sigma, method="chol")
-aa<-c(rep(0,28),5, 5, 2, 0, -5, -5, -2, 0 ,0,0,0,0)
-y<-X %*% aa + rnorm(500,0, sqrt(0.5))
-X<-data.frame(y,X)
-rfModel1 <- ranger(data=X,dependent.variable.name="y", importance="impurity_corrected",
-                   classification=FALSE,  num.trees = 500, replace=TRUE)
-zz1 <-importance(rfModel1)
-col<- c(rep("grey50",32),rep("red",8))
-barplot(zz1,col=col)
-
-cf4<-cforest(y ~ ., data = X)
-zz4 <-varimp(cf4, conditional = FALSE)
-xx4<-varimp(cf4, conditional = TRUE)
-barplot(zz4,col=col)
-barplot(xx4,col=col)
-
-```
-
-```{R, echo=FALSE, eval=FALSE}
-## Piotr simulation 2
-X <- matrix(NA, num_samples , num_vars)
-set.seed(123)
- 
-var_index <- 1
-for(band in 1:num_bands) {
-    for (rank in 0:band_rank) {
-#        cat("rank=",rank,"\n")
-        var <- sample(0:2, num_samples, replace=TRUE)
-        for (i in 1:2**rank) {
-            X[,var_index] <- var
-            var_index <- var_index +1 
-        }
-    }
-}
-
-
-y <- as.numeric(X[,1] > 1 |  X[,2] > 1  |  X[,4] > 1 |  X[,8] > 1 |  X[,16] > 1 | X[,32] > 1 | X[,64] > 1 )
-data<-cbind(y,X)
-colnames(data) <- c("y",make.names(1:num_vars))
-rfModel.1 <- ranger(data=data,dependent.variable.name="y", importance="impurity",
-                  classification=TRUE,  mtry=100,num.trees = 10000, replace=TRUE, seed  = 17 )
-zz2 <-log(importance(rfModel.1))
-plot(zz2,type="b",col=col2)
-plot(zz2,type="b",col=col)
-
-
-
-X <- matrix(NA, num_samples , num_vars)
-set.seed(124)
- 
-var_index <- 1
-for(band in 1:num_bands) {
-    for (rank in 0:band_rank) {
-#        cat("rank=",rank,"\n")
-        var <- sample(0:2, num_samples, replace=TRUE)
-        for (i in 1:2**rank) {
-            X[,var_index] <- var
-            var_index <- var_index +1 
-        }
-    }
-}
-
-
-y <- as.numeric(X[,1] > 1 |  X[,2] > 1  |  X[,4] > 1 |  X[,8] > 1 |  X[,16] > 1 | X[,32] > 1 | X[,64] > 1 )
-data<-cbind(y,X)
-colnames(data) <- c("y",make.names(1:num_vars))
-
-rfModel.2 <- ranger(data=data,dependent.variable.name="y", importance="impurity",
-                  classification=TRUE,  mtry=100,num.trees = 10000, replace=TRUE, seed  = 18 )
-zz3 <-log(importance(rfModel.2))
-points(zz3,type="b",col=col,pch=16)
-
-
-```
-
-
-#
-
-
-
-
-
-\FloatBarrier
