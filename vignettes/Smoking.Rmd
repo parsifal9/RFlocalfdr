@@ -79,6 +79,28 @@ plot(density(imp),xlab="log importances",main="")
 
 ```
 
+```{r,  echo=TRUE,  eval=FALSE}
+# starting from a randomForest model
+library(RFlocalfdr)
+library(randomForest)
+sert.seed(123)
+rf2 <-randomForest(y=factor(y.numeric) ,x=smoking_data,importance=TRUE, ntree = 10000)
+imp.rf2 <- log(rf2$importance[,"MeanDecreaseGini"])
+t2.rf2 <-varUsed(rf2)
+plot(density(imp.rf2),xlab="log importances",main="")
+
+cutoffs <- c(2,3,4,5)
+res.con<- determine_cutoff(imp.rf2,t2.rf2 ,cutoff=cutoffs,plot=c(2,3,4,5))
+
+plot(cutoffs,res.con[,3],pch=15,col="red",cex=1.5,ylab="max(abs(y - t1))")
+cutoffs[which.min(res.con[,3])]
+#2
+
+
+```
+
+
+
 <!-- ```{r log_importances, echo=FALSE, fig.cap="", fig.align="center", out.width = '50%'} -->
 <!-- #knitr::include_graphics("./supp_figures/smoking_log_importances.png") -->
 <!-- knitr::include_graphics("./supp_figures/smoking_data_determine_cutoff.png") -->
