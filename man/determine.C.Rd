@@ -48,7 +48,7 @@ df <- data.frame(x, y)
 initial.estimates <- fit.to.data.set.wrapper(df, temp, try.counter = 3,return.all=FALSE)           
 initial.estimates<-  initial.estimates$Estimate
 
-qq<- determine.C(f_fit,df,initial.estimates,start_at=37,trace.plot = FALSE)    
+qq<- determine.C(f_fit,df,initial.estimates,start_at=40,trace.plot = FALSE)    
 cc<-x[which.min(qq)]                                                                             
 plot(x,qq,main="determine cc")                                                                   
 abline(v=cc)

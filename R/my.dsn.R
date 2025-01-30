@@ -47,7 +47,7 @@
 #'
 #' #dsn, qsn and psn are wrappers around the provided functions provided by sn. This is done to
 #' # overcome some checking done by fitdistrplus
-#' \donttest{
+#' \dontrun{
 #' library(sn)
 #' getAnywhere("dsn")
 #' RFlocalfdr::my.test1fun("sn::dsn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))
@@ -63,10 +63,9 @@
 #' }
 
 
-
 my.dsn <- function(x, xi=0, omega=1, lambda=1) {
     if(abs(lambda) > 5) {
-        warning("The approximation may be unreliable for |lambda| > 4")
+        warning("The approximation may be unreliable for |lambda| > 5")
     }
     
     # For negative lambda, reflect x around xi and use |lambda|
@@ -89,12 +88,11 @@ my.dsn <- function(x, xi=0, omega=1, lambda=1) {
     idx_4 <- z >= 1/lambda & z < 3/lambda
     idx_5 <- z >= 3/lambda
     
-    # Small non-zero value instead of exactly 0
-    hx[idx_1] <- .Machine$double.xmin
+    hx[idx_1] <- 0  # Changed from .Machine$double.xmin to 0
     hx[idx_2] <- (1/8)*aa[idx_2]*(9*lambda*z[idx_2] + cc[idx_2] + bb[idx_2] + 9)
     hx[idx_3] <- (1/4)*aa[idx_3]*(3*lambda*z[idx_3] + bb[idx_3] + 4)
     hx[idx_4] <- (1/8)*aa[idx_4]*(9*lambda*z[idx_4] - cc[idx_4] + bb[idx_4] + 7)
-    hx[idx_5] <- aa[idx_5]
+    hx[idx_5] <- sqrt(2/pi)*exp(-z[idx_5]^2/2)  # Fixed this line
     
     (1/omega)*hx
 }

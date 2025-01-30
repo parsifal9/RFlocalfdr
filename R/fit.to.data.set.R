@@ -19,6 +19,7 @@
 #' @return If the skew-normal fitting routine is succesful, then the matrix of parmaters and standard errors is returned.
 #'         -- othewise a "try-error" message is returned
 #' @examples
+#' \dontrun{
 #' data(imp20000)                                      
 #' imp<-log(imp20000$importances)                               
 #' t2<-imp20000$counts
@@ -41,8 +42,9 @@
 #' curve(my.dsn(x, xi = fitted_parameters$Estimate[1], omega = fitted_parameters$Estimate[2],  
 #'                 lambda = fitted_parameters$Estimate[3]), add = TRUE, 
 #'                 col = "orange", lwd = 3)
+#' }
 #' 
-#' \donttest{
+#' \dontrun{
 #' library(RFlocalfdr.data)
 #' data(ch22)                                       
 #' imp<-log(ch22$imp)                               

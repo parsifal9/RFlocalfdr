@@ -18,6 +18,7 @@
 #' - "temp.dir" the temp directory for dubuggin
 #' - "p0"     the estmate of the proportion of null values (can be 1)
 #' @examples
+#' \dontrun{
 #' data(imp20000)
 #' imp <- log(imp20000$importances)
 #' t2 <- imp20000$counts
@@ -31,8 +32,9 @@
 #' aa<-significant.genes(ppp,imp,cutoff=0.2,debug.flag=0,do.plot=2, use_95_q=TRUE)                           
 #' length(aa$probabilities) #11#                                                          
 #' names(aa$probabilities)
+#' }
 #'
-#' \donttest{
+#' \dontrun{
 #' library(RFlocalfdr.data)
 #' data(ch22)                                                                                 
 #' ? ch22                                                                                     

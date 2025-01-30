@@ -28,7 +28,7 @@
 #' @export
 #' @return an object of class PIMP
 #' @examples
-#' \donttest{ 
+#' \dontrun{ 
 #' library(RFlocalfdr.data)
 #' library(ranger)
 #' library(vita) #vita: Variable Importance Testing Approaches

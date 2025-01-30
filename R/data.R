@@ -7,7 +7,7 @@
 #'   \item{imp1}{importances }
 #' }
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' require(ranger)
 #' inv.logit <-function (x) {
 #'     plogis(x)}

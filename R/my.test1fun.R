@@ -33,7 +33,7 @@
 #'
 #' #dsn, qsn and psn are wrappers around the provided functions provided by sn. This is done to
 #' # overcome some checking done by fitdistrplus
-#' \donttest{
+#' \dontrun{
 #' library(sn)
 #' getAnywhere("dsn")
 #' RFlocalfdr::my.test1fun("sn::dsn", list(xi = -Inf, omega =1, alpha=0 ), fix.arg = list(tau = 0))

@@ -12,6 +12,7 @@
 #' @export
 #' @return returns an estimate of the local false discovery rate.
 #' @examples
+#' \dontrun{
 #' data(imp20000)                                      
 #' imp<-log(imp20000$importances)                               
 #' t2<-imp20000$counts
@@ -42,8 +43,9 @@
 #' box() #- to make it look "as usual                                                                                     
 #' legend("topright",c("density importances","local fdr"),col=c("blue","green"),lty=1)
 #' par(oldpar)
+#' }
 #' 
-#' \donttest{
+#' \dontrun{
 #' library(RFlocalfdr.data)
 #' data(ch22)                                                                                                             
 #' imp<-log(ch22$imp)

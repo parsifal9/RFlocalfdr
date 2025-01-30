@@ -4,7 +4,7 @@
 \alias{plotQ}
 \title{plotQ}
 \usage{
-plotQ(imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
+plotQ(imp, debug.flag = 0, temp.dir = NULL, try.counter = 3, start_at = 37)
 }
 \arguments{
 \item{imp}{"reduction in impurity" importances from a random forest model}
@@ -14,6 +14,9 @@ plotQ(imp, debug.flag = 0, temp.dir = NULL, try.counter = 3)
 \item{temp.dir}{if debug flag is >0 then information is written to temp.dir}
 
 \item{try.counter}{where to explain this?}
+
+\item{start_at}{--  x <- f_fit$midpoints  is of length 119 (quite arbitrary). We use the first start_at
+values of x to fit the skew-normal distribution.}
 }
 \value{
 \itemize{

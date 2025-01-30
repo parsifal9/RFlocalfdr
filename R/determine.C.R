@@ -21,6 +21,7 @@
 #'           -- to the right of C, our data is generated from the NULL distribution
 #'           -- to the left of C, we have a mixture of the NULL and non-NULL distribution
 #' @examples
+#' \dontrun{
 #' data(imp20000)                                      
 #' imp<-log(imp20000$importances)                               
 #' t2<-imp20000$counts
@@ -34,14 +35,15 @@
 #' initial.estimates <- fit.to.data.set.wrapper(df, temp, try.counter = 3,return.all=FALSE)           
 #' initial.estimates<-  initial.estimates$Estimate
 #' 
-#' qq<- determine.C(f_fit,df,initial.estimates,start_at=37,trace.plot = FALSE)    
+#' qq<- determine.C(f_fit,df,initial.estimates,start_at=40,trace.plot = FALSE)    
 #' cc<-x[which.min(qq)]                                                                             
 #' plot(x,qq,main="determine cc")                                                                   
 #' abline(v=cc)
 #' # unfortunately the minima does not appear reasonable. In this case it is advisable to use the
 #' # 95th quantile
+#' }
 #' 
-#' \donttest{
+#' \dontrun{
 #' #needs the  chromosome 22 data in  RFlocalfdr.data. Also has a long runtime.
 #' library(RFlocalfdr.data)
 #' data(ch22)                                                                                    

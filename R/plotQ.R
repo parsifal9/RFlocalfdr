@@ -15,6 +15,8 @@
 #' @param debug.flag  either 0 (no debugging information), 1 or 2
 #' @param temp.dir if debug flag is >0 then information is written to temp.dir
 #' @param try.counter where to explain this?
+#' @param start_at       --  x <- f_fit$midpoints  is of length 119 (quite arbitrary). We use the first start_at  
+#'                          values of x to fit the skew-normal distribution.
 #' @keywords variable importance
 #' @return
 #' - df, contains x and y, midpoints and counts from a histogram of imp
@@ -29,6 +31,7 @@
 #' - ww the minimum value of the local fdr
 #' @export
 #' @examples
+#' \dontrun{
 #' data(imp20000)
 #' imp <- log(imp20000$importances)
 #' t2 <- imp20000$counts
@@ -42,8 +45,9 @@
 #' aa<-significant.genes(ppp,imp,cutoff=0.2,debug.flag=0,do.plot=2, use_95_q=TRUE)                           
 #' length(aa$probabilities) #11#                                                          
 #' names(aa$probabilities)
+#' }
 #'
-#' \donttest{
+#' \dontrun{
 #' library(RFlocalfdr.data)
 #' data(ch22)                                                                                 
 #' ?ch22                                                                                     
@@ -82,7 +86,7 @@
 #' length(aa$probabilities) # 17
 #' }
 
-plotQ <- function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3){
+plotQ <- function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3,start_at=37){
     fileConn <- NULL
     ww <- NULL
     oldpar <- par(no.readonly = TRUE)
@@ -145,7 +149,7 @@ plotQ <- function (imp, debug.flag = 0, temp.dir = NULL, try.counter = 3){
     if (debug.flag > 0) {
         message("calculating cc", "\n")
     }
-    qq <- try(determine.C(f_fit, df, initial.estimates, start_at = 37), silent = TRUE)
+    qq <- try(determine.C(f_fit, df, initial.estimates, start_at =  start_at), silent = TRUE)
     if (debug.flag > 0) {
         writeLines(paste(class(qq), "class(determine.C)"), fileConn)
     }

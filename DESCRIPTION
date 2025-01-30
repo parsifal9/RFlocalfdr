@@ -1,6 +1,6 @@
 Package: RFlocalfdr
 Title: Significance Level for Random Forest Impurity Importance Scores
-Version: 0.8.5
+Version: 0.9
 Authors@R: 
     person(given = "Robert",
            family = "Dunne",
@@ -14,7 +14,7 @@ License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 LazyDataCompression: xz
 Imports: 
     minpack.lm,
@@ -24,14 +24,14 @@ Imports:
     graphics,
     stats,
     ranger,
-    randomForest,
-    RFlocalfdr.data,
-    vita
+    randomForest
 Depends: 
     R (>= 3.5.0)
 Suggests: 
     rmarkdown,
     knitr,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    RFlocalfdr.data,
+    vita
 VignetteBuilder: knitr
 Config/testthat/edition: 3

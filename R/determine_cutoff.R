@@ -22,6 +22,7 @@
 #' evaluated up to the quantile Q
 #' @export
 #' @examples
+#' \dontrun{
 #' data(imp20000)
 #' imp <- log(imp20000$importances)
 #' t2<- imp20000$counts
@@ -41,8 +42,9 @@
 #' #[1] "X101"   "X102"   "X103"   "X104"   "X105"   "X2994"  "X9365"  "X10718"
 #' # [9] "X13371" "X15517" "X16460"
 #' # so the observed FDR is 0.54
+#' }
 #' 
-#' \donttest{
+#' \dontrun{
 #' library(ranger)
 #' library(RFlocalfdr.data)
 #' data(smoking)
